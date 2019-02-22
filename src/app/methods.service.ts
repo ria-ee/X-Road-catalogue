@@ -11,8 +11,9 @@ export class MethodsService {
 
   //private apiUrlBase = 'https://www.x-tee.ee/catalogue/EE/wsdls/';
   public apiUrlBase = 'http://localhost/';
-  private limit: number = 15;
+  private limit: number = 10;
   private offset: number = 0;
+  private nonEmpty: boolean = false;
   private apiService = 'index.json';
   private apiUrl = this.apiUrlBase + this.apiService;
   private subsystems: Subsystem[];
@@ -34,19 +35,33 @@ export class MethodsService {
   }
 
   private filtered(data: Subsystem[]): Subsystem[] {
-    return data.slice(this.offset, this.limit);
+    return data
+      .filter(subsystem => (!this.nonEmpty || subsystem.methods.length))
+      .slice(this.offset, this.limit);
   }
 
   getMethods(): Subsystem[] {
     return this.filtered(this.subsystems);
   }
 
-  filterNonEmpty(checked: boolean) {
-    console.log(checked)
-    if (checked) {
-      this.limit = 5;
-    } else {
-      this.limit = 10;
+  setNonEmpty(nonEmpty: boolean) {
+    this.nonEmpty = nonEmpty;
+    this.signalRefresh();
+  }
+
+  setLimit (limit: string) {
+    switch(limit) {
+      case '20':
+        this.limit = 20;
+        break;
+      case '50':
+        this.limit = 50;
+        break;
+      case 'All':
+        this.limit = 1000000;
+        break;
+      default:
+        this.limit = 10;
     }
     this.signalRefresh();
   }
