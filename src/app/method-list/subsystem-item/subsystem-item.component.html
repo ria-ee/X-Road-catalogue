@@ -1,0 +1,15 @@
+<div class="card-header pointerCursor" (click)="isHidden = !isHidden">
+    {{subsystemName}}
+    <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">Empty</span>
+    <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">Error</span>
+  </div>
+  <div class="card-body" [hidden]="isHidden" *ngIf="!subsystem.methods.length">
+    <p>No services found</p>
+  </div>
+  <div class="card-body" [hidden]="isHidden" *ngIf="subsystem.methods.length">
+    <p *ngFor="let method of subsystem.methods">
+      {{subsystemName}}/{{method.serviceCode}}/{{method.serviceVersion}}
+      <a href="{{methodsService.apiUrlBase}}{{method.wsdl}}" class="badge badge-success" *ngIf="method.wsdl">WSDL</a>
+      <span class="badge badge-danger" *ngIf="!method.wsdl">Error while downloading or parsing of WSDL</span>
+    </p>
+  </div>
