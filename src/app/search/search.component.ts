@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MethodsService } from '../methods.service';
 
 @Component({
   selector: 'app-search',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
+  nonEmpty: boolean = false
+
+  constructor(private methodsService: MethodsService) { }
 
   ngOnInit() {
   }

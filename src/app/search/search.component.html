@@ -4,8 +4,9 @@
   </div>
   <div class="card-body">
     <div class="form-group form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+      <input type="checkbox" class="form-check-input" id="exampleCheck1" 
+      [(ngModel)]="nonEmpty" (change)="methodsService.filterNonEmpty(nonEmpty)">
+      <label class="form-check-label" for="exampleCheck1">Show only nonempty subsystems</label>
     </div>
   </div>
 </div>
