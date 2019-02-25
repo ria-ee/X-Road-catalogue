@@ -10,14 +10,25 @@ import { MethodsService } from '../../methods.service';
 export class SubsystemItemComponent implements OnInit {
 
   @Input() subsystem: Subsystem;
-  subsystemName: string;
   isHidden: boolean = true;
 
-  constructor(private methodsService: MethodsService) { }
-
-  ngOnInit() {
-    this.subsystemName = this.subsystem.xRoadInstance + '/' + this.subsystem.memberClass
-      + '/' + this.subsystem.memberCode + '/' + this.subsystem.subsystemCode
+  constructor(private methodsService: MethodsService) {
+    // Service will tell when detail should be opened or closed
+    this.methodsService.hideDetails.subscribe(signal => {
+      if (signal) {
+        this.isHidden = true
+      } else if (this.subsystem.methods.length) {
+        // Force opening only subsystems with methods
+        this.isHidden = false
+      }
+    });
   }
 
+  ngOnInit() {
+    // New component asks service if detail should be opened or closed
+    if (this.subsystem.methods.length) {
+      // Force opening only subsystems with methods
+      this.isHidden = this.methodsService.getHideDetails()
+    }
+  }
 }

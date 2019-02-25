@@ -3,4 +3,5 @@ export class Method {
     serviceCode: string;
     wsdl: string;
     serviceVersion: string;
+    fullMethodName: string;
 }

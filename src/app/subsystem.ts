@@ -6,5 +6,6 @@ export class Subsystem {
     xRoadInstance: string;
     subsystemStatus: string;
     memberCode: string;
+    fullSubsystemName: string;
     methods: Method[];
 }
