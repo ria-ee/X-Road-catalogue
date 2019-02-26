@@ -30,11 +30,18 @@ export class SubsystemComponent implements OnInit {
 
   getSubsystem() {
     this.subsystemId = this.route.snapshot.paramMap.get('id')
+    // Show data if already available
     this.subsystem = this.methodsService.getSubsystem(this.subsystemId)
-    // Service will tell when updated data is available!
+    //console.log(this.subsystem)
+    // Service will tell when data has finished loading
     this.methodsService.subsystemsUpdated.subscribe(signal => {
       this.subsystem = this.methodsService.getSubsystem(this.subsystemId)
+      //console.log(this.subsystem)
     });
+  }
+
+  getApiUrlBase(): string {
+    return this.methodsService.getApiUrlBase()
   }
 
   goToList(): void {

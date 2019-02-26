@@ -22,6 +22,10 @@ export class SubsystemItemComponent implements OnInit {
   ngOnInit() {
   }
 
+  getApiUrlBase(): string {
+    return this.methodsService.getApiUrlBase()
+  }
+
   getMethodsPreview(): Method[] {
     return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.previewSize) : []
   }

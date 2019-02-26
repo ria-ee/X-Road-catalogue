@@ -21,7 +21,7 @@
     <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && subsystem.methods.length">
       <p *ngFor="let method of subsystem.methods">
         {{method.fullMethodName}}
-        <a href="{{methodsService.apiUrlBase}}{{method.wsdl}}" class="badge badge-success"
+        <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge badge-success"
           *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
         <span class="badge badge-danger" *ngIf="!method.wsdl">Error while downloading or parsing of WSDL</span>
       </p>

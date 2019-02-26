@@ -25,7 +25,6 @@ export class MethodsService {
   private lastMessage: string = '';
 
   @Output() subsystemsUpdated: EventEmitter<any> = new EventEmitter();
-  @Output() hideDetails: EventEmitter<boolean> = new EventEmitter();
   @Output() newMessage: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) {
@@ -44,14 +43,13 @@ export class MethodsService {
     this.subsystemsUpdated.emit(null);
   }
 
-  private signalHideDetails(signal: boolean) {
-    this.hideDetails.emit(signal);
-  }
-
   private filteredSubsystems(): Subsystem[] {
     let filtered: Subsystem[] = []
     let limit: number = this.limit
-    for (let subsystem of this.subsystems) {
+    for (let x of this.subsystems) {
+      // Copy object to avoid overwriting methods array
+      // TODO: Is there a better way???
+      let subsystem = Object.assign(Object.create(x), x);
       if (this.nonEmpty && !subsystem.methods.length) {
         // Filtering out empty subsystems
         continue
@@ -77,6 +75,7 @@ export class MethodsService {
           // No matching method names found
           continue
         }
+
         // Leaving only matcing methods
         subsystem.methods = filteredMethods
       }
@@ -103,6 +102,10 @@ export class MethodsService {
         + '/' + this.subsystems[i].methods[j].serviceVersion
       }
     }
+  }
+
+  getApiUrlBase(): string {
+    return this.apiUrlBase
   }
 
   getLimit(): string {
@@ -152,13 +155,6 @@ export class MethodsService {
 
   setFilter(filter: string) {
     if (this.filter != filter.trim()) {
-      if (filter.trim() == '') {
-        // Always close methods when filter is deleted
-        this.signalHideDetails(true)
-      } else {
-        // Always open methods when filter is inserted
-        this.signalHideDetails(false)
-      }
       this.filter = filter.trim();
       this.signalRefresh();
     }
