@@ -22,9 +22,11 @@ export class MethodsService {
   private apiUrl = this.apiUrlBase + this.apiService;
   private subsystems: Subsystem[] = [];
   private loadingDone: boolean = false;
+  private lastMessage: string = '';
 
   @Output() subsystemsUpdated: EventEmitter<any> = new EventEmitter();
   @Output() hideDetails: EventEmitter<boolean> = new EventEmitter();
+  @Output() newMessage: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) {
     this.http.get<Subsystem[]>(this.apiUrl)
@@ -176,6 +178,10 @@ export class MethodsService {
     }
   }
 
+  getMessage(): string {
+    return this.lastMessage
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -185,8 +191,9 @@ export class MethodsService {
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
+      //console.error(error); // log to console for debuging
+      this.lastMessage = 'Error loading data!'
+      this.newMessage.emit(this.lastMessage);
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
