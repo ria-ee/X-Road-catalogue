@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MethodListComponent } from './method-list/method-list.component';
+import { SubsystemListComponent } from './subsystem-list/subsystem-list.component';
 import { SubsystemComponent } from './subsystem/subsystem.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/list', pathMatch: 'full' },
-  { path: 'list', component: MethodListComponent },
+  { path: 'list', component: SubsystemListComponent },
   { path: 'subsystem/:id', component: SubsystemComponent },
 ];
 

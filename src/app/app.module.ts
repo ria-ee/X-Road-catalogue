@@ -5,16 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { MethodListComponent } from './method-list/method-list.component';
+import { SubsystemListComponent } from './subsystem-list/subsystem-list.component';
 import { SearchComponent } from './search/search.component';
-import { SubsystemItemComponent } from './method-list/subsystem-item/subsystem-item.component';
+import { SubsystemItemComponent } from './subsystem-list/subsystem-item/subsystem-item.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SubsystemComponent } from './subsystem/subsystem.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MethodListComponent,
+    SubsystemListComponent,
     SearchComponent,
     SubsystemItemComponent,
     SubsystemComponent

@@ -3,11 +3,11 @@ import { Subsystem } from '../subsystem';
 import { MethodsService } from '../methods.service';
 
 @Component({
-  selector: 'app-method-list',
-  templateUrl: './method-list.component.html',
-  styleUrls: ['./method-list.component.css']
+  selector: 'app-subsystem-list',
+  templateUrl: './subsystem-list.component.html',
+  styleUrls: ['./subsystem-list.component.css']
 })
-export class MethodListComponent implements OnInit {
+export class SubsystemListComponent implements OnInit {
   subsystems: Subsystem[];
 
   constructor(private methodsService: MethodsService) { }

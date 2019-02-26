@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MethodListComponent } from './method-list.component';
+import { SubsystemListComponent } from './subsystem-list.component';
 
-describe('MethodListComponent', () => {
-  let component: MethodListComponent;
-  let fixture: ComponentFixture<MethodListComponent>;
+describe('SubsystemListComponent', () => {
+  let component: SubsystemListComponent;
+  let fixture: ComponentFixture<SubsystemListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MethodListComponent ]
+      declarations: [ SubsystemListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MethodListComponent);
+    fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
