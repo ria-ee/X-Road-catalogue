@@ -13,6 +13,7 @@ export class MethodListComponent implements OnInit {
   constructor(private methodsService: MethodsService) { }
 
   ngOnInit() {
+    this.getMethods();
     // Service will tell when updated data is available!
     this.methodsService.subsystemsUpdated.subscribe(signal => {
       this.getMethods();

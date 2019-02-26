@@ -1,0 +1,32 @@
+<div *ngIf="loadingDone() && subsystem">
+  <div class="card">
+    <div class="card-header">
+      {{subsystem.fullSubsystemName}}
+      <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">Empty</span>
+      <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">Error</span>
+    </div>
+    <div class="card-body" *ngIf="subsystem.subsystemStatus == 'ERROR'">
+      <p>Subsystem either could not be reached by RIA's Monitoring Security Server
+        or there was some other error during the request.</p>
+    </div>
+    <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && !subsystem.methods.length">
+      <p>Subsystem does not have any methods.</p>
+    </div>
+    <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && subsystem.methods.length">
+      <p *ngFor="let method of subsystem.methods">
+        {{method.fullMethodName}}
+        <a href="{{methodsService.apiUrlBase}}{{method.wsdl}}" class="badge badge-success"
+          *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
+        <span class="badge badge-danger" *ngIf="!method.wsdl">Error while downloading or parsing of WSDL</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loadingDone() && !subsystem">
+  <p>
+    Subsystem "{{subsystemId}}" cannot be found!
+  </p>
+</div>
+  
+<button type="button" class="btn btn-secondary" (click)="goToList()">Show all subsystems</button>

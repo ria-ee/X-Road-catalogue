@@ -8,13 +8,16 @@ import { MethodsService } from '../methods.service';
 })
 export class SearchComponent implements OnInit {
 
-  nonEmpty: boolean = false
-  limit: string = '10'
-  filter: string = ''
+  limit: string
+  nonEmpty: boolean
+  filter: string
 
   constructor(private methodsService: MethodsService) { }
 
   ngOnInit() {
+    this.limit = this.methodsService.getLimit()
+    this.nonEmpty = this.methodsService.getNonEmpty()
+    this.filter = this.methodsService.getfilter()
   }
 
   setNonEmpty(nonEmpty: boolean) {

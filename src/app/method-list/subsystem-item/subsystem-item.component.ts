@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subsystem } from '../../subsystem';
+import { Method } from '../../method';
 import { MethodsService } from '../../methods.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-subsystem-item',
@@ -9,26 +11,29 @@ import { MethodsService } from '../../methods.service';
 })
 export class SubsystemItemComponent implements OnInit {
 
-  @Input() subsystem: Subsystem;
-  isHidden: boolean = true;
+  @Input() subsystem: Subsystem
+  private previewSize: number = 5
 
-  constructor(private methodsService: MethodsService) {
-    // Service will tell when detail should be opened or closed
-    this.methodsService.hideDetails.subscribe(signal => {
-      if (signal) {
-        this.isHidden = true
-      } else if (this.subsystem.methods.length) {
-        // Force opening only subsystems with methods
-        this.isHidden = false
-      }
-    });
-  }
+  constructor(
+    private methodsService: MethodsService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
-    // New component asks service if detail should be opened or closed
-    if (this.subsystem.methods.length) {
-      // Force opening only subsystems with methods
-      this.isHidden = this.methodsService.getHideDetails()
+  }
+
+  getMethodsPreview(): Method[] {
+    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.previewSize) : []
+  }
+
+  getNotInPreview(): number {
+    if (this.subsystem.methods.length - this.previewSize < 0) {
+      return 0
     }
+    return this.subsystem.methods.length - this.previewSize
+  }
+
+  showDetail() {
+    this.router.navigateByUrl('/subsystem/' + encodeURIComponent(this.subsystem.fullSubsystemName))
   }
 }

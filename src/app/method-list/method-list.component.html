@@ -1,3 +1,5 @@
-<div class="card" *ngFor="let subsystem of subsystems">
+<app-search></app-search>
+
+<div *ngFor="let subsystem of subsystems">
   <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
 </div>

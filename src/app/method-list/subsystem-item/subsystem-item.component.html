@@ -1,16 +1,25 @@
-<div class="card-header pointerCursor" (click)="isHidden = !isHidden">
+<div class="card">
+  <div class="card-header pointerCursor" (click)="showDetail()">
     {{subsystem.fullSubsystemName}}
     <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">Empty</span>
     <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">Error</span>
   </div>
-  <div class="card-body" [hidden]="isHidden" *ngIf="!subsystem.methods.length">
-    <p>No services found</p>
+  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'ERROR'">
+    <p>Subsystem either could not be reached by RIA's Monitoring Security Server
+      or there was some other error during the request.</p>
   </div>
-  <div class="card-body" [hidden]="isHidden" *ngIf="subsystem.methods.length">
-    <p *ngFor="let method of subsystem.methods">
+  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && !subsystem.methods.length">
+    <p>Subsystem does not have any methods.</p>
+  </div>
+  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && subsystem.methods.length">
+    <p *ngFor="let method of getMethodsPreview()">
       {{method.fullMethodName}}
       <a href="{{methodsService.apiUrlBase}}{{method.wsdl}}" class="badge badge-success"
-        *ngIf="method.wsdl">WSDL</a>
+        *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
       <span class="badge badge-danger" *ngIf="!method.wsdl">Error while downloading or parsing of WSDL</span>
     </p>
+    <p *ngIf="getNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
+      {{getNotInPreview()}} more methods...
+    </p>
   </div>
+</div>

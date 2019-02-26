@@ -8,18 +8,22 @@ import { AppComponent } from './app.component';
 import { MethodListComponent } from './method-list/method-list.component';
 import { SearchComponent } from './search/search.component';
 import { SubsystemItemComponent } from './method-list/subsystem-item/subsystem-item.component';
+import { AppRoutingModule } from './app-routing.module';
+import { SubsystemComponent } from './subsystem/subsystem.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MethodListComponent,
     SearchComponent,
-    SubsystemItemComponent
+    SubsystemItemComponent,
+    SubsystemComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

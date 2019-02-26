@@ -5,6 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
 
+const MAX_LIMIT: number = 1000000;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +20,8 @@ export class MethodsService {
   private filter: string = "";
   private apiService = 'index.json';
   private apiUrl = this.apiUrlBase + this.apiService;
-  private subsystems: Subsystem[];
+  private subsystems: Subsystem[] = [];
+  private loadingDone: boolean = false;
 
   @Output() subsystemsUpdated: EventEmitter<any> = new EventEmitter();
   @Output() hideDetails: EventEmitter<boolean> = new EventEmitter();
@@ -30,6 +33,7 @@ export class MethodsService {
     ).subscribe(subsystems => {
       this.subsystems = subsystems;
       this.setFullNames();
+      this.loadingDone = true;
       this.signalRefresh();
     })
   }
@@ -99,6 +103,25 @@ export class MethodsService {
     }
   }
 
+  getLimit(): string {
+    if (this.limit == MAX_LIMIT) {
+      return 'All'
+    }
+    return this.limit.toString()
+  }
+
+  getNonEmpty(): boolean {
+    return this.nonEmpty
+  }
+
+  getfilter(): string {
+    return this.filter
+  }
+
+  isLoadingDone(): boolean {
+    return this.loadingDone
+  }
+
   getMethods(): Subsystem[] {
     return this.filteredSubsystems();
   }
@@ -117,7 +140,7 @@ export class MethodsService {
         this.limit = 50;
         break;
       case 'All':
-        this.limit = 1000000;
+        this.limit = MAX_LIMIT;
         break;
       default:
         this.limit = 10;
@@ -137,6 +160,12 @@ export class MethodsService {
       this.filter = filter.trim();
       this.signalRefresh();
     }
+  }
+
+  getSubsystem(name: string): Subsystem {
+    return this.subsystems.find(function(element) {
+      return element.fullSubsystemName === name;
+    })
   }
 
   getHideDetails(): boolean {
