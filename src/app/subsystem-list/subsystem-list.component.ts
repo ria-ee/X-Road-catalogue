@@ -13,11 +13,13 @@ export class SubsystemListComponent implements OnInit {
   constructor(private methodsService: MethodsService) { }
 
   ngOnInit() {
-    this.getMethods();
     // Service will tell when updated data is available!
     this.methodsService.subsystemsUpdated.subscribe(signal => {
       this.getMethods();
     });
+    // If json data is loaded update event will not be emited.
+    // This line must be after subscription (data may be changed while we start subscription)
+    this.getMethods();
   }
 
   getMethods(): void {

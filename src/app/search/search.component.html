@@ -4,13 +4,13 @@
   </div>
   <div class="card-body">
     <div class="form-group form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1" 
+      <input type="checkbox" class="form-check-input" id="nonEmptyCheck" 
         [(ngModel)]="nonEmpty" (change)="setNonEmpty(nonEmpty)">
-      <label class="form-check-label" for="exampleCheck1">Show only producer subsystems</label>
+      <label class="form-check-label" for="nonEmptyCheck">Show only producer subsystems</label>
     </div>
     <div class="form-group">
-      <label for="exampleFormControlSelect1">Amount of subsystems to display</label>
-      <select class="form-control" id="exampleFormControlSelect1"
+      <label for="limitSelect">Amount of subsystems to display</label>
+      <select class="form-control" id="limitSelect"
         [(ngModel)]="limit" (change)="setLimit(limit)">
         <option>10</option>
         <option>20</option>
@@ -19,8 +19,8 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="exampleFormControlInput1">Filter by method name</label>
-      <input type="text" class="form-control" id="exampleFormControlInput1"
+      <label for="filterInput">Filter by method name</label>
+      <input type="text" class="form-control" id="filterInput"
         [(ngModel)]="filter" (ngModelChange)="setFilter(filter)">
     </div>
   </div>

@@ -13,11 +13,12 @@ export class MessageComponent implements OnInit {
   constructor(private methodsService: MethodsService) { }
 
   ngOnInit() {
-    this.message = this.methodsService.getMessage();
     // Service will tell when updated data is available!
     this.methodsService.newMessage.subscribe(signal => {
       this.message = signal;
     });
+    // This line must be after subscription (data may be changed while we start subscription)
+    this.message = this.methodsService.getMessage();
   }
 
 }

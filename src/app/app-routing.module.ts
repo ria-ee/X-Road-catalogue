@@ -4,8 +4,7 @@ import { SubsystemListComponent } from './subsystem-list/subsystem-list.componen
 import { SubsystemComponent } from './subsystem/subsystem.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/list', pathMatch: 'full' },
-  { path: 'list', component: SubsystemListComponent },
+  { path: '', component: SubsystemListComponent },
   { path: 'subsystem/:id', component: SubsystemComponent },
 ];
 

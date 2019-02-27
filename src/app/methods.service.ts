@@ -46,10 +46,7 @@ export class MethodsService {
   private filteredSubsystems(): Subsystem[] {
     let filtered: Subsystem[] = []
     let limit: number = this.limit
-    for (let x of this.subsystems) {
-      // Copy object to avoid overwriting methods array
-      // TODO: Is there a better way???
-      let subsystem = Object.assign(Object.create(x), x);
+    for (let subsystem of this.subsystems) {
       if (this.nonEmpty && !subsystem.methods.length) {
         // Filtering out empty subsystems
         continue
@@ -76,6 +73,9 @@ export class MethodsService {
           continue
         }
 
+        // Copy object to avoid overwriting methods array in subsystem object
+        // TODO: Is there a better way???
+        subsystem = Object.assign(Object.create(subsystem), subsystem);
         // Leaving only matcing methods
         subsystem.methods = filteredMethods
       }
@@ -102,6 +102,22 @@ export class MethodsService {
         + '/' + this.subsystems[i].methods[j].serviceVersion
       }
     }
+  }
+
+  /**
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
+   */
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      this.lastMessage = 'Error loading data!'
+      this.newMessage.emit(this.lastMessage);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
   }
 
   getApiUrlBase(): string {
@@ -166,33 +182,7 @@ export class MethodsService {
     })
   }
 
-  getHideDetails(): boolean {
-    if (this.filter == '') {
-      return true
-    } else {
-      return false
-    }
-  }
-
   getMessage(): string {
     return this.lastMessage
-  }
-
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      //console.error(error); // log to console for debuging
-      this.lastMessage = 'Error loading data!'
-      this.newMessage.emit(this.lastMessage);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
   }
 }
