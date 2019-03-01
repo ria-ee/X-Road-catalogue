@@ -6,38 +6,33 @@ import { Subsystem } from './subsystem';
 import { Method } from './method';
 
 const MAX_LIMIT: number = 1000000;
+const CONFIG = {
+  'EE': 'https://www.x-tee.ee/catalogue/EE/wsdls/',
+  'ee-test': 'https://www.x-tee.ee/catalogue/ee-test/wsdls/',
+  'ee-dev': 'https://www.x-tee.ee/catalogue/ee-dev/wsdls/'
+}
+const API_SERVICE = 'index.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MethodsService {
 
-  private apiUrlBase = 'https://www.x-tee.ee/catalogue/EE/wsdls/';
-  //public apiUrlBase = 'http://localhost/';
+  private apiUrlBase = '';
   private limit: number = 10;
   private offset: number = 0;
   private nonEmpty: boolean = false;
   private filter: string = "";
-  private apiService = 'index.json';
-  private apiUrl = this.apiUrlBase + this.apiService;
   private subsystems: Subsystem[] = [];
   private loadingDone: boolean = false;
-  private lastMessage: string = '';
+  private loadingError: boolean = false;
+  private instance: string = '';
+  private instanceData = new Object();
 
   @Output() subsystemsUpdated: EventEmitter<any> = new EventEmitter();
-  @Output() newMessage: EventEmitter<string> = new EventEmitter();
+  @Output() warnings: EventEmitter<string> = new EventEmitter();
 
-  constructor(private http: HttpClient) {
-    this.http.get<Subsystem[]>(this.apiUrl)
-    .pipe(
-      catchError(this.handleError('getMethods', []))
-    ).subscribe(subsystems => {
-      this.subsystems = subsystems;
-      this.setFullNames();
-      this.loadingDone = true;
-      this.signalRefresh();
-    })
-  }
+  constructor(private http: HttpClient) {}
 
   private signalRefresh() {
     this.subsystemsUpdated.emit(null);
@@ -112,12 +107,52 @@ export class MethodsService {
    */
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      this.lastMessage = 'Error loading data!'
-      this.newMessage.emit(this.lastMessage);
+      this.loadingError = true
+      this.emitWarning('Error while loading data from server!')
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  getDefaultInstance(): string {
+    return Object.keys(CONFIG)[0]
+  }
+
+  getInstances(): string[] {
+    return Object.keys(CONFIG)
+  }
+
+  getInstance(): string {
+    return this.instance
+  }
+
+  emitWarning(msg: string) {
+    this.warnings.emit(msg);
+  }
+
+  setInstance(instance: string) {
+    this.instance = instance
+    this.apiUrlBase = CONFIG[instance]
+
+    // Data of this instance already loaded
+    if (this.instanceData[instance]) {
+      this.subsystems = this.instanceData[instance]
+      this.signalRefresh();
+    } else {
+      this.loadingDone = false;
+      this.loadingError = false;
+      this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
+      .pipe(
+        catchError(this.handleError('getMethods', []))
+      ).subscribe(subsystems => {
+        this.instanceData[instance] = subsystems
+        this.subsystems = this.instanceData[instance]
+        this.setFullNames();
+        this.loadingDone = true;
+        this.signalRefresh();
+      })
+    }
   }
 
   getApiUrlBase(): string {
@@ -141,6 +176,10 @@ export class MethodsService {
 
   isLoadingDone(): boolean {
     return this.loadingDone
+  }
+
+  isLoadingError(): boolean {
+    return this.loadingError
   }
 
   getMethods(): Subsystem[] {
@@ -180,9 +219,5 @@ export class MethodsService {
     return this.subsystems.find(function(element) {
       return element.fullSubsystemName === name;
     })
-  }
-
-  getMessage(): string {
-    return this.lastMessage
   }
 }

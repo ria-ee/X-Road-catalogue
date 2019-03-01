@@ -38,6 +38,12 @@ export class SubsystemItemComponent implements OnInit {
   }
 
   showDetail() {
-    this.router.navigateByUrl('/subsystem/' + encodeURIComponent(this.subsystem.fullSubsystemName))
+    //this.router.navigateByUrl('/subsystem/' + encodeURIComponent(this.subsystem.fullSubsystemName))
+    this.router.navigateByUrl(
+      '/' + this.subsystem.xRoadInstance
+      + '/' + this.subsystem.memberClass
+      + '/' + this.subsystem.memberCode
+      + '/' + this.subsystem.subsystemCode
+    )
   }
 }

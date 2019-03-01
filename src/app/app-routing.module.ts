@@ -5,7 +5,8 @@ import { SubsystemComponent } from './subsystem/subsystem.component';
 
 const routes: Routes = [
   { path: '', component: SubsystemListComponent },
-  { path: 'subsystem/:id', component: SubsystemComponent },
+  { path: ':instance', component: SubsystemListComponent },
+  { path: ':instance/:class/:member/:subsystem', component: SubsystemComponent },
 ];
 
 @NgModule({

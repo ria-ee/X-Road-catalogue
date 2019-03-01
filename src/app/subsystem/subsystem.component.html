@@ -1,12 +1,14 @@
 <h3>Subsystem {{subsystemId}} with methods and WSDL descriptions for
-  X-tee instance "EE"</h3>
+  X-tee instance "{{getInstance()}}"</h3>
 <p>Support: <a href="mailto:help@ria.ee">help@ria.ee</a></p>
 
-<app-message></app-message>
+<div class="alert alert-warning" role="alert" *ngIf="message">
+  {{message}}
+</div>
 
 <button type="button" class="btn btn-secondary" (click)="goToList()">Show all subsystems</button>
 
-<div *ngIf="loadingDone() && subsystem">
+<div *ngIf="subsystem">
   <div class="card">
     <div class="card-header">
       {{subsystem.fullSubsystemName}}
@@ -29,10 +31,4 @@
       </p>
     </div>
   </div>
-</div>
-
-<div *ngIf="loadingDone() && !subsystem">
-  <p>
-    Subsystem "{{subsystemId}}" cannot be found!
-  </p>
 </div>
