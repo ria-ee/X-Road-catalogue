@@ -5,8 +5,11 @@ import { SubsystemComponent } from './subsystem/subsystem.component';
 
 const routes: Routes = [
   { path: '', component: SubsystemListComponent },
+  // Redirecting old catalogue app links
+  { path: ':instance/wsdls', redirectTo: '/:instance', pathMatch: 'full' },
   { path: ':instance', component: SubsystemListComponent },
   { path: ':instance/:class/:member/:subsystem', component: SubsystemComponent },
+  { path: '**', redirectTo: '/' }
 ];
 
 @NgModule({

@@ -17,7 +17,6 @@ const API_SERVICE = 'index.json';
   providedIn: 'root'
 })
 export class MethodsService {
-
   private apiUrlBase = '';
   private limit: number = 10;
   private offset: number = 0;
@@ -102,10 +101,9 @@ export class MethodsService {
   /**
    * Handle Http operation that failed.
    * Let the app continue.
-   * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T> (result?: T) {
     return (error: any): Observable<T> => {
       this.loadingError = true
       this.emitWarning('Error while loading data from server!')
@@ -136,7 +134,7 @@ export class MethodsService {
     this.apiUrlBase = CONFIG[instance]
 
     // Data of this instance already loaded
-    if (this.instanceData[instance]) {
+    if (this.instanceData[instance] && this.instanceData[instance].length) {
       this.subsystems = this.instanceData[instance]
       this.signalRefresh();
     } else {
@@ -144,7 +142,7 @@ export class MethodsService {
       this.loadingError = false;
       this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
       .pipe(
-        catchError(this.handleError('getMethods', []))
+        catchError(this.handleError([]))
       ).subscribe(subsystems => {
         this.instanceData[instance] = subsystems
         this.subsystems = this.instanceData[instance]

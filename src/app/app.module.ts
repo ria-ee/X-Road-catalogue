@@ -5,7 +5,7 @@ import { HttpClientModule }    from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { SubsystemListComponent } from './subsystem-list/subsystem-list.component';
-import { SearchComponent } from './search/search.component';
+import { SearchComponent } from './subsystem-list/search/search.component';
 import { SubsystemItemComponent } from './subsystem-list/subsystem-item/subsystem-item.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SubsystemComponent } from './subsystem/subsystem.component';
