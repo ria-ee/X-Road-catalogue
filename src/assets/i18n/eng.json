@@ -22,7 +22,7 @@
     "subsystem": {
         "heading": "Subsystem {{subsystem}} with methods and WSDL descriptions for X-tee instance \"{{instance}}\"",
         "intro": {
-            "p1": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
+            "p1": "Support: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
         },
         "statusEmpty": "Empty",
         "statusError": "Error",
