@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MethodsService } from '../methods.service';
 import { Subsystem } from '../subsystem';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ViewportScroller } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subsystem',
@@ -13,6 +15,8 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   subsystem: Subsystem
   subsystemId: string
   message: string = ''
+  scrollPosition: [number, number]
+  routerScrollSubscription: Subscription
   routeSubscription: Subscription
   updatedSubscription: Subscription
   warningsSubscription: Subscription
@@ -20,8 +24,20 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   constructor(
     private methodsService: MethodsService,
     private route: ActivatedRoute,
-    private router: Router
-  ) { }
+    private router: Router,
+    private viewportScroller: ViewportScroller
+  ) {
+    // Geting previous scroll position
+    this.routerScrollSubscription = this.router.events.pipe(
+      filter(e => e instanceof Scroll)
+    ).subscribe(e => {
+      if ((e as Scroll).position) {
+        this.scrollPosition = (e as Scroll).position;
+      } else {
+        this.scrollPosition = [0, 0];
+      }
+    });
+  }
 
   private checkSubsystem() {
     // Do not overwrite previous warnings
@@ -67,7 +83,13 @@ export class SubsystemComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    // Restoring scroll position
+    this.viewportScroller.scrollToPosition(this.scrollPosition);
+  }
+
   ngOnDestroy() {
+    this.routerScrollSubscription.unsubscribe()
     this.routeSubscription.unsubscribe()
     this.updatedSubscription.unsubscribe()
     this.warningsSubscription.unsubscribe()

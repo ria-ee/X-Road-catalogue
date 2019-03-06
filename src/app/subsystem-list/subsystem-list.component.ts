@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { MethodsService } from '../methods.service';
-import { LanguagesService } from '../languages.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
@@ -12,7 +11,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './subsystem-list.component.html',
   styleUrls: ['./subsystem-list.component.css']
 })
-export class SubsystemListComponent implements OnInit {
+export class SubsystemListComponent implements OnInit, OnDestroy {
   subsystems: Subsystem[]
   message: string = ''
   scrollPosition: [number, number]
@@ -23,7 +22,6 @@ export class SubsystemListComponent implements OnInit {
 
   constructor(
     private methodsService: MethodsService,
-    private languagesService: LanguagesService,
     private route: ActivatedRoute,
     private router: Router,
     private viewportScroller: ViewportScroller
