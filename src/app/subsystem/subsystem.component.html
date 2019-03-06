@@ -1,33 +1,33 @@
-<h3>Subsystem {{subsystemId}} with methods and WSDL descriptions for
-  X-tee instance "{{getInstance()}}"</h3>
-<p>Support: <a href="mailto:help@ria.ee">help@ria.ee</a></p>
+<app-header></app-header>
+
+<h3>{{'subsystem.heading' | translate:{"subsystem": subsystemId, "instance": getInstance()} }}</h3>
+<p [innerHTML]="'subsystem.intro.p1' | translate"></p>
 
 <div class="alert alert-warning" role="alert" *ngIf="message">
   {{message}}
 </div>
 
-<button type="button" class="btn btn-secondary" (click)="goToList()">Show all subsystems</button>
+<button type="button" class="btn btn-secondary" (click)="goToList()">{{'subsystem.allSystemsBtn' | translate}}</button>
 
 <div *ngIf="subsystem">
   <div class="card">
     <div class="card-header">
       {{subsystem.fullSubsystemName}}
-      <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">Empty</span>
-      <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">Error</span>
-    </div>
+      <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">{{'subsystem.statusEmpty' | translate}}</span>
+      <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">{{'subsystem.statusError' | translate}}</span>
+    </div>  
     <div class="card-body" *ngIf="subsystem.subsystemStatus == 'ERROR'">
-      <p>Subsystem either could not be reached by RIA's Monitoring Security Server
-        or there was some other error during the request.</p>
+      <p>{{'subsystem.statusErrorInfo' | translate}}</p>
     </div>
     <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && !subsystem.methods.length">
-      <p>Subsystem does not have any methods.</p>
+      <p>{{'subsystem.statusEmptyInfo' | translate}}</p>
     </div>
     <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && subsystem.methods.length">
       <p *ngFor="let method of subsystem.methods">
         {{method.fullMethodName}}
         <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge badge-success"
           *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
-        <span class="badge badge-danger" *ngIf="!method.wsdl">Error while downloading or parsing of WSDL</span>
+        <span class="badge badge-danger" *ngIf="!method.wsdl">{{'subsystem.statusWsdlError' | translate}}</span>
       </p>
     </div>
   </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { MethodsService } from '../methods.service';
+import { LanguagesService } from '../languages.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
@@ -22,6 +23,7 @@ export class SubsystemListComponent implements OnInit {
 
   constructor(
     private methodsService: MethodsService,
+    private languagesService: LanguagesService,
     private route: ActivatedRoute,
     private router: Router,
     private viewportScroller: ViewportScroller

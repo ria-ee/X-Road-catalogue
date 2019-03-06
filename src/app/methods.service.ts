@@ -159,7 +159,7 @@ export class MethodsService {
 
   getLimit(): string {
     if (this.limit == MAX_LIMIT) {
-      return 'All'
+      return 'all'
     }
     return this.limit.toString()
   }
@@ -197,7 +197,7 @@ export class MethodsService {
       case '50':
         this.limit = 50;
         break;
-      case 'All':
+      case 'all':
         this.limit = MAX_LIMIT;
         break;
       default:

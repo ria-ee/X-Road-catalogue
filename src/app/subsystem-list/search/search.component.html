@@ -1,25 +1,25 @@
 <div class="card">
   <div class="card-header">
-    Search filters
+    {{'search.searchFilters' | translate}}
   </div>
   <div class="card-body">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
-          <label for="filterInput">Filter by method name</label>
+          <label for="filterInput">{{'search.nameFilter' | translate}}</label>
           <input type="text" class="form-control" id="filterInput"
             [(ngModel)]="filter" (ngModelChange)="setFilter(filter)">
         </div>
       </div>
       <div class="col-sm-3">
         <div class="form-group">
-          <label for="limitSelect">Amount of subsystems to display</label>
+          <label for="limitSelect">{{'search.limit' | translate}}</label>
           <select class="form-control" id="limitSelect"
             [(ngModel)]="limit" (change)="setLimit(limit)">
-            <option>10</option>
-            <option>20</option>
-            <option>50</option>
-            <option>All</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="all">{{'search.allOption' | translate}}</option>
           </select>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="form-check">
               <input type="checkbox" class="form-check-input" id="nonEmptyCheck" 
               [(ngModel)]="nonEmpty" (change)="setNonEmpty(nonEmpty)">
-            <label class="form-check-label" for="nonEmptyCheck">Show only producer subsystems</label>
+            <label class="form-check-label" for="nonEmptyCheck">{{'search.nonEmpty' | translate}}</label>
           </div>
         </div>
     </div>
