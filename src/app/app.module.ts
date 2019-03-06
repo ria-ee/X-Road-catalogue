@@ -41,5 +41,6 @@ import { HeaderComponent } from './header/header.component';
 export class AppModule { }
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  // Providing path as a workaround for ngx-translate bug with --base-href option
+  return new TranslateHttpLoader(http, './assets/i18n/');
 }
