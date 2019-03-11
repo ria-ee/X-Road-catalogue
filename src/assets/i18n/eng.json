@@ -30,6 +30,6 @@
         "allSystemsBtn": "Show all subsystems",
         "statusErrorInfo": "Subsystem either could not be reached by RIA's Monitoring Security Server or there was some other error during the request.",
         "statusEmptyInfo": "Subsystem does not have any methods.",
-        "moreMethods": "{{count}} more methods..."
+        "moreMethods": "{{count}} more..."
     }
 }

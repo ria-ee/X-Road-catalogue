@@ -6,8 +6,8 @@
         "heading": "X-tee alamsüsteemide kataloog teenuste ja WSDL kirjeldustega",
         "intro": {
             "p1": "Antud kataloog on genereeritud saates getWsdl päringud RIA monitooringu turvaserverist kõigi X-tee alamsüsteemide pihta.",
-            "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-Tee teenuseid.",
-            "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole liigipääsetavad RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
+            "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid.",
+            "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
             "p4": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
         },
         "selectInstance": "Vali X-tee instants"
@@ -27,9 +27,9 @@
         "statusEmpty": "Tühi",
         "statusError": "Viga",
         "statusWsdlError": "Viga WSDL'i laadimisel või töötlemisel",
-        "allSystemsBtn": "Näita kõik alamsüsteemid",
-        "statusErrorInfo": "Alamsüsteem kas ei ole liigipääsetav RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
-        "statusEmptyInfo": "Alamsüsteem ei oma X-Tee teenuseid.",
-        "moreMethods": "veel {{count}} teenust..."
+        "allSystemsBtn": "Näita kõiki alamsüsteeme",
+        "statusErrorInfo": "Alamsüsteem kas ei ole ligipääsetav RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
+        "statusEmptyInfo": "Alamsüsteem ei oma X-tee teenuseid.",
+        "moreMethods": "veel {{count}}..."
     }
 }
