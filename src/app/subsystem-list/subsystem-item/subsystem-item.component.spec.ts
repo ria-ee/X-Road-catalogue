@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientModule } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SubsystemItemComponent', () => {
   let component: SubsystemItemComponent;
@@ -8,7 +10,14 @@ describe('SubsystemItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SubsystemItemComponent ]
+      declarations: [
+        SubsystemItemComponent        
+      ],
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientModule,
+        RouterTestingModule
+      ]
     })
     .compileComponents();
   }));
@@ -16,6 +25,17 @@ describe('SubsystemItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SubsystemItemComponent);
     component = fixture.componentInstance;
+
+    component.subsystem = {
+      xRoadInstance: "XRD",
+      memberClass: "CLASS",
+      memberCode: "CODE",
+      subsystemCode: "SUB",
+      subsystemStatus: "OK",
+      fullSubsystemName: "XRD/CLASS/CODE/SUB",
+      methods: []
+    }
+
     fixture.detectChanges();
   });
 

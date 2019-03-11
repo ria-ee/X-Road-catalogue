@@ -14,7 +14,7 @@ import { filter } from 'rxjs/operators';
 export class SubsystemListComponent implements OnInit, OnDestroy {
   subsystems: Subsystem[]
   message: string = ''
-  scrollPosition: [number, number]
+  scrollPosition: [number, number] = [0, 0]
   routerScrollSubscription: Subscription
   routeSubscription: Subscription
   updatedSubscription: Subscription
@@ -74,6 +74,10 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     // Restoring scroll position
     this.viewportScroller.scrollToPosition(this.scrollPosition);
+    // TODO: what if this.scrollPosition is not ready yet?
+    /*this.routerScrollSubscription.add(() => {
+      this.viewportScroller.scrollToPosition(this.scrollPosition);
+    })*/
   }
 
   ngOnDestroy() {

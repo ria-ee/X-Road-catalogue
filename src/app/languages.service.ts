@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 const LANGUAGES = {
   'EST': 'est',
@@ -27,9 +28,8 @@ export class LanguagesService {
   updateTitle(): void {
     // Not subscribing if subscription already in progress
     if (!this.translateSubscription || this.translateSubscription.closed) {
-      this.translateSubscription = this.translate.get('index.title').subscribe((res: string) => {
+      this.translateSubscription = this.translate.get('index.title').pipe(take(1)).subscribe((res: string) => {
         this.title.setTitle(res)
-        this.translateSubscription.unsubscribe()
       });
     }
   }

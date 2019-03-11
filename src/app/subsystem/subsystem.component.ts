@@ -4,7 +4,7 @@ import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subsystem',
@@ -15,7 +15,7 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   subsystem: Subsystem
   subsystemId: string
   message: string = ''
-  scrollPosition: [number, number]
+  scrollPosition: [number, number] = [0, 0]
   routerScrollSubscription: Subscription
   routeSubscription: Subscription
   updatedSubscription: Subscription
@@ -29,7 +29,8 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   ) {
     // Geting previous scroll position
     this.routerScrollSubscription = this.router.events.pipe(
-      filter(e => e instanceof Scroll)
+      filter(e => e instanceof Scroll),
+      take(1)
     ).subscribe(e => {
       if ((e as Scroll).position) {
         this.scrollPosition = (e as Scroll).position;
@@ -86,6 +87,10 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     // Restoring scroll position
     this.viewportScroller.scrollToPosition(this.scrollPosition);
+    // TODO: what if this.scrollPosition is not ready yet?
+    /*this.routerScrollSubscription.add(() => {
+      this.viewportScroller.scrollToPosition(this.scrollPosition);
+    })*/
   }
 
   ngOnDestroy() {
