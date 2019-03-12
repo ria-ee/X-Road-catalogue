@@ -8,7 +8,8 @@
             "p1": "Antud kataloog on genereeritud saates getWsdl päringud RIA monitooringu turvaserverist kõigi X-tee alamsüsteemide pihta.",
             "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid.",
             "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
-            "p4": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
+            "p4": "Kataloog JSON kujul: <a href=\"{{jsonUrl}}\">JSON</a>",
+            "p5": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
         },
         "selectInstance": "Vali X-tee instants"
     },
@@ -30,6 +31,6 @@
         "allSystemsBtn": "Näita kõiki alamsüsteeme",
         "statusErrorInfo": "Alamsüsteem kas ei ole ligipääsetav RIA monitooringu turvaserveri poolt, või päringu tegemisel ilmnes muu viga.",
         "statusEmptyInfo": "Alamsüsteem ei oma X-tee teenuseid.",
-        "moreMethods": "veel {{count}}..."
+        "moreMethods": "veel {{count}} ..."
     }
 }

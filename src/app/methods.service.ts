@@ -158,6 +158,10 @@ export class MethodsService {
     return this.apiUrlBase
   }
 
+  getApiUrl(): string {
+    return this.apiUrlBase + API_SERVICE
+  }
+
   getLimit(): string {
     if (this.limit == MAX_LIMIT) {
       return 'all'

@@ -102,4 +102,8 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
   switchInstance(instance: string): void {
     this.router.navigateByUrl('/' + instance)
   }
+
+  getApiUrl(): string {
+    return this.methodsService.getApiUrl()
+  }
 }
