@@ -28,6 +28,8 @@
         "statusEmpty": "Empty",
         "statusError": "Error",
         "statusWsdlError": "Error while downloading or parsing of WSDL",
+        "statusWsdlTimeout": "WSDL query timed out",
+        "statusWsdlSkipped": "WSDL skipped due to previous Timeout",
         "allSystemsBtn": "Show all subsystems",
         "statusErrorInfo": "Subsystem either could not be reached by RIA's Monitoring Security Server or there was some other error during the request.",
         "statusEmptyInfo": "Subsystem does not have any methods.",
