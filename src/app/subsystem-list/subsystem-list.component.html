@@ -4,7 +4,8 @@
 <p [innerHTML]="'subsystemList.intro.p1' | translate"></p>
 <p [innerHTML]="'subsystemList.intro.p2' | translate"></p>
 <p [innerHTML]="'subsystemList.intro.p3' | translate"></p>
-<p [innerHTML]="'subsystemList.intro.p4' | translate"></p>
+<p [innerHTML]="'subsystemList.intro.p4' | translate:{'jsonUrl': getApiUrl()}"></p>
+<p [innerHTML]="'subsystemList.intro.p5' | translate"></p>
 
 <div class="alert alert-warning" role="alert" *ngIf="message">
   {{message}}

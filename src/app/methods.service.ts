@@ -135,6 +135,7 @@ export class MethodsService {
     this.apiUrlBase = CONFIG[instance]
 
     // Data of this instance already loaded
+    // TODO: refresh data every time (rely on browser cache).
     if (this.instanceData[instance] && this.instanceData[instance].length) {
       this.subsystems = this.instanceData[instance]
       this.signalRefresh();
@@ -156,6 +157,10 @@ export class MethodsService {
 
   getApiUrlBase(): string {
     return this.apiUrlBase
+  }
+
+  getApiUrl(): string {
+    return this.apiUrlBase + API_SERVICE
   }
 
   getLimit(): string {
