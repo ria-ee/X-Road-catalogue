@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MethodsService } from '../methods.service';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subsystem',
@@ -15,11 +15,12 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   subsystem: Subsystem
   subsystemId: string
   message: string = ''
-  scrollPosition: [number, number] = [0, 0]
+  scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   routerScrollSubscription: Subscription
   routeSubscription: Subscription
   updatedSubscription: Subscription
   warningsSubscription: Subscription
+  scrollSubjectSubscription: Subscription
 
   constructor(
     private methodsService: MethodsService,
@@ -29,13 +30,10 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   ) {
     // Geting previous scroll position
     this.routerScrollSubscription = this.router.events.pipe(
-      filter(e => e instanceof Scroll),
-      take(1)
-    ).subscribe(e => {
+      filter(e => e instanceof Scroll)
+    ).subscribe(async(e) => {
       if ((e as Scroll).position) {
-        this.scrollPosition = (e as Scroll).position;
-      } else {
-        this.scrollPosition = [0, 0];
+        this.scrollSubject.next((e as Scroll).position)
       }
     });
   }
@@ -86,11 +84,11 @@ export class SubsystemComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     // Restoring scroll position
-    this.viewportScroller.scrollToPosition(this.scrollPosition);
-    // TODO: what if this.scrollPosition is not ready yet?
-    /*this.routerScrollSubscription.add(() => {
-      this.viewportScroller.scrollToPosition(this.scrollPosition);
-    })*/
+    this.scrollSubjectSubscription = this.scrollSubject.subscribe( position => {
+      if(position) {
+        this.viewportScroller.scrollToPosition(position);
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -98,6 +96,7 @@ export class SubsystemComponent implements OnInit, OnDestroy {
     this.routeSubscription.unsubscribe()
     this.updatedSubscription.unsubscribe()
     this.warningsSubscription.unsubscribe()
+    this.scrollSubjectSubscription.unsubscribe()
   }
 
   getInstance(): string {

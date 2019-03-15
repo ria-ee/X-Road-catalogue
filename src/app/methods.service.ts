@@ -84,7 +84,6 @@ export class MethodsService {
     return filtered.slice(this.offset, this.limit);
   }
 
-  // TODO: move that to Class constructor?
   private setFullNames() {
     for (let i in this.subsystems) {
       this.subsystems[i].fullSubsystemName = this.subsystems[i].xRoadInstance
@@ -126,7 +125,7 @@ export class MethodsService {
     return this.instance
   }
 
-  emitWarning(msg: string) {
+  private emitWarning(msg: string) {
     this.warnings.emit(msg);
   }
 
