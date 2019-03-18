@@ -9,7 +9,7 @@
 
 <button type="button" class="btn btn-secondary" (click)="goToList()">{{'subsystem.allSystemsBtn' | translate}}</button>
 
-<div *ngIf="subsystem">
+<div *ngIf="(subsystemSubject | async) as subsystem">
   <div class="card">
     <div class="card-header">
       {{subsystem.fullSubsystemName}}

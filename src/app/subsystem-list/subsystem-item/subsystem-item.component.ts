@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
-import { MethodsService } from '../../methods.service';
+import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
+import { PREVIEW_SIZE } from '../../config'
 
 @Component({
   selector: 'app-subsystem-item',
@@ -10,31 +11,26 @@ import { Router } from '@angular/router';
   styleUrls: ['./subsystem-item.component.css']
 })
 export class SubsystemItemComponent implements OnInit {
-
   @Input() subsystem: Subsystem
-  private previewSize: number = 5
 
   constructor(
-    private methodsService: MethodsService,
+    private subsystemsService: SubsystemsService,
     private router: Router
   ) { }
 
-  ngOnInit() {
-  }
-
   getApiUrlBase(): string {
-    return this.methodsService.getApiUrlBase()
+    return this.subsystemsService.getApiUrlBase()
   }
 
   getMethodsPreview(): Method[] {
-    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.previewSize) : []
+    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, PREVIEW_SIZE) : []
   }
 
   getNotInPreview(): number {
-    if (this.subsystem.methods.length - this.previewSize < 0) {
+    if (this.subsystem.methods.length - PREVIEW_SIZE < 0) {
       return 0
     }
-    return this.subsystem.methods.length - this.previewSize
+    return this.subsystem.methods.length - PREVIEW_SIZE
   }
 
   showDetail() {
@@ -45,4 +41,6 @@ export class SubsystemItemComponent implements OnInit {
       + '/' + this.subsystem.subsystemCode
     )
   }
+
+  ngOnInit() {}
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subsystem } from '../subsystem';
-import { MethodsService } from '../methods.service';
+import { SubsystemsService } from '../subsystems.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
@@ -17,12 +17,12 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
   scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   routerScrollSubscription: Subscription
   routeSubscription: Subscription
-  updatedSubscription: Subscription
   warningsSubscription: Subscription
   scrollSubjectSubscription: Subscription
+  filteredSubsystems: BehaviorSubject<Subsystem[]>
 
   constructor(
-    private methodsService: MethodsService,
+    private subsystemsService: SubsystemsService,
     private route: ActivatedRoute,
     private router: Router,
     private viewportScroller: ViewportScroller
@@ -37,12 +37,29 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
     });
   }
 
+  getInstance(): string {
+    return this.subsystemsService.getInstance()
+  }
+
+  getInstances(): string[] {
+    return this.subsystemsService.getInstances()
+  }
+
+  switchInstance(instance: string): void {
+    this.router.navigateByUrl('/' + instance)
+  }
+
+  getApiUrl(): string {
+    return this.subsystemsService.getApiUrl()
+  }
+
   ngOnInit() {
     // Reset message on page load
     this.message = ''
+    this.filteredSubsystems = this.subsystemsService.filteredSubsystemsSubject
 
     // Service will tell when data loading failed!
-    this.warningsSubscription = this.methodsService.warnings.subscribe(signal => {
+    this.warningsSubscription = this.subsystemsService.warnings.subscribe(signal => {
       this.message = signal
     });
     
@@ -51,23 +68,15 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
       this.message = ''
 
       // Redirect to default instance if instance is empty or invalid
-      if (!this.methodsService.getInstances().includes(params['instance'])) {
-        this.router.navigateByUrl('/' + this.methodsService.getDefaultInstance())
+      if (!this.subsystemsService.getInstances().includes(params['instance'])) {
+        this.router.navigateByUrl('/' + this.subsystemsService.getDefaultInstance())
         return
       }
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() == '' || this.getInstance() != params['instance']) {
-        this.methodsService.setInstance(params['instance'] ? params['instance'] : this.methodsService.getDefaultInstance())
+        this.subsystemsService.setInstance(params['instance'] ? params['instance'] : this.subsystemsService.getDefaultInstance())
       }
     });
-
-    // Service will tell when updated data is available!
-    this.updatedSubscription = this.methodsService.subsystemsUpdated.subscribe(signal => {
-      this.getMethods();
-    });
-    // If json data is loaded update event will not be emited.
-    // This line must be after subscription (data may be changed while we start subscription)
-    this.getMethods();
   }
 
   ngAfterViewInit() {
@@ -82,28 +91,7 @@ export class SubsystemListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routerScrollSubscription.unsubscribe()
     this.routeSubscription.unsubscribe()
-    this.updatedSubscription.unsubscribe()
     this.warningsSubscription.unsubscribe()
     this.scrollSubjectSubscription.unsubscribe()
-  }
-
-  getInstance(): string {
-    return this.methodsService.getInstance()
-  }
-
-  getInstances(): string[] {
-    return this.methodsService.getInstances()
-  }
-
-  getMethods(): void {
-    this.subsystems = this.methodsService.getMethods()
-  }
-
-  switchInstance(instance: string): void {
-    this.router.navigateByUrl('/' + instance)
-  }
-
-  getApiUrl(): string {
-    return this.methodsService.getApiUrl()
   }
 }

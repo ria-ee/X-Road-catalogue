@@ -3,8 +3,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing'
 import { SubsystemListComponent } from './subsystem-list.component';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ViewportScroller } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';

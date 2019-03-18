@@ -1,46 +1,31 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
-
-const MAX_LIMIT: number = 1000000;
-const CONFIG = {
-  'EE': 'https://www.x-tee.ee/catalogue/EE/wsdls/',
-  'ee-test': 'https://www.x-tee.ee/catalogue/ee-test/wsdls/',
-  'ee-dev': 'https://www.x-tee.ee/catalogue/ee-dev/wsdls/'
-}
-const API_SERVICE = 'index.json';
+import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE } from './config'
 
 @Injectable({
   providedIn: 'root'
 })
-export class MethodsService {
+export class SubsystemsService {
   private apiUrlBase = '';
-  private limit: number = 10;
-  private offset: number = 0;
+  private limit: number = DEFAULT_LIMIT;
   private nonEmpty: boolean = false;
-  private filter: string = "";
-  private subsystems: Subsystem[] = [];
-  private loadingDone: boolean = false;
-  private loadingError: boolean = false;
+  private filter: string = '';
   private instance: string = '';
-  private instanceData = new Object();
+  subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
 
-  @Output() subsystemsUpdated: EventEmitter<any> = new EventEmitter();
   @Output() warnings: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) {}
 
-  private signalRefresh() {
-    this.subsystemsUpdated.emit(null);
-  }
-
   private filteredSubsystems(): Subsystem[] {
     let filtered: Subsystem[] = []
     let limit: number = this.limit
-    for (let subsystem of this.subsystems) {
+    for (let subsystem of this.subsystemsSubject.value) {
       if (this.nonEmpty && !subsystem.methods.length) {
         // Filtering out empty subsystems
         continue
@@ -66,36 +51,33 @@ export class MethodsService {
           // No matching method names found
           continue
         }
-
         // Copy object to avoid overwriting methods array in subsystem object
-        // TODO: Is there a better way???
         subsystem = Object.assign(Object.create(subsystem), subsystem);
         // Leaving only matcing methods
         subsystem.methods = filteredMethods
       }
-
       filtered.push(subsystem)
       limit -= 1
       if (limit == 0) {
         break
       }
     }
-
-    return filtered.slice(this.offset, this.limit);
+    return filtered
   }
 
-  private setFullNames() {
-    for (let i in this.subsystems) {
-      this.subsystems[i].fullSubsystemName = this.subsystems[i].xRoadInstance
-        + '/' + this.subsystems[i].memberClass
-        + '/' + this.subsystems[i].memberCode
-        + '/' + this.subsystems[i].subsystemCode
-      for (let j in this.subsystems[i].methods) {
-        this.subsystems[i].methods[j].fullMethodName = this.subsystems[i].fullSubsystemName
-        + '/' + this.subsystems[i].methods[j].serviceCode
-        + '/' + this.subsystems[i].methods[j].serviceVersion
+  private setFullNames(subsystems: Subsystem[]): Subsystem[] {
+    for (let i in subsystems) {
+      subsystems[i].fullSubsystemName = subsystems[i].xRoadInstance
+        + '/' + subsystems[i].memberClass
+        + '/' + subsystems[i].memberCode
+        + '/' + subsystems[i].subsystemCode
+      for (let j in subsystems[i].methods) {
+        subsystems[i].methods[j].fullMethodName = subsystems[i].fullSubsystemName
+        + '/' + subsystems[i].methods[j].serviceCode
+        + '/' + subsystems[i].methods[j].serviceVersion
       }
     }
+    return subsystems
   }
 
   /**
@@ -105,53 +87,47 @@ export class MethodsService {
    */
   private handleError<T> (result?: T) {
     return (error: any): Observable<T> => {
-      this.loadingError = true
       this.emitWarning('Error while loading data from server!')
-
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
-  }
-
-  getDefaultInstance(): string {
-    return Object.keys(CONFIG)[0]
-  }
-
-  getInstances(): string[] {
-    return Object.keys(CONFIG)
-  }
-
-  getInstance(): string {
-    return this.instance
   }
 
   private emitWarning(msg: string) {
     this.warnings.emit(msg);
   }
 
+  private updateFiltered() {
+    this.filteredSubsystemsSubject.next(this.filteredSubsystems())
+  }
+
+  getDefaultInstance(): string {
+    return Object.keys(INSTANCES)[0]
+  }
+
+  getInstances(): string[] {
+    return Object.keys(INSTANCES)
+  }
+
+  getInstance(): string {
+    return this.instance
+  }
+
   setInstance(instance: string) {
     this.instance = instance
-    this.apiUrlBase = CONFIG[instance]
+    this.apiUrlBase = INSTANCES[instance]
 
-    // Data of this instance already loaded
-    // TODO: refresh data every time (rely on browser cache).
-    if (this.instanceData[instance] && this.instanceData[instance].length) {
-      this.subsystems = this.instanceData[instance]
-      this.signalRefresh();
-    } else {
-      this.loadingDone = false;
-      this.loadingError = false;
-      this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
-      .pipe(
-        catchError(this.handleError([]))
-      ).subscribe(subsystems => {
-        this.instanceData[instance] = subsystems
-        this.subsystems = this.instanceData[instance]
-        this.setFullNames();
-        this.loadingDone = true;
-        this.signalRefresh();
-      })
+    // Reset only if has values (less refreshes)
+    if (this.subsystemsSubject.value.length) {
+      this.subsystemsSubject.next([])
     }
+    this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
+    .pipe(
+      catchError(this.handleError([]))
+    ).subscribe(subsystems => {
+      this.subsystemsSubject.next(this.setFullNames(subsystems))
+      this.updateFiltered()
+    })
   }
 
   getApiUrlBase(): string {
@@ -169,31 +145,6 @@ export class MethodsService {
     return this.limit.toString()
   }
 
-  getNonEmpty(): boolean {
-    return this.nonEmpty
-  }
-
-  getfilter(): string {
-    return this.filter
-  }
-
-  isLoadingDone(): boolean {
-    return this.loadingDone
-  }
-
-  isLoadingError(): boolean {
-    return this.loadingError
-  }
-
-  getMethods(): Subsystem[] {
-    return this.filteredSubsystems();
-  }
-
-  setNonEmpty(nonEmpty: boolean) {
-    this.nonEmpty = nonEmpty;
-    this.signalRefresh();
-  }
-
   setLimit (limit: string) {
     switch(limit) {
       case '20':
@@ -208,19 +159,26 @@ export class MethodsService {
       default:
         this.limit = 10;
     }
-    this.signalRefresh();
+    this.updateFiltered()
+  }
+
+  getNonEmpty(): boolean {
+    return this.nonEmpty
+  }
+
+  setNonEmpty(nonEmpty: boolean) {
+    this.nonEmpty = nonEmpty;
+    this.updateFiltered()
+  }
+
+  getfilter(): string {
+    return this.filter
   }
 
   setFilter(filter: string) {
     if (this.filter != filter.trim()) {
       this.filter = filter.trim();
-      this.signalRefresh();
+      this.updateFiltered()
     }
-  }
-
-  getSubsystem(name: string): Subsystem {
-    return this.subsystems.find(function(element) {
-      return element.fullSubsystemName === name;
-    })
   }
 }

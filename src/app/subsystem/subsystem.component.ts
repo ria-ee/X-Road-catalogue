@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MethodsService } from '../methods.service';
+import { SubsystemsService } from '../subsystems.service';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -12,18 +12,18 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./subsystem.component.css']
 })
 export class SubsystemComponent implements OnInit, OnDestroy {
-  subsystem: Subsystem
-  subsystemId: string
+  subsystemId: string = ''
   message: string = ''
-  scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  routerScrollSubscription: Subscription
-  routeSubscription: Subscription
-  updatedSubscription: Subscription
-  warningsSubscription: Subscription
-  scrollSubjectSubscription: Subscription
+  private scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null)
+  private routerScrollSubscription: Subscription
+  private routeSubscription: Subscription
+  private warningsSubscription: Subscription
+  private scrollSubjectSubscription: Subscription
+  private subsystemsSubscription: Subscription
+  subsystemSubject: BehaviorSubject<Subsystem> = new BehaviorSubject(null)
 
   constructor(
-    private methodsService: MethodsService,
+    private subsystemsService: SubsystemsService,
     private route: ActivatedRoute,
     private router: Router,
     private viewportScroller: ViewportScroller
@@ -38,48 +38,53 @@ export class SubsystemComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkSubsystem() {
-    // Do not overwrite previous warnings
-    if (!this.subsystem && !this.message) {
-      this.message = 'Subsystem "' + this.subsystemId + '" cannot be found!'
-    } 
-} 
+  private getSubsystem(subsystems: Subsystem[], name: string): Subsystem {
+    return subsystems.find(function(element) {
+      return element.fullSubsystemName === name;
+    })
+  }
+
+  getInstance(): string {
+    return this.subsystemsService.getInstance()
+  }
+
+  getApiUrlBase(): string {
+    return this.subsystemsService.getApiUrlBase()
+  }
+
+  goToList(): void {
+    this.router.navigateByUrl('/' + this.subsystemsService.getInstance())
+  }
 
   ngOnInit() {
     // Reset message on page load
     this.message = ''
 
     // Service will tell when data loading failed!
-    this.warningsSubscription = this.methodsService.warnings.subscribe(signal => {
+    this.warningsSubscription = this.subsystemsService.warnings.subscribe(signal => {
       this.message = signal
     });
 
     this.routeSubscription = this.route.params.subscribe( params => {
       // Checking if instance is correct
-      if (!this.methodsService.getInstances().includes(params['instance'])) {
+      if (!this.subsystemsService.getInstances().includes(params['instance'])) {
         this.message = 'Incorrect instance!'
         return
       }
       this.subsystemId = params['instance'] + '/' + params['class'] + '/' + params['member'] + '/' + params['subsystem']
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() == '' || this.getInstance() != params['instance']) {
-        this.methodsService.setInstance(params['instance'] ? params['instance'] : this.methodsService.getDefaultInstance())
+        this.subsystemsService.setInstance(params['instance'] ? params['instance'] : this.subsystemsService.getDefaultInstance())
       }
+      this.subsystemsSubscription = this.subsystemsService.subsystemsSubject.subscribe(subsystems => {
+        let subsystem = this.getSubsystem(subsystems, this.subsystemId)
+        if (!subsystem && !this.message) {
+          this.message = 'Subsystem "' + this.subsystemId + '" cannot be found!'
+        } else {
+          this.subsystemSubject.next(subsystem)
+        }
+      })
     });
-
-    // Service will tell when data has finished loading
-    this.updatedSubscription = this.methodsService.subsystemsUpdated.subscribe(signal => {
-      this.subsystem = this.methodsService.getSubsystem(this.subsystemId)
-      if (this.methodsService.isLoadingDone() && !this.methodsService.isLoadingError()) {
-        this.checkSubsystem()
-      }
-    });
-    // If json data is loaded update event will not be emited.
-    // This line must be after subscription (data may be changed while we start subscription)
-    if (this.subsystemId && this.methodsService.isLoadingDone() && !this.methodsService.isLoadingError()) {
-      this.subsystem = this.methodsService.getSubsystem(this.subsystemId)
-      this.checkSubsystem()
-    }
   }
 
   ngAfterViewInit() {
@@ -94,20 +99,8 @@ export class SubsystemComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routerScrollSubscription.unsubscribe()
     this.routeSubscription.unsubscribe()
-    this.updatedSubscription.unsubscribe()
     this.warningsSubscription.unsubscribe()
     this.scrollSubjectSubscription.unsubscribe()
-  }
-
-  getInstance(): string {
-    return this.methodsService.getInstance()
-  }
-
-  getApiUrlBase(): string {
-    return this.methodsService.getApiUrlBase()
-  }
-
-  goToList(): void {
-    this.router.navigateByUrl('/' + this.methodsService.getInstance())
+    this.subsystemsSubscription.unsubscribe()
   }
 }

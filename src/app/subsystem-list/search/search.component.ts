@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MethodsService } from '../../methods.service';
+import { SubsystemsService } from '../../subsystems.service';
 
 @Component({
   selector: 'app-search',
@@ -12,24 +12,23 @@ export class SearchComponent implements OnInit {
   nonEmpty: boolean
   filter: string
 
-  constructor(private methodsService: MethodsService) { }
-
-  ngOnInit() {
-    this.limit = this.methodsService.getLimit()
-    this.nonEmpty = this.methodsService.getNonEmpty()
-    this.filter = this.methodsService.getfilter()
-  }
+  constructor(private subsystemsService: SubsystemsService) { }
 
   setNonEmpty(nonEmpty: boolean) {
-    this.methodsService.setNonEmpty(nonEmpty)
+    this.subsystemsService.setNonEmpty(nonEmpty)
   }
 
   setLimit(limit: string) {
-    this.methodsService.setLimit(limit)
+    this.subsystemsService.setLimit(limit)
   }
 
   setFilter(filter: string) {
-    this.methodsService.setFilter(filter)
+    this.subsystemsService.setFilter(filter)
   }
 
+  ngOnInit() {
+    this.limit = this.subsystemsService.getLimit()
+    this.nonEmpty = this.subsystemsService.getNonEmpty()
+    this.filter = this.subsystemsService.getfilter()
+  }
 }

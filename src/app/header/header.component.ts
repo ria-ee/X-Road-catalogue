@@ -10,9 +10,6 @@ export class HeaderComponent implements OnInit {
 
   constructor(private languagesService: LanguagesService) { }
 
-  ngOnInit() {
-  }
-
   getLangs():string[] {
     return this.languagesService.getLangs()
   }
@@ -24,4 +21,6 @@ export class HeaderComponent implements OnInit {
   setLang(lang: string) {
     return this.languagesService.setLang(lang)
   }
+
+  ngOnInit() {}
 }

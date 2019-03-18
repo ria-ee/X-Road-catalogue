@@ -20,6 +20,6 @@
 <app-search></app-search>
 <br>
 
-<div *ngFor="let subsystem of subsystems">
+<div *ngFor="let subsystem of filteredSubsystems | async">
   <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
 </div>

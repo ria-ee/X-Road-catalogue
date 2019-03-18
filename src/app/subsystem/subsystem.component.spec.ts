@@ -5,7 +5,7 @@ import { SubsystemComponent } from './subsystem.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 //import { ViewportScroller } from '@angular/common';
-//import { MethodsService } from '../methods.service';
+//import { SubsystemsService } from '../methods.service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -28,7 +28,7 @@ describe('SubsystemComponent', () => {
         RouterTestingModule
       ]/*,
       providers: [
-        MethodsService
+        SubsystemsService
       ]*/
     })
     .compileComponents();

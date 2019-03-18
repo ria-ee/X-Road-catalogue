@@ -3,11 +3,7 @@ import {TranslateService} from "@ngx-translate/core";
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-
-const LANGUAGES = {
-  'EST': 'est',
-  'ENG': 'eng'
-}
+import { LANGUAGES } from './config'
 
 @Injectable({
   providedIn: 'root'
@@ -41,12 +37,12 @@ export class LanguagesService {
     return Object.keys(LANGUAGES)[0]
   }
 
-  getLang(): string {
-    return this.selectedLang
-  }
-
   getLangs(): string[] {
     return Object.keys(LANGUAGES)
+  }
+
+  getLang(): string {
+    return this.selectedLang
   }
 
   setLang(lang: string): void {
