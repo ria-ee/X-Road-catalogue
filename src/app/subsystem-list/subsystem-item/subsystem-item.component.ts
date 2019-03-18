@@ -3,7 +3,7 @@ import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
-import { PREVIEW_SIZE } from '../../config'
+import { PREVIEW_SIZE } from '../../config';
 
 @Component({
   selector: 'app-subsystem-item',
@@ -11,7 +11,7 @@ import { PREVIEW_SIZE } from '../../config'
   styleUrls: ['./subsystem-item.component.css']
 })
 export class SubsystemItemComponent implements OnInit {
-  @Input() subsystem: Subsystem
+  @Input() subsystem: Subsystem;
 
   constructor(
     private subsystemsService: SubsystemsService,
@@ -19,18 +19,18 @@ export class SubsystemItemComponent implements OnInit {
   ) { }
 
   getApiUrlBase(): string {
-    return this.subsystemsService.getApiUrlBase()
+    return this.subsystemsService.getApiUrlBase();
   }
 
   getMethodsPreview(): Method[] {
-    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, PREVIEW_SIZE) : []
+    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, PREVIEW_SIZE) : [];
   }
 
   getNotInPreview(): number {
     if (this.subsystem.methods.length - PREVIEW_SIZE < 0) {
-      return 0
+      return 0;
     }
-    return this.subsystem.methods.length - PREVIEW_SIZE
+    return this.subsystem.methods.length - PREVIEW_SIZE;
   }
 
   showDetail() {
@@ -39,7 +39,7 @@ export class SubsystemItemComponent implements OnInit {
       + '/' + this.subsystem.memberClass
       + '/' + this.subsystem.memberCode
       + '/' + this.subsystem.subsystemCode
-    )
+    );
   }
 
   ngOnInit() {}

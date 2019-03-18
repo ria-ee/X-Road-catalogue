@@ -11,7 +11,7 @@ describe('SubsystemItemComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        SubsystemItemComponent        
+        SubsystemItemComponent
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -27,14 +27,14 @@ describe('SubsystemItemComponent', () => {
     component = fixture.componentInstance;
 
     component.subsystem = {
-      xRoadInstance: "XRD",
-      memberClass: "CLASS",
-      memberCode: "CODE",
-      subsystemCode: "SUB",
-      subsystemStatus: "OK",
-      fullSubsystemName: "XRD/CLASS/CODE/SUB",
+      xRoadInstance: 'XRD',
+      memberClass: 'CLASS',
+      memberCode: 'CODE',
+      subsystemCode: 'SUB',
+      subsystemStatus: 'OK',
+      fullSubsystemName: 'XRD/CLASS/CODE/SUB',
       methods: []
-    }
+    };
 
     fixture.detectChanges();
   });

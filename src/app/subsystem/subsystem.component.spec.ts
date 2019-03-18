@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
 import { SubsystemComponent } from './subsystem.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
-//import { ViewportScroller } from '@angular/common';
-//import { SubsystemsService } from '../methods.service';
+// import { ViewportScroller } from '@angular/common';
+// import { SubsystemsService } from '../methods.service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -23,7 +23,7 @@ describe('SubsystemComponent', () => {
         HeaderStubComponent
       ],
       imports: [
-        TranslateModule.forRoot(),  
+        TranslateModule.forRoot(),
         HttpClientModule,
         RouterTestingModule
       ]/*,
@@ -37,12 +37,12 @@ describe('SubsystemComponent', () => {
   beforeEach(() => {
     // Mocks and spies
     TestBed.get(ActivatedRoute).params = of({
-      "instance": "EE",
-      "class": "CLASS",
-      "member": "MEMBER",
-      "subsystem": "SYSTEM"
-    })
-    //spyOn(TestBed.get(ViewportScroller), "scrollToPosition").and.callFake(() => {});
+      instance: 'EE',
+      class: 'CLASS',
+      member: 'MEMBER',
+      subsystem: 'SYSTEM'
+    });
+    // spyOn(TestBed.get(ViewportScroller), "scrollToPosition").and.callFake(() => {});
 
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
