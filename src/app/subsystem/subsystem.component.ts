@@ -8,8 +8,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subsystem',
-  templateUrl: './subsystem.component.html',
-  styleUrls: ['./subsystem.component.css']
+  templateUrl: './subsystem.component.html'
 })
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   subsystemId = '';

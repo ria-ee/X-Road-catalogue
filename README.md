@@ -9,6 +9,19 @@ sudo -H npm install -g @angular/cli
 git clone <this_repository>
 cd <this_repository_name>
 npm ci
+npm run lint
+npm run test-headless
+```
+
+## Sonarqube
+By default `http://localhost:9000` is used as a sonarqube server.
+If you have a remote sonarqube server, update `sonar-project.properties` cunfiguration file and run the test with:
+```
+npm run sonar
+```
+Alternatively you can provide hostname and access token with command line:
+```
+./node_modules/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=<server> -Dsonar.login=<token>
 ```
 
 ## Updating angular version

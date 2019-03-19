@@ -8,8 +8,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subsystem-list',
-  templateUrl: './subsystem-list.component.html',
-  styleUrls: ['./subsystem-list.component.css']
+  templateUrl: './subsystem-list.component.html'
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
   subsystems: Subsystem[];
