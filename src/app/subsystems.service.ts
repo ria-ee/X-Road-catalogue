@@ -1,10 +1,10 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
-import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE } from './config';
+import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE, FILTER_DEBOUNCE } from './config';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +17,19 @@ export class SubsystemsService {
   private instance = '';
   subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
   filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  private updateFilter = new Subject<string>();
 
   @Output() warnings: EventEmitter<string> = new EventEmitter();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Debouncing update of filter
+    this.updateFilter.pipe(
+      debounceTime(FILTER_DEBOUNCE),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.updateFiltered();
+    });
+  }
 
   private filteredSubsystems(): Subsystem[] {
     const filtered: Subsystem[] = [];
@@ -178,7 +187,8 @@ export class SubsystemsService {
   setFilter(filter: string) {
     if (this.filter !== filter.trim()) {
       this.filter = filter.trim();
-      this.updateFiltered();
+      // Debouncing update of filter
+      this.updateFilter.next(this.filter);
     }
   }
 }

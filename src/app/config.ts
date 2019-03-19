@@ -11,3 +11,4 @@ export const LANGUAGES = {
   ENG: 'eng'
 };
 export const PREVIEW_SIZE = 5;
+export const FILTER_DEBOUNCE = 200;

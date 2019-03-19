@@ -7,12 +7,11 @@ import { SubsystemsService } from '../../subsystems.service';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-
   limit: string;
   nonEmpty: boolean;
   filter: string;
 
-  constructor(private subsystemsService: SubsystemsService) { }
+  constructor(private subsystemsService: SubsystemsService) {}
 
   setNonEmpty(nonEmpty: boolean) {
     this.subsystemsService.setNonEmpty(nonEmpty);
