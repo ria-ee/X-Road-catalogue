@@ -19,7 +19,7 @@ export class SubsystemsService {
   filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
   private updateFilter = new Subject<string>();
 
-  @Output() warnings: EventEmitter<string> = new EventEmitter();
+  warnings: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) {
     // Debouncing update of filter

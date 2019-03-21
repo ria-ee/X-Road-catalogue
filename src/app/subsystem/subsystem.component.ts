@@ -67,17 +67,20 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe( params => {
       // Checking if instance is correct
       if (!this.subsystemsService.getInstances().includes(params.instance)) {
+        // TODO: translation!
         this.message = 'Incorrect instance!';
         return;
       }
       this.subsystemId = params.instance + '/' + params.class + '/' + params.member + '/' + params.subsystem;
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() === '' || this.getInstance() !== params.instance) {
-        this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
+        // this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
+        this.subsystemsService.setInstance(params.instance);
       }
       this.subsystemsSubscription = this.subsystemsService.subsystemsSubject.subscribe(subsystems => {
         const subsystem = this.getSubsystem(subsystems, this.subsystemId);
         if (!subsystem && !this.message) {
+          // TODO: translation!
           this.message = 'Subsystem "' + this.subsystemId + '" cannot be found!';
         } else {
           this.subsystemSubject.next(subsystem);
@@ -96,10 +99,26 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.routerScrollSubscription.unsubscribe();
+    // TODO: optimize this...
+    if (this.routerScrollSubscription) {
+      this.routerScrollSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    if (this.warningsSubscription) {
+      this.warningsSubscription.unsubscribe();
+    }
+    if (this.scrollSubjectSubscription) {
+      this.scrollSubjectSubscription.unsubscribe();
+    }
+    if (this.subsystemsSubscription) {
+      this.subsystemsSubscription.unsubscribe();
+    }
+    /*this.routerScrollSubscription.unsubscribe();
     this.routeSubscription.unsubscribe();
     this.warningsSubscription.unsubscribe();
     this.scrollSubjectSubscription.unsubscribe();
-    this.subsystemsSubscription.unsubscribe();
+    this.subsystemsSubscription.unsubscribe();*/
   }
 }
