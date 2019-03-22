@@ -78,7 +78,7 @@ describe('SubsystemComponent', () => {
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(component.message).toBe('Incorrect instance!');
+    expect(component.message).toBe('subsystem.incorrectInstanceWarning');
   });
 
   it('should detect when instance is not selected', () => {
@@ -99,11 +99,21 @@ describe('SubsystemComponent', () => {
   });
 
   it('should detect incorrect subsystem', () => {
-    subsystemsService.subsystemsSubject = new BehaviorSubject([]);
+    subsystemsService.subsystemsSubject = new BehaviorSubject([
+      {
+        memberClass: '',
+        subsystemCode: '',
+        xRoadInstance: '',
+        subsystemStatus: '',
+        memberCode: '',
+        fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
+        methods: []
+      }
+    ]);
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(component.message).toBe('Subsystem "INST/CLASS/MEMBER/SYSTEM" cannot be found!');
+    expect(component.message).toBe('subsystem.subsystemNotFoundWarning');
   });
 
   it('should scroll to position', () => {

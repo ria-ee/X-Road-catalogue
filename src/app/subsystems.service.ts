@@ -1,4 +1,4 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -96,8 +96,7 @@ export class SubsystemsService {
    */
   private handleError<T>(result?: T) {
     return (error: any): Observable<T> => {
-      // TODO: translation!
-      this.emitWarning('Error while loading data from server!');
+      this.emitWarning('service.dataLoadingError');
       // Let the app keep running by returning an empty result.
       return of(result);
     };
