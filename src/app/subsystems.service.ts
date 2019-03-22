@@ -96,6 +96,7 @@ export class SubsystemsService {
    */
   private handleError<T>(result?: T) {
     return (error: any): Observable<T> => {
+      // TODO: translation!
       this.emitWarning('Error while loading data from server!');
       // Let the app keep running by returning an empty result.
       return of(result);
