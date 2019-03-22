@@ -1,4 +1,4 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class SubsystemsService {
   filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
   private updateFilter = new Subject<string>();
 
-  @Output() warnings: EventEmitter<string> = new EventEmitter();
+  warnings: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) {
     // Debouncing update of filter
@@ -96,7 +96,7 @@ export class SubsystemsService {
    */
   private handleError<T>(result?: T) {
     return (error: any): Observable<T> => {
-      this.emitWarning('Error while loading data from server!');
+      this.emitWarning('service.dataLoadingError');
       // Let the app keep running by returning an empty result.
       return of(result);
     };

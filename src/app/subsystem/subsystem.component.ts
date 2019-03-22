@@ -13,6 +13,8 @@ import { filter } from 'rxjs/operators';
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   subsystemId = '';
   message = '';
+  // Contains instance from route.params (for displaying warning)
+  paramsInstance = '';
   private scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   private routerScrollSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -67,18 +69,20 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routeSubscription = this.route.params.subscribe( params => {
       // Checking if instance is correct
       if (!this.subsystemsService.getInstances().includes(params.instance)) {
-        this.message = 'Incorrect instance!';
+        this.paramsInstance = params.instance;
+        this.message = 'subsystem.incorrectInstanceWarning';
         return;
       }
       this.subsystemId = params.instance + '/' + params.class + '/' + params.member + '/' + params.subsystem;
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() === '' || this.getInstance() !== params.instance) {
-        this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
+        // this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
+        this.subsystemsService.setInstance(params.instance);
       }
       this.subsystemsSubscription = this.subsystemsService.subsystemsSubject.subscribe(subsystems => {
         const subsystem = this.getSubsystem(subsystems, this.subsystemId);
-        if (!subsystem && !this.message) {
-          this.message = 'Subsystem "' + this.subsystemId + '" cannot be found!';
+        if (!subsystem && !this.message && subsystems.length) {
+          this.message = 'subsystem.subsystemNotFoundWarning';
         } else {
           this.subsystemSubject.next(subsystem);
         }
@@ -100,6 +104,8 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routeSubscription.unsubscribe();
     this.warningsSubscription.unsubscribe();
     this.scrollSubjectSubscription.unsubscribe();
-    this.subsystemsSubscription.unsubscribe();
+    if (this.subsystemsSubscription) {
+      this.subsystemsSubscription.unsubscribe();
+    }
   }
 }

@@ -73,7 +73,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() === '' || this.getInstance() !== params.instance) {
-        this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
+        this.subsystemsService.setInstance(params.instance);
       }
     });
   }
