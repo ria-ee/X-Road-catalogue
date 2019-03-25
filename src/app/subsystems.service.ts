@@ -11,7 +11,7 @@ import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE, FILTER_DEBOUNCE } fro
 })
 export class SubsystemsService {
   private apiUrlBase = '';
-  private limit: number = DEFAULT_LIMIT
+  private limit: number = DEFAULT_LIMIT;
   private nonEmpty = false;
   private filter = '';
   private instance = '';
