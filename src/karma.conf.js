@@ -3,6 +3,12 @@
 
 module.exports = function (config) {
   config.set({
+    customLaunchers: {
+      ChromiumDocker: {
+        base: 'ChromiumHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
