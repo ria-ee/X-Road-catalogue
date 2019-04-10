@@ -4,15 +4,17 @@ import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { HttpErrorResponse } from '@angular/common/http';
 import { tick, fakeAsync } from '@angular/core/testing';
-import { FILTER_DEBOUNCE, DEFAULT_LIMIT, INSTANCES } from './config';
+import { AppConfigMock } from './app.config-mock';
 
 describe('SubsystemsService', () => {
   let httpClientSpy: { get: jasmine.Spy };
   let service: SubsystemsService;
+  let config: AppConfigMock;
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-    service = new SubsystemsService(httpClientSpy as any);
+    config = new AppConfigMock(httpClientSpy as any);
+    service = new SubsystemsService(httpClientSpy as any, config);
   });
 
   it('should be created', () => {
@@ -206,18 +208,18 @@ describe('SubsystemsService', () => {
     // Search member without methods
     service.setFilter('MEMBER2');
     // Waiting for a debounce time to apply filter
-    tick(FILTER_DEBOUNCE);
+    tick(config.getConfig('FILTER_DEBOUNCE'));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems1);
 
     // Search member with multiple methods
     service.setFilter('SERVICE2');
     // Waiting for a debounce time to apply filter
-    tick(FILTER_DEBOUNCE);
+    tick(config.getConfig('FILTER_DEBOUNCE'));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems2);
 
     // Search with limit
     const sourceSubsystems2 = [];
-    for (let i = 0; i < DEFAULT_LIMIT + 1; i++) {
+    for (let i = 0; i < config.getConfig('DEFAULT_LIMIT') + 1; i++) {
       sourceSubsystems2.push(
         {
           memberClass: 'CLASS',
@@ -233,8 +235,8 @@ describe('SubsystemsService', () => {
     service.subsystemsSubject.next(sourceSubsystems2);
     service.setFilter('MEMBER');
     // Waiting for a debounce time to apply filter
-    tick(FILTER_DEBOUNCE);
-    expect(service.filteredSubsystemsSubject.value.length).toEqual(DEFAULT_LIMIT);
+    tick(config.getConfig('FILTER_DEBOUNCE'));
+    expect(service.filteredSubsystemsSubject.value.length).toEqual(config.getConfig('DEFAULT_LIMIT'));
   }));
 
   it('should set limit', () => {
@@ -268,18 +270,18 @@ describe('SubsystemsService', () => {
   });
 
   it('getLimit should work', () => {
-    expect(service.getLimit()).toEqual(DEFAULT_LIMIT.toString());
+    expect(service.getLimit()).toEqual(config.getConfig('DEFAULT_LIMIT').toString());
 
     service.setLimit('all');
     expect(service.getLimit()).toEqual('all');
   });
 
   it('getInstances should work', () => {
-    expect(service.getInstances()).toEqual(Object.keys(INSTANCES));
+    expect(service.getInstances()).toEqual(Object.keys(config.getConfig('INSTANCES')));
   });
 
   it('getDefaultInstance should work', () => {
-    expect(service.getDefaultInstance()).toEqual(Object.keys(INSTANCES)[0]);
+    expect(service.getDefaultInstance()).toEqual(Object.keys(config.getConfig('INSTANCES'))[0]);
   });
 
   it('getInstance should work', () => {

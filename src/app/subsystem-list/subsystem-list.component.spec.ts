@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterTestingModule } from '@angular/router/testing';
 import { SubsystemListComponent } from './subsystem-list.component';
 import { Component, Input } from '@angular/core';
 import { Subsystem } from '../subsystem';
@@ -9,6 +8,8 @@ import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { of } from 'rxjs';
 import { SubsystemsService } from '../subsystems.service';
 import { ViewportScroller } from '@angular/common';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
@@ -47,7 +48,8 @@ describe('SubsystemListComponent', () => {
         { provide: Router, useValue: {
             events: of(new Scroll(null, [11, 12], null)),
             navigateByUrl: jasmine.createSpy('navigateByUrl')
-        }}
+        }},
+        { provide: AppConfig, useClass: AppConfigMock }
       ]
     })
     .compileComponents();

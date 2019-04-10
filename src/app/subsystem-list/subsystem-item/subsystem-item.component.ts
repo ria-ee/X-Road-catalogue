@@ -3,7 +3,7 @@ import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
-import { PREVIEW_SIZE } from '../../config';
+import { AppConfig } from '../../app.config';
 
 @Component({
   selector: 'app-subsystem-item',
@@ -15,7 +15,8 @@ export class SubsystemItemComponent implements OnInit {
 
   constructor(
     private subsystemsService: SubsystemsService,
-    private router: Router
+    private router: Router,
+    private config: AppConfig
   ) { }
 
   getApiUrlBase(): string {
@@ -23,14 +24,14 @@ export class SubsystemItemComponent implements OnInit {
   }
 
   getMethodsPreview(): Method[] {
-    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, PREVIEW_SIZE) : [];
+    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.config.getConfig('PREVIEW_SIZE')) : [];
   }
 
   getNotInPreview(): number {
-    if (this.subsystem.methods.length - PREVIEW_SIZE < 0) {
+    if (this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE') < 0) {
       return 0;
     }
-    return this.subsystem.methods.length - PREVIEW_SIZE;
+    return this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE');
   }
 
   showDetail() {

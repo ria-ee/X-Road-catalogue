@@ -7,6 +7,8 @@ import { Router, ActivatedRoute, Scroll } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { SubsystemsService } from '../subsystems.service';
 import { ViewportScroller } from '@angular/common';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
@@ -40,7 +42,8 @@ describe('SubsystemComponent', () => {
         { provide: Router, useValue: {
             events: of(new Scroll(null, [11, 12], null)),
             navigateByUrl: jasmine.createSpy('navigateByUrl')
-        }}
+        }},
+        { provide: AppConfig, useClass: AppConfigMock }
       ]
     })
     .compileComponents();

@@ -3,6 +3,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from './header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { LanguagesService } from '../languages.service';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -14,6 +16,9 @@ describe('HeaderComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         HttpClientModule
+      ],
+      providers: [
+        { provide: AppConfig, useClass: AppConfigMock }
       ]
     })
     .compileComponents();

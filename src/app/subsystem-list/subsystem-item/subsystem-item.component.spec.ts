@@ -5,8 +5,11 @@ import { SubsystemItemComponent } from './subsystem-item.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubsystemsService } from 'src/app/subsystems.service';
 import { Router } from '@angular/router';
-import { PREVIEW_SIZE } from '../../config';
 import { Method } from 'src/app/method';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
+
+const PREVIEW_SIZE = 5;
 
 describe('SubsystemItemComponent', () => {
   let component: SubsystemItemComponent;
@@ -26,9 +29,9 @@ describe('SubsystemItemComponent', () => {
       providers: [
         { provide: Router, useValue: {
             navigateByUrl: jasmine.createSpy('navigateByUrl')
-        }}
+        }},
+        { provide: AppConfig, useClass: AppConfigMock }
       ]
-
     })
     .compileComponents();
   }));

@@ -1,11 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { LanguagesService } from './languages.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('LanguagesService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      TranslateModule.forRoot()
+      TranslateModule.forRoot(),
+      HttpClientModule
+    ],
+    providers: [
+      { provide: AppConfig, useClass: AppConfigMock }
     ]
   }));
 

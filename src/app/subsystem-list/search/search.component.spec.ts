@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent } from './search.component';
 import { SubsystemsService } from 'src/app/subsystems.service';
+import { AppConfigMock } from 'src/app/app.config-mock';
+import { AppConfig } from 'src/app/app.config';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -17,6 +19,9 @@ describe('SearchComponent', () => {
         FormsModule,
         TranslateModule.forRoot(),
         HttpClientModule
+      ],
+      providers: [
+        { provide: AppConfig, useClass: AppConfigMock }
       ]
     })
     .compileComponents();

@@ -4,14 +4,14 @@ import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
-import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE, FILTER_DEBOUNCE } from './config';
+import { AppConfig } from './app.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubsystemsService {
   private apiUrlBase = '';
-  private limit: number = DEFAULT_LIMIT;
+  private limit: number = this.config.getConfig('DEFAULT_LIMIT');
   private nonEmpty = false;
   private filter = '';
   private instance = '';
@@ -21,10 +21,13 @@ export class SubsystemsService {
 
   warnings: EventEmitter<string> = new EventEmitter();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private config: AppConfig
+  ) {
     // Debouncing update of filter
     this.updateFilter.pipe(
-      debounceTime(FILTER_DEBOUNCE),
+      debounceTime(this.config.getConfig('FILTER_DEBOUNCE')),
       distinctUntilChanged()
     ).subscribe(() => {
       this.updateFiltered();
@@ -111,11 +114,11 @@ export class SubsystemsService {
   }
 
   getDefaultInstance(): string {
-    return Object.keys(INSTANCES)[0];
+    return Object.keys(this.config.getConfig('INSTANCES'))[0];
   }
 
   getInstances(): string[] {
-    return Object.keys(INSTANCES);
+    return Object.keys(this.config.getConfig('INSTANCES'));
   }
 
   getInstance(): string {
@@ -124,13 +127,13 @@ export class SubsystemsService {
 
   setInstance(instance: string) {
     this.instance = instance;
-    this.apiUrlBase = INSTANCES[instance];
+    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
 
     // Reset only if has values (less refreshes)
     if (this.subsystemsSubject.value.length) {
       this.subsystemsSubject.next([]);
     }
-    this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
+    this.http.get<Subsystem[]>(this.apiUrlBase + this.config.getConfig('API_SERVICE'))
     .pipe(
       catchError(this.handleError([]))
     ).subscribe(subsystems => {
@@ -144,11 +147,11 @@ export class SubsystemsService {
   }
 
   getApiUrl(): string {
-    return this.apiUrlBase + API_SERVICE;
+    return this.apiUrlBase + this.config.getConfig('API_SERVICE');
   }
 
   getLimit(): string {
-    if (this.limit === MAX_LIMIT) {
+    if (this.limit === this.config.getConfig('MAX_LIMIT')) {
       return 'all';
     }
     return this.limit.toString();
@@ -163,7 +166,7 @@ export class SubsystemsService {
         this.limit = 50;
         break;
       case 'all':
-        this.limit = MAX_LIMIT;
+        this.limit = this.config.getConfig('MAX_LIMIT');
         break;
       default:
         this.limit = 10;
