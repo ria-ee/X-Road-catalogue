@@ -7,10 +7,18 @@ import { SubsystemsService } from '../../subsystems.service';
 })
 export class SearchComponent implements OnInit {
   limit: string;
+  limits: object;
   nonEmpty: boolean;
   filter: string;
 
-  constructor(private subsystemsService: SubsystemsService) {}
+  constructor(private subsystemsService: SubsystemsService) {
+    this.limit = this.subsystemsService.getLimit();
+    this.limits = this.subsystemsService.getLimits();
+  }
+
+  getLimitKeys(): string[] {
+    return Object.keys(this.limits);
+  }
 
   setNonEmpty(nonEmpty: boolean) {
     this.subsystemsService.setNonEmpty(nonEmpty);

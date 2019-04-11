@@ -29,6 +29,7 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.get(SubsystemsService);
+    spyOn(subsystemsService, 'getLimits').and.returnValue({10: 10, 20: 20});
     spyOn(subsystemsService, 'setNonEmpty').and.returnValue(null);
     spyOn(subsystemsService, 'setLimit').and.returnValue(null);
     spyOn(subsystemsService, 'setFilter').and.returnValue(null);
@@ -39,6 +40,11 @@ describe('SearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('getLimitKeys should work', () => {
+    expect(component.getLimitKeys()).toEqual(['10', '20']);
+    expect(subsystemsService.getLimits).toHaveBeenCalledWith();
   });
 
   it('setNonEmpty should work', () => {

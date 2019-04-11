@@ -157,19 +157,26 @@ export class SubsystemsService {
     return this.limit.toString();
   }
 
+  getLimits(): object {
+    return this.config.getConfig('LIMITS');
+  }
+
   setLimit(limit: string) {
-    switch (limit) {
-      case '20':
-        this.limit = 20;
+    const limits = this.config.getConfig('LIMITS');
+    let found = false;
+    for (const key of Object.keys(limits)) {
+      if (limit === key) {
+        this.limit = limits[key];
+        found = true;
         break;
-      case '50':
-        this.limit = 50;
-        break;
-      case 'all':
-        this.limit = this.config.getConfig('MAX_LIMIT');
-        break;
-      default:
-        this.limit = 10;
+      }
+    }
+    if (!found && limit === 'all') {
+      this.limit = this.config.getConfig('MAX_LIMIT');
+      found = true;
+    }
+    if (!found) {
+      this.limit = this.config.getConfig('DEFAULT_LIMIT');
     }
     this.updateFiltered();
   }

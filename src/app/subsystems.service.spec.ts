@@ -267,6 +267,10 @@ describe('SubsystemsService', () => {
 
     service.setLimit('10');
     expect(service.filteredSubsystemsSubject.value.length).toEqual(10);
+
+    // Should set default limit of 10
+    service.setLimit('5');
+    expect(service.filteredSubsystemsSubject.value.length).toEqual(10);
   });
 
   it('getLimit should work', () => {
@@ -274,6 +278,10 @@ describe('SubsystemsService', () => {
 
     service.setLimit('all');
     expect(service.getLimit()).toEqual('all');
+  });
+
+  it('getLimits should work', () => {
+    expect(service.getLimits()).toEqual(config.getConfig('LIMITS'));
   });
 
   it('getInstances should work', () => {
