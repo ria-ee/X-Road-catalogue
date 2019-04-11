@@ -18,6 +18,11 @@
 <app-search></app-search>
 <br>
 
-<div *ngFor="let subsystem of filteredSubsystems | async">
-  <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
-</div>
+<app-subsystem-item *ngFor="let subsystem of filteredSubsystems | async" [subsystem]="subsystem"></app-subsystem-item>
+<br>
+
+<p *ngIf="isPartialList()">{{'subsystemList.moreSubsystems' | translate}}</p>
+
+<p *ngIf="filteredSubsystems.value?.length">
+  <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
+</p>

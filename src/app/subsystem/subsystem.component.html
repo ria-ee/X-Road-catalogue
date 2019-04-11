@@ -32,3 +32,8 @@
     </div>
   </div>
 </div>
+<br>
+
+<p *ngIf="subsystemSubject.value?.methods?.length">
+  <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
+</p>

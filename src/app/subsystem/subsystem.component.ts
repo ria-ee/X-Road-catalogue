@@ -57,6 +57,10 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigateByUrl('/' + this.subsystemsService.getInstance());
   }
 
+  scrollToTop() {
+    this.viewportScroller.scrollToPosition([0, 0]);
+  }
+
   ngOnInit() {
     // Reset message on page load
     this.message = '';

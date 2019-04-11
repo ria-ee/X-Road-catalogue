@@ -155,4 +155,14 @@ describe('SubsystemComponent', () => {
     subsystemsService.warnings.emit('WARN');
     expect(component.message).toBe('WARN');
   });
+
+  it('scrollToTop should work', () => {
+    fixture = TestBed.createComponent(SubsystemComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    const spy = TestBed.get(ViewportScroller).scrollToPosition;
+    spy.calls.reset();
+    component.scrollToTop();
+    expect(spy).toHaveBeenCalledWith([0, 0]);
+  });
 });

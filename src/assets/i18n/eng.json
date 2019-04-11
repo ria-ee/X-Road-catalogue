@@ -14,6 +14,7 @@
       "p4": "Catalogue in JSON form: <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON</a>",
       "p5": "Support: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
+    "moreSubsystems": "To see more subsystems change amount of subsystems to displa or filter by subsystem or service name.",
     "selectInstance": "Select X-tee instance"
   },
   "search": {
@@ -39,5 +40,6 @@
     "moreMethods": "{{count}} more ...",
     "incorrectInstanceWarning": "Incorrect instance!",
     "subsystemNotFoundWarning": "Subsystem \"{{subsystem}}\" cannot be found!"
-  }
+  },
+  "scrollToTop": "Scroll to top"
 }

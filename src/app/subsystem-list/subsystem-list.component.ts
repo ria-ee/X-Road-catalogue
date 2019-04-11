@@ -11,7 +11,6 @@ import { filter } from 'rxjs/operators';
   templateUrl: './subsystem-list.component.html'
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
-  subsystems: Subsystem[];
   message = '';
   scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   routerScrollSubscription: Subscription;
@@ -50,6 +49,23 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   getApiUrl(): string {
     return this.subsystemsService.getApiUrl();
+  }
+
+  isPartialList(): boolean {
+    const limit = parseInt(this.subsystemsService.getLimit(), 10);
+    if (isNaN(limit)) {
+      // limit is "all" (or some faulty string)
+      return false;
+    } else if (this.filteredSubsystems.value.length < limit) {
+      return false;
+    } else {
+      // If subsystems length == limit then we still asume it is partial
+      return true;
+    }
+  }
+
+  scrollToTop() {
+    this.viewportScroller.scrollToPosition([0, 0]);
   }
 
   ngOnInit() {

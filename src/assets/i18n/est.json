@@ -14,6 +14,7 @@
       "p4": "Kataloog JSON kujul: <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON</a>",
       "p5": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
+    "moreSubsystems": "Selleks, et näha rohkem alamsüsteeme, muutke alamsüsteemide näitamise piirangu või otsige alamsüsteemi või teenuse nime järgi.",
     "selectInstance": "Vali X-tee instants"
   },
   "search": {
@@ -39,5 +40,6 @@
     "moreMethods": "veel {{count}} ...",
     "incorrectInstanceWarning": "Vale instants!",
     "subsystemNotFoundWarning": "Alamsüsteem \"{{subsystem}}\" ei ole leitud!"
-  }
+  },
+  "scrollToTop": "Lehe algusesse"
 }

@@ -124,4 +124,31 @@ describe('SubsystemListComponent', () => {
     subsystemsService.warnings.emit('WARN');
     expect(component.message).toBe('WARN');
   });
+
+  it('scrollToTop should work', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    const spy = TestBed.get(ViewportScroller).scrollToPosition;
+    spy.calls.reset();
+    component.scrollToTop();
+    expect(spy).toHaveBeenCalledWith([0, 0]);
+  });
+
+  it('isPartialList should work', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    subsystemsService.filteredSubsystemsSubject.next([new Subsystem(), new Subsystem()]);
+
+    const getLimitSpy = spyOn(subsystemsService, 'getLimit').and.returnValue(['all']);
+    expect(component.isPartialList()).toBeFalsy();
+
+    getLimitSpy.and.returnValue(['2']);
+    expect(component.isPartialList()).toBeTruthy();
+
+    getLimitSpy.and.returnValue(['3']);
+    expect(component.isPartialList()).toBeFalsy();
+  });
 });
