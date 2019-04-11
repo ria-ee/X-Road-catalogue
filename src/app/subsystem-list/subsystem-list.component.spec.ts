@@ -13,6 +13,10 @@ import { AppConfig } from 'src/app/app.config';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
+@Component({selector: 'app-messages', template: ''})
+class MessagesStubComponent {
+  @Input() message: string;
+}
 @Component({selector: 'app-search', template: ''})
 class SearchStubComponent {}
 @Component({selector: 'app-subsystem-item', template: ''})
@@ -32,6 +36,7 @@ describe('SubsystemListComponent', () => {
       declarations: [
         SubsystemListComponent,
         HeaderStubComponent,
+        MessagesStubComponent,
         SearchStubComponent,
         SubsystemItemStubComponent
       ],

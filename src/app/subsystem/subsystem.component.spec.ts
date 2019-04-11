@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { Component, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SubsystemComponent } from './subsystem.component';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute, Scroll } from '@angular/router';
@@ -12,6 +12,11 @@ import { AppConfig } from 'src/app/app.config';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
+@Component({selector: 'app-messages', template: ''})
+class MessagesStubComponent {
+  @Input() message: string;
+  @Input() subsystemId: string;
+}
 
 describe('SubsystemComponent', () => {
   let component: SubsystemComponent;
@@ -24,7 +29,8 @@ describe('SubsystemComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         SubsystemComponent,
-        HeaderStubComponent
+        HeaderStubComponent,
+        MessagesStubComponent
       ],
       imports: [
         TranslateModule.forRoot(),

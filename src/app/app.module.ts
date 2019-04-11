@@ -13,6 +13,7 @@ import { SubsystemComponent } from './subsystem/subsystem.component';
 import { HeaderComponent } from './header/header.component';
 import { APP_INITIALIZER } from '@angular/core';
 import { AppConfig } from './app.config';
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AppConfig } from './app.config';
     SearchComponent,
     SubsystemItemComponent,
     SubsystemComponent,
-    HeaderComponent
+    HeaderComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
