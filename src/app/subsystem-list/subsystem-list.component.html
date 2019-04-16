@@ -15,6 +15,22 @@
     (click)="switchInstance(instance)">{{instance}}</button>
 </div>
 
+<div class="card">
+  <div class="card-header">
+    {{'subsystemList.selectVersion' | translate}}
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <select [(ngModel)]="instanceVersion" class="form-control" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
+          <option value="">{{'subsystemList.latestVersion' | translate}}</option>
+          <option *ngFor="let version of instanceVersions | async" [ngValue]="version.reportTimeCompact">{{version.reportTime}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
 <app-search></app-search>
 <br>
 

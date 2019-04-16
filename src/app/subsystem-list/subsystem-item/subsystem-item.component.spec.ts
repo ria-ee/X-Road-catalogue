@@ -80,7 +80,13 @@ describe('SubsystemItemComponent', () => {
   });
 
   it('should go to detail view', () => {
+    const spy = TestBed.get(Router).navigateByUrl;
     component.showDetail();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
+    expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
+
+    spy.calls.reset();
+    spyOn(subsystemsService, 'getInstanceVersion').and.returnValue('12345');
+    component.showDetail();
+    expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB?at=12345');
   });
 });

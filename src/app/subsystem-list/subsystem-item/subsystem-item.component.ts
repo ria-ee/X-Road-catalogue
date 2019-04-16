@@ -40,6 +40,7 @@ export class SubsystemItemComponent implements OnInit {
       + '/' + this.subsystem.memberClass
       + '/' + this.subsystem.memberCode
       + '/' + this.subsystem.subsystemCode
+      + (this.subsystemsService.getInstanceVersion() ? '?at=' + this.subsystemsService.getInstanceVersion() : '')
     );
   }
 

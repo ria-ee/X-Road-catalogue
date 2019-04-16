@@ -5,6 +5,7 @@ import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { AppConfig } from './app.config';
+import { InstanceVersion } from './instance-version';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,10 @@ export class SubsystemsService {
   private nonEmpty = false;
   private filter = '';
   private instance = '';
+  private instanceVersion = '';
   subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
   filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  instanceVersionsSubject: BehaviorSubject<InstanceVersion[]> = new BehaviorSubject([]);
   private updateFilter = new Subject<string>();
 
   warnings: EventEmitter<string> = new EventEmitter();
@@ -92,19 +95,6 @@ export class SubsystemsService {
     return subsystems;
   }
 
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(result?: T) {
-    return (error: any): Observable<T> => {
-      this.emitWarning('service.dataLoadingError');
-      // Let the app keep running by returning an empty result.
-      return of(result);
-    };
-  }
-
   private emitWarning(msg: string) {
     this.warnings.emit(msg);
   }
@@ -125,21 +115,58 @@ export class SubsystemsService {
     return this.instance;
   }
 
-  setInstance(instance: string) {
-    this.instance = instance;
-    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
-
+  // Not "private" to be able to override in unit tests
+  updateSubsystems() {
     // Reset only if has values (less refreshes)
     if (this.subsystemsSubject.value.length) {
       this.subsystemsSubject.next([]);
     }
-    this.http.get<Subsystem[]>(this.apiUrlBase + this.config.getConfig('API_SERVICE'))
-    .pipe(
-      catchError(this.handleError([]))
+    this.http.get<Subsystem[]>(
+      this.apiUrlBase + (this.instanceVersion ? 'index_' + this.instanceVersion + '.json' : this.config.getConfig('API_SERVICE'))
+    ).pipe(
+      catchError( () => {
+        this.emitWarning('service.dataLoadingError');
+        // Let the app keep running by returning an empty result.
+        return of([]);
+      })
     ).subscribe(subsystems => {
       this.subsystemsSubject.next(this.setFullNames(subsystems));
       this.updateFiltered();
     });
+  }
+
+  // Not "private" to be able to override in unit tests
+  updateInstanceVersions() {
+    this.instanceVersionsSubject.next([]);
+    this.http.get<InstanceVersion[]>(this.apiUrlBase + this.config.getConfig('API_HISTORY'))
+    .pipe(
+      catchError(() => {
+        // Let the app keep running by returning an empty result.
+        return of([]);
+      })
+    ).subscribe(history => {
+      const versions: InstanceVersion[] = [];
+      for (const version of history) {
+        const matches = version.reportPath.match(/index_(\d+).json/);
+        if (matches && matches.length === 2) {
+          version.reportTimeCompact = matches[1];
+          versions.push(version);
+        }
+        if (versions.length >= this.config.getConfig('HISTORY_LIMIT')) {
+          break;
+        }
+      }
+      this.instanceVersionsSubject.next(versions);
+    });
+  }
+
+  setInstance(instance: string, instanceVersion: string = '') {
+    this.instance = instance;
+    this.instanceVersion = instanceVersion;
+    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
+
+    this.updateSubsystems();
+    this.updateInstanceVersions();
   }
 
   getApiUrlBase(): string {
@@ -200,5 +227,9 @@ export class SubsystemsService {
       // Debouncing update of filter
       this.updateFilter.next(this.filter);
     }
+  }
+
+  getInstanceVersion(): string {
+    return this.instanceVersion;
   }
 }

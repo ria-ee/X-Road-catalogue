@@ -95,7 +95,7 @@ describe('SubsystemComponent', () => {
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST');
+    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST', '');
   });
 
   it('should detect change instance', () => {
@@ -104,7 +104,7 @@ describe('SubsystemComponent', () => {
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST');
+    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST', '');
   });
 
   it('should detect incorrect subsystem', () => {
@@ -164,5 +164,77 @@ describe('SubsystemComponent', () => {
     spy.calls.reset();
     component.scrollToTop();
     expect(spy).toHaveBeenCalledWith([0, 0]);
+  });
+});
+
+
+describe('SubsystemComponent (with instance version)', () => {
+  let component: SubsystemComponent;
+  let fixture: ComponentFixture<SubsystemComponent>;
+  let getInstanceSpy;
+  let getInstancesSpy;
+  let subsystemsService: SubsystemsService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        SubsystemComponent,
+        HeaderStubComponent,
+        MessagesStubComponent
+      ],
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientModule
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: {
+          params: of({
+            instance: 'INST',
+            class: 'CLASS',
+            member: 'MEMBER',
+            subsystem: 'SYSTEM'
+          }),
+          snapshot: {
+            queryParams: {
+              at: '12345'
+            }
+          }
+        }},
+        { provide: Router, useValue: {
+            events: of(new Scroll(null, [11, 12], null)),
+            navigateByUrl: jasmine.createSpy('navigateByUrl')
+        }},
+        { provide: AppConfig, useClass: AppConfigMock }
+      ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    subsystemsService = TestBed.get(SubsystemsService);
+    getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
+    getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
+    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(subsystemsService, 'setInstance').and.returnValue(null);
+    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    subsystemsService.subsystemsSubject = new BehaviorSubject([
+      {
+        memberClass: '',
+        subsystemCode: '',
+        xRoadInstance: '',
+        subsystemStatus: '',
+        memberCode: '',
+        fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
+        methods: []
+      }
+    ]);
+  });
+
+  it('goToList should work with instance version', () => {
+    fixture = TestBed.createComponent(SubsystemComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.goToList();
+    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
   });
 });

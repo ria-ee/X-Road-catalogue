@@ -17,6 +17,8 @@ export class AppConfigMock extends AppConfig {
             'ee-dev': 'https://www.x-tee.ee/catalogue/ee-dev/wsdls/'
         },
         API_SERVICE: 'index.json',
+        API_HISTORY: 'history.json',
+        HISTORY_LIMIT: 30,
         LANGUAGES: {
             EST: 'est',
             ENG: 'eng'

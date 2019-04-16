@@ -5,6 +5,7 @@ import { Method } from './method';
 import { HttpErrorResponse } from '@angular/common/http';
 import { tick, fakeAsync } from '@angular/core/testing';
 import { AppConfigMock } from './app.config-mock';
+import { InstanceVersion } from './instance-version';
 
 describe('SubsystemsService', () => {
   let httpClientSpy: { get: jasmine.Spy };
@@ -21,7 +22,7 @@ describe('SubsystemsService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set instance on HTTP OK', () => {
+  it('should set instance on HTTP OK', fakeAsync(() => {
     const sourceSubsystems = [
       {
         memberClass: 'CLASS',
@@ -79,12 +80,22 @@ describe('SubsystemsService', () => {
     // Setting value to test resetting of values
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
-    service.setInstance('EE');
+    // Disabling updateInstanceVersions()
+    service.updateInstanceVersions = () => {};
+
+    service.setInstance('EE', '');
+    // Waiting for asynchronous work
+    tick();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index.json');
     expect(service.subsystemsSubject.value).toEqual(expectedSubsystems);
     // No filters yet
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems);
-  });
+
+    service.setInstance('EE', '12345');
+    // Waiting for asynchronous work
+    tick();
+    expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index_12345.json');
+  }));
 
   it('should set instance on HTTP ERROR', fakeAsync(() => {
     const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
@@ -92,12 +103,78 @@ describe('SubsystemsService', () => {
     // Setting value to test resetting of values
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
-    service.setInstance('EE');
-    // Waiting for some (unknown) asynchronous work
+    // Disabling updateInstanceVersions()
+    service.updateInstanceVersions = () => {};
+
+    service.setInstance('EE', '');
+    // Waiting for asynchronous work
     tick();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index.json');
     expect(service.subsystemsSubject.value).toEqual([]);
     expect(service.filteredSubsystemsSubject.value).toEqual([]);
+  }));
+
+  it('should set instance versions on HTTP OK', fakeAsync(() => {
+    const sourceHistory = [
+      {
+        reportTime: '2019-04-15 08:01:41',
+        reportPath: 'index_20190415080141.json'
+      },
+      {
+        reportTime: '2019-04-14 08:01:37',
+        reportPath: 'index_FAIL.json'
+      }
+    ];
+    const expectedInstanceVersions = [
+      {
+        reportTime: '2019-04-15 08:01:41',
+        reportTimeCompact: '20190415080141',
+        reportPath: 'index_20190415080141.json'
+      }
+    ];
+    httpClientSpy.get.and.returnValue(of(sourceHistory));
+    // Setting value to test resetting of values
+    service.instanceVersionsSubject.next([new InstanceVersion()]);
+    // Disabling updateSubsystems()
+    service.updateSubsystems = () => {};
+
+    service.setInstance('EE', '');
+    // Waiting for asynchronous work
+    tick();
+    expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/history.json');
+    expect(service.instanceVersionsSubject.value).toEqual(expectedInstanceVersions);
+
+    const longHistory = [];
+    for (let i = 0; i < config.getConfig('HISTORY_LIMIT') + 1; i++) {
+      longHistory.push(
+        {
+          reportTime: '2019-04-15 08:01:41',
+          reportPath: 'index_20190415080141.json'
+        }
+      );
+    }
+    httpClientSpy.get.and.returnValue(of(longHistory));
+    service.setInstance('EE');
+    // Waiting for asynchronous work
+    tick();
+    expect(longHistory.length).toBe(config.getConfig('HISTORY_LIMIT') + 1);
+    expect(service.instanceVersionsSubject.value.length).toEqual(config.getConfig('HISTORY_LIMIT'));
+
+  }));
+
+  it('should set instance versions on HTTP ERROR', fakeAsync(() => {
+    const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
+    httpClientSpy.get.and.returnValue(defer(() => Promise.reject(errorResponse)));
+    // Setting value to test resetting of values
+    service.instanceVersionsSubject.next([new InstanceVersion()]);
+    // Disabling updateSubsystems()
+    service.updateSubsystems = () => {};
+
+    service.setInstance('EE');
+    // Waiting for asynchronous work
+    tick();
+    expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/history.json');
+    expect(service.instanceVersionsSubject.value).toEqual([]);
   }));
 
   it('should filter nonEmpty subsystems', () => {

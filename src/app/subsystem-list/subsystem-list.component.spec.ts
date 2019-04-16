@@ -10,6 +10,7 @@ import { SubsystemsService } from '../subsystems.service';
 import { ViewportScroller } from '@angular/common';
 import { AppConfigMock } from 'src/app/app.config-mock';
 import { AppConfig } from 'src/app/app.config';
+import { FormsModule } from '@angular/forms';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
@@ -41,6 +42,7 @@ describe('SubsystemListComponent', () => {
         SubsystemItemStubComponent
       ],
       imports: [
+        FormsModule,
         TranslateModule.forRoot(),
         HttpClientModule
       ],
@@ -90,7 +92,7 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST');
+    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST', '');
   });
 
   it('should detect change instance', () => {
@@ -99,7 +101,7 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST');
+    expect(subsystemsService.setInstance).toHaveBeenCalledWith('INST', '');
   });
 
   it('should scroll to position', () => {
@@ -150,5 +152,82 @@ describe('SubsystemListComponent', () => {
 
     getLimitSpy.and.returnValue(['3']);
     expect(component.isPartialList()).toBeFalsy();
+  });
+
+  it('setInstanceVersion should work without instance version', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.setInstanceVersion();
+    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
+  });
+});
+
+describe('SubsystemListComponent (with instance version)', () => {
+  let component: SubsystemListComponent;
+  let fixture: ComponentFixture<SubsystemListComponent>;
+  let getInstanceSpy;
+  let getInstancesSpy;
+  let subsystemsService: SubsystemsService;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        SubsystemListComponent,
+        HeaderStubComponent,
+        MessagesStubComponent,
+        SearchStubComponent,
+        SubsystemItemStubComponent
+      ],
+      imports: [
+        FormsModule,
+        TranslateModule.forRoot(),
+        HttpClientModule
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: {
+          params: of({
+            instance: 'INST'
+          }),
+          snapshot: {
+            queryParams: {
+              at: '12345'
+            }
+          }
+        }},
+        { provide: Router, useValue: {
+            events: of(new Scroll(null, [11, 12], null)),
+            navigateByUrl: jasmine.createSpy('navigateByUrl')
+        }},
+        { provide: AppConfig, useClass: AppConfigMock }
+      ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    subsystemsService = TestBed.get(SubsystemsService);
+    getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
+    getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
+    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(subsystemsService, 'setInstance').and.returnValue(null);
+    spyOn(subsystemsService, 'getDefaultInstance').and.returnValue('DEFINST');
+    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+  });
+
+  it('should create', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+    expect(component.instanceVersion).toBe('12345');
+  });
+
+  it('setInstanceVersion should work with instance version', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.setInstanceVersion();
+    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
   });
 });
