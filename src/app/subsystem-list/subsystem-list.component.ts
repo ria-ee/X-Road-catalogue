@@ -48,6 +48,11 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   switchInstance(instance: string): void {
     this.router.navigateByUrl('/' + instance);
+    // Reloading data if clicked on the current instance
+    if (this.subsystemsService.getInstance() === instance) {
+      this.instanceVersion = '';
+      this.subsystemsService.setInstance(instance, this.instanceVersion);
+    }
   }
 
   getApiUrl(): string {

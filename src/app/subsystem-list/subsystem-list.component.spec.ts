@@ -115,8 +115,14 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    const spy = TestBed.get(Router).navigateByUrl;
+
     component.switchInstance('NEWINST');
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/NEWINST');
+    expect(spy).toHaveBeenCalledWith('/NEWINST');
+
+    spy.calls.reset();
+    component.switchInstance('INST');
+    expect(spy).toHaveBeenCalledWith('/INST');
   });
 
   it('should receive service warnings', () => {
@@ -229,5 +235,15 @@ describe('SubsystemListComponent (with instance version)', () => {
     fixture.detectChanges();
     component.setInstanceVersion();
     expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
+  });
+
+  it('switchInstance should reset instance version when instance does not change', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.instanceVersion = 'test';
+    component.switchInstance('INST');
+    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
+    expect(component.instanceVersion).toBe('');
   });
 });
