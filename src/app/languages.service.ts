@@ -3,7 +3,7 @@ import {TranslateService} from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { LANGUAGES } from './config';
+import { AppConfig } from './app.config';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +14,11 @@ export class LanguagesService {
 
   constructor(
     private translate: TranslateService,
-    private title: Title
+    private title: Title,
+    private config: AppConfig
   ) {
     this.selectedLang = this.getDefaultLang();
-    translate.setDefaultLang(LANGUAGES[this.selectedLang]);
+    translate.setDefaultLang(this.config.getConfig('LANGUAGES')[this.selectedLang]);
     this.updateTitle();
   }
 
@@ -34,11 +35,11 @@ export class LanguagesService {
     if (window && window.localStorage && window.localStorage.getItem('lang')) {
       return window.localStorage.getItem('lang');
     }
-    return Object.keys(LANGUAGES)[0];
+    return Object.keys(this.config.getConfig('LANGUAGES'))[0];
   }
 
   getLangs(): string[] {
-    return Object.keys(LANGUAGES);
+    return Object.keys(this.config.getConfig('LANGUAGES'));
   }
 
   getLang(): string {
@@ -50,7 +51,7 @@ export class LanguagesService {
     if (window && window.localStorage) {
       window.localStorage.setItem('lang', this.selectedLang);
     }
-    this.translate.use(LANGUAGES[this.selectedLang]);
+    this.translate.use(this.config.getConfig('LANGUAGES')[this.selectedLang]);
     this.updateTitle();
   }
 }

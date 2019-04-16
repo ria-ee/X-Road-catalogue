@@ -5,20 +5,22 @@ import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { InstanceVersion } from '../instance-version';
 
 @Component({
   selector: 'app-subsystem-list',
   templateUrl: './subsystem-list.component.html'
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
-  subsystems: Subsystem[];
-  message = '';
+  message: string;
   scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   routerScrollSubscription: Subscription;
   routeSubscription: Subscription;
   warningsSubscription: Subscription;
   scrollSubjectSubscription: Subscription;
   filteredSubsystems: BehaviorSubject<Subsystem[]>;
+  instanceVersions: BehaviorSubject<InstanceVersion[]>;
+  instanceVersion: string;
 
   constructor(
     private subsystemsService: SubsystemsService,
@@ -46,16 +48,48 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   switchInstance(instance: string): void {
     this.router.navigateByUrl('/' + instance);
+    // Reloading data if clicked on the current instance
+    if (this.subsystemsService.getInstance() === instance) {
+      this.instanceVersion = '';
+      this.subsystemsService.setInstance(instance, this.instanceVersion);
+    }
   }
 
   getApiUrl(): string {
     return this.subsystemsService.getApiUrl();
   }
 
+  isPartialList(): boolean {
+    const limit = parseInt(this.subsystemsService.getLimit(), 10);
+    if (isNaN(limit)) {
+      // limit is "all" (or some faulty string)
+      return false;
+    } else if (this.filteredSubsystems.value.length < limit) {
+      return false;
+    } else {
+      // If subsystems length == limit then we still asume it is partial
+      return true;
+    }
+  }
+
+  scrollToTop() {
+    this.viewportScroller.scrollToPosition([0, 0]);
+  }
+
+  setInstanceVersion() {
+    // This will update URL without triggering route.params
+    this.router.navigateByUrl(
+      '/' + this.subsystemsService.getInstance()
+      + (this.instanceVersion ? '?at=' + this.instanceVersion : ''));
+    this.subsystemsService.setInstance(this.subsystemsService.getInstance(), this.instanceVersion);
+  }
+
   ngOnInit() {
     // Reset message on page load
     this.message = '';
+
     this.filteredSubsystems = this.subsystemsService.filteredSubsystemsSubject;
+    this.instanceVersions = this.subsystemsService.instanceVersionsSubject;
 
     // Service will tell when data loading failed!
     this.warningsSubscription = this.subsystemsService.warnings.subscribe(signal => {
@@ -71,9 +105,17 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.router.navigateByUrl('/' + this.subsystemsService.getDefaultInstance());
         return;
       }
+
+      // Set selected instance version
+      if (this.route.snapshot && this.route.snapshot.queryParams.at) {
+        this.instanceVersion = this.route.snapshot.queryParams.at;
+      } else {
+        this.instanceVersion = '';
+      }
+
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() === '' || this.getInstance() !== params.instance) {
-        this.subsystemsService.setInstance(params.instance);
+        this.subsystemsService.setInstance(params.instance, this.instanceVersion);
       }
     });
   }

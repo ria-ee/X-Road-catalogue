@@ -21,6 +21,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   private warningsSubscription: Subscription;
   private scrollSubjectSubscription: Subscription;
   private subsystemsSubscription: Subscription;
+  private instanceVersion: string;
   subsystemSubject: BehaviorSubject<Subsystem> = new BehaviorSubject(null);
 
   constructor(
@@ -54,7 +55,14 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   goToList(): void {
-    this.router.navigateByUrl('/' + this.subsystemsService.getInstance());
+    this.router.navigateByUrl(
+      '/' + this.subsystemsService.getInstance()
+      + (this.instanceVersion ? '?at=' + this.instanceVersion : '')
+    );
+  }
+
+  scrollToTop() {
+    this.viewportScroller.scrollToPosition([0, 0]);
   }
 
   ngOnInit() {
@@ -73,12 +81,22 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
         this.message = 'subsystem.incorrectInstanceWarning';
         return;
       }
+
+      // Set selected instance version
+      if (this.route.snapshot && this.route.snapshot.queryParams.at) {
+        this.instanceVersion = this.route.snapshot.queryParams.at;
+      } else {
+        this.instanceVersion = '';
+      }
+
       this.subsystemId = params.instance + '/' + params.class + '/' + params.member + '/' + params.subsystem;
+
       // Only reload on switching of instance or when no instance is selected yet on service side
       if (this.getInstance() === '' || this.getInstance() !== params.instance) {
         // this.subsystemsService.setInstance(params.instance ? params.instance : this.subsystemsService.getDefaultInstance());
-        this.subsystemsService.setInstance(params.instance);
+        this.subsystemsService.setInstance(params.instance, this.instanceVersion);
       }
+
       this.subsystemsSubscription = this.subsystemsService.subsystemsSubject.subscribe(subsystems => {
         const subsystem = this.getSubsystem(subsystems, this.subsystemId);
         if (!subsystem && !this.message && subsystems.length) {

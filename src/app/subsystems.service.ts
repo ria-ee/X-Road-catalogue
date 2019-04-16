@@ -1,30 +1,36 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
+import { of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
-import { MAX_LIMIT, DEFAULT_LIMIT, INSTANCES, API_SERVICE, FILTER_DEBOUNCE } from './config';
+import { AppConfig } from './app.config';
+import { InstanceVersion } from './instance-version';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubsystemsService {
   private apiUrlBase = '';
-  private limit: number = DEFAULT_LIMIT;
+  private limit: number = this.config.getConfig('DEFAULT_LIMIT');
   private nonEmpty = false;
   private filter = '';
   private instance = '';
+  private instanceVersion = '';
   subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
   filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  instanceVersionsSubject: BehaviorSubject<InstanceVersion[]> = new BehaviorSubject([]);
   private updateFilter = new Subject<string>();
 
   warnings: EventEmitter<string> = new EventEmitter();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private config: AppConfig
+  ) {
     // Debouncing update of filter
     this.updateFilter.pipe(
-      debounceTime(FILTER_DEBOUNCE),
+      debounceTime(this.config.getConfig('FILTER_DEBOUNCE')),
       distinctUntilChanged()
     ).subscribe(() => {
       this.updateFiltered();
@@ -89,19 +95,6 @@ export class SubsystemsService {
     return subsystems;
   }
 
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(result?: T) {
-    return (error: any): Observable<T> => {
-      this.emitWarning('service.dataLoadingError');
-      // Let the app keep running by returning an empty result.
-      return of(result);
-    };
-  }
-
   private emitWarning(msg: string) {
     this.warnings.emit(msg);
   }
@@ -111,32 +104,69 @@ export class SubsystemsService {
   }
 
   getDefaultInstance(): string {
-    return Object.keys(INSTANCES)[0];
+    return Object.keys(this.config.getConfig('INSTANCES'))[0];
   }
 
   getInstances(): string[] {
-    return Object.keys(INSTANCES);
+    return Object.keys(this.config.getConfig('INSTANCES'));
   }
 
   getInstance(): string {
     return this.instance;
   }
 
-  setInstance(instance: string) {
-    this.instance = instance;
-    this.apiUrlBase = INSTANCES[instance];
-
+  // Not "private" to be able to override in unit tests
+  updateSubsystems() {
     // Reset only if has values (less refreshes)
     if (this.subsystemsSubject.value.length) {
       this.subsystemsSubject.next([]);
     }
-    this.http.get<Subsystem[]>(this.apiUrlBase + API_SERVICE)
-    .pipe(
-      catchError(this.handleError([]))
+    this.http.get<Subsystem[]>(
+      this.apiUrlBase + (this.instanceVersion ? 'index_' + this.instanceVersion + '.json' : this.config.getConfig('API_SERVICE'))
+    ).pipe(
+      catchError( () => {
+        this.emitWarning('service.dataLoadingError');
+        // Let the app keep running by returning an empty result.
+        return of([]);
+      })
     ).subscribe(subsystems => {
       this.subsystemsSubject.next(this.setFullNames(subsystems));
       this.updateFiltered();
     });
+  }
+
+  // Not "private" to be able to override in unit tests
+  updateInstanceVersions() {
+    this.instanceVersionsSubject.next([]);
+    this.http.get<InstanceVersion[]>(this.apiUrlBase + this.config.getConfig('API_HISTORY'))
+    .pipe(
+      catchError(() => {
+        // Let the app keep running by returning an empty result.
+        return of([]);
+      })
+    ).subscribe(history => {
+      const versions: InstanceVersion[] = [];
+      for (const version of history) {
+        const matches = version.reportPath.match(/index_(\d+).json/);
+        if (matches && matches.length === 2) {
+          version.reportTimeCompact = matches[1];
+          versions.push(version);
+        }
+        if (versions.length >= this.config.getConfig('HISTORY_LIMIT')) {
+          break;
+        }
+      }
+      this.instanceVersionsSubject.next(versions);
+    });
+  }
+
+  setInstance(instance: string, instanceVersion: string = '') {
+    this.instance = instance;
+    this.instanceVersion = instanceVersion;
+    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
+
+    this.updateSubsystems();
+    this.updateInstanceVersions();
   }
 
   getApiUrlBase(): string {
@@ -144,29 +174,36 @@ export class SubsystemsService {
   }
 
   getApiUrl(): string {
-    return this.apiUrlBase + API_SERVICE;
+    return this.apiUrlBase + this.config.getConfig('API_SERVICE');
   }
 
   getLimit(): string {
-    if (this.limit === MAX_LIMIT) {
+    if (this.limit === this.config.getConfig('MAX_LIMIT')) {
       return 'all';
     }
     return this.limit.toString();
   }
 
+  getLimits(): object {
+    return this.config.getConfig('LIMITS');
+  }
+
   setLimit(limit: string) {
-    switch (limit) {
-      case '20':
-        this.limit = 20;
+    const limits = this.config.getConfig('LIMITS');
+    let found = false;
+    for (const key of Object.keys(limits)) {
+      if (limit === key) {
+        this.limit = limits[key];
+        found = true;
         break;
-      case '50':
-        this.limit = 50;
-        break;
-      case 'all':
-        this.limit = MAX_LIMIT;
-        break;
-      default:
-        this.limit = 10;
+      }
+    }
+    if (!found && limit === 'all') {
+      this.limit = this.config.getConfig('MAX_LIMIT');
+      found = true;
+    }
+    if (!found) {
+      this.limit = this.config.getConfig('DEFAULT_LIMIT');
     }
     this.updateFiltered();
   }
@@ -190,5 +227,9 @@ export class SubsystemsService {
       // Debouncing update of filter
       this.updateFilter.next(this.filter);
     }
+  }
+
+  getInstanceVersion(): string {
+    return this.instanceVersion;
   }
 }

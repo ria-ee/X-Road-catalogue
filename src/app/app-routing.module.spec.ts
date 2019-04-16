@@ -1,6 +1,6 @@
 import { AppRoutingModule } from './app-routing.module';
 
-describe('AppModule', () => {
+describe('AppRoutingModule', () => {
   let module: AppRoutingModule;
 
   beforeEach(() => {
