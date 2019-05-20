@@ -3,6 +3,12 @@
 
 module.exports = function (config) {
   config.set({
+    customLaunchers: {
+      ChromiumDocker: {
+        base: 'ChromiumHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -16,7 +22,7 @@ module.exports = function (config) {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../coverage/methods'),
+      dir: require('path').join(__dirname, '../coverage/xtss-catalogue'),
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },

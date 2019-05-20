@@ -16,9 +16,7 @@
           <label for="limitSelect">{{'search.limit' | translate}}</label>
           <select class="form-control" id="limitSelect"
             [(ngModel)]="limit" (change)="setLimit(limit)">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
+            <option *ngFor="let key of getLimitKeys()" [ngValue]="key">{{limits[key]}}</option>
             <option value="all">{{'search.allOption' | translate}}</option>
           </select>
         </div>

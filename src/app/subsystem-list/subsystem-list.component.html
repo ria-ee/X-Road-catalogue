@@ -4,11 +4,10 @@
 <p [innerHTML]="'subsystemList.intro.p1' | translate"></p>
 <p [innerHTML]="'subsystemList.intro.p2' | translate"></p>
 <p [innerHTML]="'subsystemList.intro.p3' | translate"></p>
-<p [innerHTML]="'subsystemList.intro.p4' | translate"></p>
+<p [innerHTML]="'subsystemList.intro.p4' | translate:{'jsonUrl': getApiUrl()}"></p>
+<p [innerHTML]="'subsystemList.intro.p5' | translate"></p>
 
-<div class="alert alert-warning" role="alert" *ngIf="message">
-  {{message}}
-</div>
+<app-messages [message]="message"></app-messages>
 
 <div class="btn-group" role="group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
   <button *ngFor="let instance of getInstances()"
@@ -16,9 +15,30 @@
     (click)="switchInstance(instance)">{{instance}}</button>
 </div>
 
+<div class="card">
+  <div class="card-header">
+    {{'subsystemList.selectVersion' | translate}}
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <select [(ngModel)]="instanceVersion" class="form-control" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
+          <option value="">{{'subsystemList.latestVersion' | translate}}</option>
+          <option *ngFor="let version of instanceVersions | async" [ngValue]="version.reportTimeCompact">{{version.reportTime}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
 <app-search></app-search>
 <br>
 
-<div *ngFor="let subsystem of subsystems">
-  <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
-</div>
+<app-subsystem-item *ngFor="let subsystem of filteredSubsystems | async" [subsystem]="subsystem"></app-subsystem-item>
+<br>
+
+<p *ngIf="isPartialList()">{{'subsystemList.moreSubsystems' | translate}}</p>
+
+<p *ngIf="filteredSubsystems.value?.length">
+  <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
+</p>

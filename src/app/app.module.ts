@@ -11,6 +11,9 @@ import { SubsystemItemComponent } from './subsystem-list/subsystem-item/subsyste
 import { AppRoutingModule } from './app-routing.module';
 import { SubsystemComponent } from './subsystem/subsystem.component';
 import { HeaderComponent } from './header/header.component';
+import { APP_INITIALIZER } from '@angular/core';
+import { AppConfig } from './app.config';
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,8 @@ import { HeaderComponent } from './header/header.component';
     SearchComponent,
     SubsystemItemComponent,
     SubsystemComponent,
-    HeaderComponent
+    HeaderComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,10 @@ import { HeaderComponent } from './header/header.component';
       }
     })
   ],
-  providers: [],
+  providers: [
+    AppConfig,
+    { provide: APP_INITIALIZER, useFactory: (config: AppConfig) => () => config.load(), deps: [AppConfig], multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

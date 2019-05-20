@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
-import { MethodsService } from '../../methods.service';
+import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
+import { AppConfig } from '../../app.config';
 
 @Component({
   selector: 'app-subsystem-item',
@@ -10,31 +11,27 @@ import { Router } from '@angular/router';
   styleUrls: ['./subsystem-item.component.css']
 })
 export class SubsystemItemComponent implements OnInit {
-
-  @Input() subsystem: Subsystem
-  private previewSize: number = 5
+  @Input() subsystem: Subsystem;
 
   constructor(
-    private methodsService: MethodsService,
-    private router: Router
+    private subsystemsService: SubsystemsService,
+    private router: Router,
+    private config: AppConfig
   ) { }
 
-  ngOnInit() {
-  }
-
   getApiUrlBase(): string {
-    return this.methodsService.getApiUrlBase()
+    return this.subsystemsService.getApiUrlBase();
   }
 
   getMethodsPreview(): Method[] {
-    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.previewSize) : []
+    return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.config.getConfig('PREVIEW_SIZE')) : [];
   }
 
   getNotInPreview(): number {
-    if (this.subsystem.methods.length - this.previewSize < 0) {
-      return 0
+    if (this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE') < 0) {
+      return 0;
     }
-    return this.subsystem.methods.length - this.previewSize
+    return this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE');
   }
 
   showDetail() {
@@ -43,6 +40,9 @@ export class SubsystemItemComponent implements OnInit {
       + '/' + this.subsystem.memberClass
       + '/' + this.subsystem.memberCode
       + '/' + this.subsystem.subsystemCode
-    )
+      + (this.subsystemsService.getInstanceVersion() ? '?at=' + this.subsystemsService.getInstanceVersion() : '')
+    );
   }
+
+  ngOnInit() {}
 }

@@ -3,25 +3,23 @@ import { LanguagesService } from '../languages.service';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit {
 
   constructor(private languagesService: LanguagesService) { }
 
-  ngOnInit() {
+  getLangs(): string[] {
+    return this.languagesService.getLangs();
   }
 
-  getLangs():string[] {
-    return this.languagesService.getLangs()
-  }
-
-  getLang():string {
-    return this.languagesService.getLang()
+  getLang(): string {
+    return this.languagesService.getLang();
   }
 
   setLang(lang: string) {
-    return this.languagesService.setLang(lang)
+    return this.languagesService.setLang(lang);
   }
+
+  ngOnInit() {}
 }

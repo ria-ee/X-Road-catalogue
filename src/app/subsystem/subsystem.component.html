@@ -1,15 +1,13 @@
 <app-header></app-header>
 
-<h3>{{'subsystem.heading' | translate:{"subsystem": subsystemId, "instance": getInstance()} }}</h3>
+<h3>{{'subsystem.heading' | translate:{"subsystem": subsystemId, "instance": getInstance() === "" ? paramsInstance : getInstance()} }}</h3>
 <p [innerHTML]="'subsystem.intro.p1' | translate"></p>
 
-<div class="alert alert-warning" role="alert" *ngIf="message">
-  {{message}}
-</div>
+<app-messages [message]="message" [subsystemId]="subsystemId"></app-messages>
 
 <button type="button" class="btn btn-secondary" (click)="goToList()">{{'subsystem.allSystemsBtn' | translate}}</button>
 
-<div *ngIf="subsystem">
+<div *ngIf="(subsystemSubject | async) as subsystem">
   <div class="card">
     <div class="card-header">
       {{subsystem.fullSubsystemName}}
@@ -27,8 +25,15 @@
         {{method.fullMethodName}}
         <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge badge-success"
           *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
-        <span class="badge badge-danger" *ngIf="!method.wsdl">{{'subsystem.statusWsdlError' | translate}}</span>
-      </p>
+        <span class="badge badge-danger" *ngIf="method.methodStatus == 'ERROR'">{{'subsystem.statusWsdlError' | translate}}</span>
+        <span class="badge badge-danger" *ngIf="method.methodStatus == 'TIMEOUT'">{{'subsystem.statusWsdlTimeout' | translate}}</span>
+        <span class="badge badge-warning" *ngIf="method.methodStatus == 'SKIPPED'">{{'subsystem.statusWsdlSkipped' | translate}}</span>
+        </p>
     </div>
   </div>
 </div>
+<br>
+
+<p *ngIf="subsystemSubject.value?.methods?.length">
+  <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
+</p>
