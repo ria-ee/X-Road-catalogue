@@ -15,6 +15,7 @@
       {{method.fullMethodName}}
       <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge badge-success"
         *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
+      <span class="badge badge-info" *ngIf="method.methodStatus == 'REST'">REST</span>
       <span class="badge badge-danger" *ngIf="method.methodStatus == 'ERROR'">{{'subsystem.statusWsdlError' | translate}}</span>
       <span class="badge badge-danger" *ngIf="method.methodStatus == 'TIMEOUT'">{{'subsystem.statusWsdlTimeout' | translate}}</span>
       <span class="badge badge-warning" *ngIf="method.methodStatus == 'SKIPPED'">{{'subsystem.statusWsdlSkipped' | translate}}</span>
