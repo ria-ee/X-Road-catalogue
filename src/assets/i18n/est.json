@@ -41,7 +41,7 @@
     "statusEmptyInfo": "Alamsüsteem ei oma X-tee teenuseid.",
     "moreMethods": "veel {{count}} ...",
     "incorrectInstanceWarning": "Vale instants!",
-    "subsystemNotFoundWarning": "Alamsüsteem \"{{subsystem}}\" ei ole leitud!"
+    "subsystemNotFoundWarning": "Alamsüsteemi \"{{subsystem}}\" ei leitud!"
   },
   "scrollToTop": "Lehe algusesse"
 }
