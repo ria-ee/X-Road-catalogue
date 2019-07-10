@@ -7,9 +7,9 @@
         "50": 50
     },
     "INSTANCES": {
-        "EE": "https://www.x-tee.ee/catalogue/EE/wsdls/",
-        "ee-test": "https://www.x-tee.ee/catalogue/ee-test/wsdls/",
-        "ee-dev": "https://www.x-tee.ee/catalogue/ee-dev/wsdls/"
+        "EE": "https://www.x-tee.ee/catalogue-data/EE/",
+        "ee-test": "https://www.x-tee.ee/catalogue-data/EE/",
+        "ee-dev": "https://www.x-tee.ee/catalogue-data/EE/"
     },
     "API_SERVICE": "index.json",
     "API_HISTORY": "history.json",
