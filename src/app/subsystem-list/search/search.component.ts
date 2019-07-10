@@ -25,6 +25,7 @@ export class SearchComponent implements OnInit {
   }
 
   setLimit(limit: string) {
+    this.limit = limit;
     this.subsystemsService.setLimit(limit);
   }
 

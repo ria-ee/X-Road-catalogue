@@ -14,7 +14,8 @@
       "p4": "Latest catalogue version in JSON form: <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON</a>",
       "p5": "Support: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
-    "moreSubsystems": "To see more subsystems change amount of subsystems to display or filter by subsystem or service name.",
+    "moreSubsystems": "Because of selected subsystem display limit some subsystems are hidden. To see more subsystems change amount of subsystems to display or filter by subsystem or service name.",
+    "showAll": "Show all hidden sybsystems",
     "selectInstance": "Select X-tee instance",
     "selectVersion": "Select methods catalogue version",
     "latestVersion": "Latest version"

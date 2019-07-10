@@ -14,7 +14,8 @@
       "p4": "Kõige värskem kataloogi versioon JSON kujul: <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON</a>",
       "p5": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
-    "moreSubsystems": "Selleks, et näha rohkem alamsüsteeme, muutke alamsüsteemide näitamise piirangu või otsige alamsüsteemi või teenuse nime järgi.",
+    "moreSubsystems": "Seoses valitud alamsüsteemide näitamise piiranguga mõned alamsüsteemid on peidetud. Selleks, et näha rohkem alamsüsteeme, muutke alamsüsteemide näitamise piirangu või otsige alamsüsteemi või teenuse nime järgi.",
+    "showAll": "Näita kõik peidetud alamsüsteemid",
     "selectInstance": "Vali X-tee instants",
     "selectVersion": "Vali teenuste kataloogi versiooni",
     "latestVersion": "Viimane versioon"
