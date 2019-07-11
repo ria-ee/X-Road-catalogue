@@ -14,7 +14,7 @@
       "p4": "Värskeim kataloogi versioon <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON kujul</a>",
       "p5": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
-    "moreSubsystems": "Mõned alamsüsteemid ei ole kuvatud seoses näitamise lehekülje pikkuse piiranguga. Selleks, et näha rohkem alamsüsteeme, palun muutke pikkuse piirangut või otsige alamsüsteemi või teenuse nime järgi.",
+    "moreSubsystems": "Kõiki alamsüsteeme ei kuvatud seoses alamsüsteemide arvu piiranguga. Selleks, et näha rohkem alamsüsteeme, palun muutke määrangut 'Alamsüsteeme lehel' või otsige alamsüsteemi või teenuse nime järgi.",
     "showAll": "Näita kõiki alamsüsteeme",
     "selectInstance": "Vali X-tee keskkond",
     "selectVersion": "Vali kataloogi versiooni",
@@ -23,7 +23,7 @@
   "search": {
     "searchFilters": "Otsingu filtrid",
     "nameFilter": "Filtreeri nime järgi",
-    "limit": "lehekülje pikkuse piirang",
+    "limit": "Alamsüsteeme lehel",
     "nonEmpty": "Näita vaid teenusepakkujaid",
     "allOption": "Kõik"
   },
@@ -36,7 +36,7 @@
     "statusError": "Viga",
     "statusWsdlError": "Viga WSDL'i laadimisel või töötlemisel",
     "statusWsdlTimeout": "WSDL'i laadimine aegus",
-    "statusWsdlSkipped": "Eelneva aegumise tõttu pole WSDL kättesaadav",
+    "statusWsdlSkipped": "WSDL'i ei leatud eelneva aegumise tõttu",
     "allSystemsBtn": "Näita kõiki alamsüsteeme",
     "statusErrorInfo": "Alamsüsteem ei ole ligipääsetav RIA monitooringu turvaserveri poolt või ilmnes päringu tegemisel muu viga.",
     "statusEmptyInfo": "Alamsüsteem ei oma X-tee teenuseid.",
