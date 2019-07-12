@@ -167,6 +167,16 @@ describe('SubsystemListComponent', () => {
     component.setInstanceVersion();
     expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
   });
+
+  it('setMaxLimit should work', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    component.search = TestBed.createComponent(SearchStubComponent).componentInstance;
+    fixture.detectChanges();
+    component.search.setLimit = jasmine.createSpy();
+    component.setMaxLimit();
+    expect(component.search.setLimit).toHaveBeenCalledWith('all');
+  });
 });
 
 describe('SubsystemListComponent (with instance version)', () => {

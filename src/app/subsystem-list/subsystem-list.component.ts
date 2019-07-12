@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { SubsystemsService } from '../subsystems.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
@@ -6,6 +6,7 @@ import { Subscription, BehaviorSubject } from 'rxjs';
 import { ViewportScroller } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { InstanceVersion } from '../instance-version';
+import { SearchComponent } from './search/search.component';
 
 @Component({
   selector: 'app-subsystem-list',
@@ -21,6 +22,8 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   filteredSubsystems: BehaviorSubject<Subsystem[]>;
   instanceVersions: BehaviorSubject<InstanceVersion[]>;
   instanceVersion: string;
+
+  @ViewChild(SearchComponent) search;
 
   constructor(
     private subsystemsService: SubsystemsService,
@@ -82,6 +85,10 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
       '/' + this.subsystemsService.getInstance()
       + (this.instanceVersion ? '?at=' + this.instanceVersion : ''));
     this.subsystemsService.setInstance(this.subsystemsService.getInstance(), this.instanceVersion);
+  }
+
+  setMaxLimit() {
+    this.search.setLimit('all');
   }
 
   ngOnInit() {
