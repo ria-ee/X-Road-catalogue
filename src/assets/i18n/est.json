@@ -3,7 +3,7 @@
     "title": "X-tee alamsüsteemide ja teenuste kataloog"
   },
   "service": {
-    "dataLoadingError": "Viga andmete laadimisel turvaserverist!"
+    "dataLoadingError": "Viga andmete laadimisel! Võimalik lahendus - palun värskendage sirviku vahemälu (refresh browser cache)."
   },
   "subsystemList": {
     "heading": "X-tee alamsüsteemide kataloog teenuste ja WSDL kirjeldustega",

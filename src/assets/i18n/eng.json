@@ -3,7 +3,7 @@
     "title": "Catalogue of X-tee Subsystems and Methods"
   },
   "service": {
-    "dataLoadingError": "Error while loading data from Security Server!"
+    "dataLoadingError": "Error while loading data from application server! Possible solution - please refresh your browser cache."
   },
   "subsystemList": {
     "heading": "Catalogue of all X-tee subsystems with methods and WSDL descriptions",
