@@ -36,7 +36,7 @@
     "statusError": "Viga",
     "statusWsdlError": "Viga WSDL'i laadimisel või töötlemisel",
     "statusWsdlTimeout": "WSDL'i laadimine aegus",
-    "statusWsdlSkipped": "WSDL'i ei leatud eelneva aegumise tõttu",
+    "statusWsdlSkipped": "WSDL'i ei laetud eelneva aegumise tõttu",
     "allSystemsBtn": "Näita kõiki alamsüsteeme",
     "statusErrorInfo": "Alamsüsteem ei ole ligipääsetav RIA monitooringu turvaserveri poolt või ilmnes päringu tegemisel muu viga.",
     "statusEmptyInfo": "Alamsüsteem ei oma X-tee teenuseid.",
