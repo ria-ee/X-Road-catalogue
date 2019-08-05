@@ -37,7 +37,11 @@
 <app-subsystem-item *ngFor="let subsystem of filteredSubsystems | async" [subsystem]="subsystem"></app-subsystem-item>
 <br>
 
-<p *ngIf="isPartialList()">{{'subsystemList.moreSubsystems' | translate}}</p>
+<p *ngIf="isPartialList()">
+  {{'subsystemList.moreSubsystems' | translate}}<br>
+  <a class="font-weight-bold"
+    onClick="return false" href="#" (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</a>.
+</p>
 
 <p *ngIf="filteredSubsystems.value?.length">
   <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
