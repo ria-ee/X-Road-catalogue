@@ -23,7 +23,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   instanceVersions: BehaviorSubject<InstanceVersion[]>;
   instanceVersion: string;
 
-  @ViewChild(SearchComponent) search;
+  @ViewChild(SearchComponent, { static: true }) search;
 
   constructor(
     private subsystemsService: SubsystemsService,
