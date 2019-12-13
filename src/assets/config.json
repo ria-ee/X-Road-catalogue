@@ -8,8 +8,8 @@
     },
     "INSTANCES": {
         "EE": "https://www.x-tee.ee/catalogue-data/EE/",
-        "ee-test": "https://www.x-tee.ee/catalogue-data/EE/",
-        "ee-dev": "https://www.x-tee.ee/catalogue-data/EE/"
+        "ee-test": "https://www.x-tee.ee/catalogue-data/ee-test/",
+        "ee-dev": "https://www.x-tee.ee/catalogue-data/ee-dev/"
     },
     "API_SERVICE": "index.json",
     "API_HISTORY": "history.json",

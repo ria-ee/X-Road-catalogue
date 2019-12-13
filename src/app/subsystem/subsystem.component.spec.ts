@@ -68,9 +68,11 @@ describe('SubsystemComponent', () => {
         subsystemCode: '',
         xRoadInstance: '',
         subsystemStatus: '',
+        servicesStatus: '',
         memberCode: '',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
       }
     ]);
   });
@@ -114,9 +116,11 @@ describe('SubsystemComponent', () => {
         subsystemCode: '',
         xRoadInstance: '',
         subsystemStatus: '',
+        servicesStatus: '',
         memberCode: '',
         fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
       }
     ]);
     fixture = TestBed.createComponent(SubsystemComponent);
@@ -223,9 +227,11 @@ describe('SubsystemComponent (with instance version)', () => {
         subsystemCode: '',
         xRoadInstance: '',
         subsystemStatus: '',
+        servicesStatus: '',
         memberCode: '',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
       }
     ]);
   });

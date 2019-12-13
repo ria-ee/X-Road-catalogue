@@ -4,6 +4,7 @@ import { of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
+import { Service } from './service';
 import { AppConfig } from './app.config';
 import { InstanceVersion } from './instance-version';
 
@@ -41,35 +42,43 @@ export class SubsystemsService {
     const filtered: Subsystem[] = [];
     let limit: number = this.limit;
     for (let subsystem of this.subsystemsSubject.value) {
-      if (this.nonEmpty && !subsystem.methods.length) {
+      if (this.nonEmpty && !subsystem.methods.length && !subsystem.services.length) {
         // Filtering out empty subsystems
         continue;
       }
       if (
         this.filter !== ''
         && !subsystem.methods.length
+        && !subsystem.services.length
       ) {
-        // Subsystem without methods
+        // Subsystem without methods and services
         if (subsystem.fullSubsystemName.toLowerCase().indexOf(this.filter.toLowerCase()) < 0) {
           // Subsystem name does not match the filter
           continue;
         }
       } else if (this.filter !== '') {
-        // Subsystem with methods
+        // Subsystem with methods and/or services
         const filteredMethods: Method[] = [];
         for (const method of subsystem.methods) {
           if (method.fullMethodName.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0) {
             filteredMethods.push(method);
           }
         }
-        if (!filteredMethods.length) {
-          // No matching method names found
+        const filteredServices: Service[] = [];
+        for (const service of subsystem.services) {
+          if (service.fullServiceName.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0) {
+            filteredServices.push(service);
+          }
+        }
+        if (!filteredMethods.length && !filteredServices.length) {
+          // No matching method and/or services names found
           continue;
         }
         // Copy object to avoid overwriting methods array in subsystem object
         subsystem = Object.assign(Object.create(subsystem), subsystem);
-        // Leaving only matcing methods
+        // Leaving only matcing methods and services
         subsystem.methods = filteredMethods;
+        subsystem.services = filteredServices;
       }
       filtered.push(subsystem);
       limit -= 1;
@@ -90,6 +99,18 @@ export class SubsystemsService {
         method.fullMethodName = subsystem.fullSubsystemName
         + '/' + method.serviceCode
         + '/' + method.serviceVersion;
+      }
+      if (!subsystem.servicesStatus) {
+        // Fix missing data in previous versions
+        subsystem.servicesStatus = 'ERROR';
+      }
+      if (!subsystem.services) {
+        // Fix missing data in previous versions
+        subsystem.services = [];
+      }
+      for (const service of subsystem.services) {
+        service.fullServiceName = subsystem.fullSubsystemName
+        + '/' + service.serviceCode;
       }
     }
     return subsystems;

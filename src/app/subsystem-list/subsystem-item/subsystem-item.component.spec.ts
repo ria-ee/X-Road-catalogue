@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { Method } from 'src/app/method';
 import { AppConfigMock } from 'src/app/app.config-mock';
 import { AppConfig } from 'src/app/app.config';
+import { Service } from 'src/app/service';
 
 const PREVIEW_SIZE = 5;
 
@@ -48,8 +49,10 @@ describe('SubsystemItemComponent', () => {
       memberCode: 'CODE',
       subsystemCode: 'SUB',
       subsystemStatus: 'OK',
+      servicesStatus: 'OK',
       fullSubsystemName: 'INST/CLASS/CODE/SUB',
-      methods: []
+      methods: [],
+      services: []
     };
     fixture.detectChanges();
   });
@@ -71,12 +74,28 @@ describe('SubsystemItemComponent', () => {
     expect(component.getMethodsPreview().length).toBe(PREVIEW_SIZE);
   });
 
+  it('should preview services', () => {
+    expect(component.getServicesPreview().length).toBe(0);
+    for (let i = 0; i < PREVIEW_SIZE + 10; i++) {
+      component.subsystem.services.push(new Service());
+    }
+    expect(component.getServicesPreview().length).toBe(PREVIEW_SIZE);
+  });
+
   it('should calculate methods not in preview', () => {
-    expect(component.getNotInPreview()).toBe(0);
+    expect(component.getMethodsNotInPreview()).toBe(0);
     for (let i = 0; i < PREVIEW_SIZE + 10; i++) {
       component.subsystem.methods.push(new Method());
     }
-    expect(component.getNotInPreview()).toBe(10);
+    expect(component.getMethodsNotInPreview()).toBe(10);
+  });
+
+  it('should calculate services not in preview', () => {
+    expect(component.getServicesNotInPreview()).toBe(0);
+    for (let i = 0; i < PREVIEW_SIZE + 10; i++) {
+      component.subsystem.services.push(new Service());
+    }
+    expect(component.getServicesNotInPreview()).toBe(10);
   });
 
   it('should go to detail view', () => {
