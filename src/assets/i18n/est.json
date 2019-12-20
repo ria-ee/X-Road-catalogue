@@ -8,7 +8,7 @@
   "subsystemList": {
     "heading": "X-tee alamsüsteemide kataloog teenuste ja WSDL kirjeldustega",
     "intro": {
-      "p1": "Kataloog on genereeritud metapäringute 'getWsdl' tulemustest RIA monitooringu turvaserveri poolt kõigist X-tee alamsüsteemidest.",
+      "p1": "Kataloog on genereeritud metapäringute 'getWsdl' ja 'getOpenAPI' tulemustest RIA monitooringu turvaserveri poolt kõigist X-tee alamsüsteemidest.",
       "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid.",
       "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt või päringu tegemisel ilmnes muu viga.",
       "p4": "Värskeim kataloogi versioon <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON kujul</a>",
