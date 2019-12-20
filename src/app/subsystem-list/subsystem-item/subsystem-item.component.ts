@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
+import { Service } from '../../service';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../app.config';
@@ -27,11 +28,22 @@ export class SubsystemItemComponent implements OnInit {
     return this.subsystem.methods.length ? this.subsystem.methods.slice(0, this.config.getConfig('PREVIEW_SIZE')) : [];
   }
 
-  getNotInPreview(): number {
+  getServicesPreview(): Service[] {
+    return this.subsystem.services.length ? this.subsystem.services.slice(0, this.config.getConfig('PREVIEW_SIZE')) : [];
+  }
+
+  getMethodsNotInPreview(): number {
     if (this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE') < 0) {
       return 0;
     }
     return this.subsystem.methods.length - this.config.getConfig('PREVIEW_SIZE');
+  }
+
+  getServicesNotInPreview(): number {
+    if (this.subsystem.services.length - this.config.getConfig('PREVIEW_SIZE') < 0) {
+      return 0;
+    }
+    return this.subsystem.services.length - this.config.getConfig('PREVIEW_SIZE');
   }
 
   showDetail() {

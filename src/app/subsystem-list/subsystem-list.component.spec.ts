@@ -84,7 +84,7 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/DEFINST');
+    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/DEFINST', Object({ replaceUrl: true }));
   });
 
   it('should detect when instance is not selected', () => {

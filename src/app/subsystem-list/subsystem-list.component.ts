@@ -23,7 +23,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   instanceVersions: BehaviorSubject<InstanceVersion[]>;
   instanceVersion: string;
 
-  @ViewChild(SearchComponent) search;
+  @ViewChild(SearchComponent, { static: true }) search;
 
   constructor(
     private subsystemsService: SubsystemsService,
@@ -109,7 +109,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
 
       // Redirect to default instance if instance is empty or invalid
       if (!this.subsystemsService.getInstances().includes(params.instance)) {
-        this.router.navigateByUrl('/' + this.subsystemsService.getDefaultInstance());
+        this.router.navigateByUrl('/' + this.subsystemsService.getDefaultInstance(), { replaceUrl: true });
         return;
       }
 

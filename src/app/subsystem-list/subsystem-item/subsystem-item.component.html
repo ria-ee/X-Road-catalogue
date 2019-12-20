@@ -1,27 +1,39 @@
 <div class="card">
   <div class="card-header pointerCursor" (click)="showDetail()">
     {{subsystem.fullSubsystemName}}
-    <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && subsystem.subsystemStatus == 'OK'">{{'subsystem.statusEmpty' | translate}}</span>
+    <span class="badge badge-secondary" *ngIf="!subsystem.methods.length && !subsystem.services.length && subsystem.subsystemStatus == 'OK'">{{'subsystem.statusEmpty' | translate}}</span>
     <span class="badge badge-danger" *ngIf="subsystem.subsystemStatus == 'ERROR'">{{'subsystem.statusError' | translate}}</span>
   </div>
   <div class="card-body" *ngIf="subsystem.subsystemStatus == 'ERROR'">
     <p>{{'subsystem.statusErrorInfo' | translate}}</p>
   </div>
-  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && !subsystem.methods.length">
+  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && !subsystem.methods.length && !subsystem.services.length">
     <p>{{'subsystem.statusEmptyInfo' | translate}}</p>
   </div>
-  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && subsystem.methods.length">
+  <div class="card-body" *ngIf="subsystem.subsystemStatus == 'OK' && (subsystem.methods.length || subsystem.services.length)">
+    <h6 *ngIf="subsystem.methods.length" class="card-subtitle text-muted">SOAP</h6>
     <p *ngFor="let method of getMethodsPreview()">
       {{method.fullMethodName}}
       <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge badge-success"
         *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
-      <span class="badge badge-info" *ngIf="method.methodStatus == 'REST'">REST</span>
       <span class="badge badge-danger" *ngIf="method.methodStatus == 'ERROR'">{{'subsystem.statusWsdlError' | translate}}</span>
       <span class="badge badge-danger" *ngIf="method.methodStatus == 'TIMEOUT'">{{'subsystem.statusWsdlTimeout' | translate}}</span>
       <span class="badge badge-warning" *ngIf="method.methodStatus == 'SKIPPED'">{{'subsystem.statusWsdlSkipped' | translate}}</span>
-  </p>
-    <p *ngIf="getNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
-      {{'subsystem.moreMethods' | translate:{"count": getNotInPreview()} }}
+    </p>
+    <p *ngIf="getMethodsNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
+      {{'subsystem.moreMethods' | translate:{"count": getMethodsNotInPreview()} }}
+    </p>
+    <h6 *ngIf="subsystem.services.length" class="card-subtitle text-muted">REST</h6>
+    <p *ngFor="let service of getServicesPreview()">
+      {{service.fullServiceName}}
+      <a href="{{getApiUrlBase()}}{{service.openapi}}" class="badge badge-success"
+        *ngIf="service.openapi" [target]="'_blank'">OpenAPI</a>
+      <span class="badge badge-danger" *ngIf="service.status == 'ERROR'">{{'subsystem.statusOpenapiError' | translate}}</span>
+      <span class="badge badge-danger" *ngIf="service.status == 'TIMEOUT'">{{'subsystem.statusOpenapiTimeout' | translate}}</span>
+      <span class="badge badge-warning" *ngIf="service.status == 'SKIPPED'">{{'subsystem.statusOpenapiSkipped' | translate}}</span>
+    </p>
+    <p *ngIf="getServicesNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
+      {{'subsystem.moreMethods' | translate:{"count": getServicesNotInPreview()} }}
     </p>
   </div>
 </div>

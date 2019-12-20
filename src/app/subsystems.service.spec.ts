@@ -2,6 +2,7 @@ import { SubsystemsService } from './subsystems.service';
 import { of, defer } from 'rxjs';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
+import { Service } from './service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { tick, fakeAsync } from '@angular/core/testing';
 import { AppConfigMock } from './app.config-mock';
@@ -46,6 +47,22 @@ describe('SubsystemsService', () => {
         subsystemStatus: 'OK',
         memberCode: 'MEMBER2',
         methods: []
+      },
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        methods: [],
+        services: [
+          {
+            status: 'OK',
+            serviceCode: 'SERVICE',
+            openapi: 'URL'
+          }
+        ]
       }
     ];
     const expectedSubsystems = [
@@ -54,6 +71,7 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
         methods: [
@@ -64,16 +82,37 @@ describe('SubsystemsService', () => {
             serviceVersion: 'VER',
             fullMethodName: 'INST/CLASS/MEMBER/SYSTEM/SERVICE/VER'
           }
-        ]
+        ],
+        services: []
       },
       {
         memberClass: 'CLASS',
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER2',
         fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
+      },
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        fullSubsystemName: 'INST/CLASS/MEMBER3/SYSTEM',
+        methods: [],
+        services: [
+          {
+            status: 'OK',
+            serviceCode: 'SERVICE',
+            openapi: 'URL',
+            fullServiceName: 'INST/CLASS/MEMBER3/SYSTEM/SERVICE'
+          }
+        ]
       }
     ];
     httpClientSpy.get.and.returnValue(of(sourceSubsystems));
@@ -184,19 +223,34 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
-        methods: [{} as Method]
+        methods: [{} as Method],
+        services: []
       },
       {
         memberClass: 'CLASS',
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER2',
         fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
-        methods: []
-      }
+        methods: [],
+        services: []
+      },
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        fullSubsystemName: 'INST/CLASS/MEMBER3/SYSTEM',
+        methods: [],
+        services: [{} as Service]
+      },
     ];
     const expectedSubsystems = [
       {
@@ -204,9 +258,22 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
-        methods: [{} as Method]
+        methods: [{} as Method],
+        services: []
+      },
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        fullSubsystemName: 'INST/CLASS/MEMBER3/SYSTEM',
+        methods: [],
+        services: [{} as Service]
       }
     ];
     service.subsystemsSubject.next(sourceSubsystems);
@@ -221,6 +288,7 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
         methods: [
@@ -238,16 +306,43 @@ describe('SubsystemsService', () => {
             serviceVersion: 'VER',
             fullMethodName: 'INST/CLASS/MEMBER/SYSTEM/SERVICE2/VER'
           }
-        ]
+        ],
+        services: []
       },
       {
         memberClass: 'CLASS',
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER2',
         fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
+      },
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        fullSubsystemName: 'INST/CLASS/MEMBER3/SYSTEM',
+        methods: [],
+        services: [
+          {
+            status: 'OK',
+            serviceCode: 'SERVICE',
+            openapi: 'URL',
+            fullServiceName: 'INST/CLASS/MEMBER3/SYSTEM/RESTSRV'
+          },
+          {
+            status: 'OK',
+            serviceCode: 'SERVICE2',
+            openapi: 'URL',
+            fullServiceName: 'INST/CLASS/MEMBER3/SYSTEM/RESTSRV2'
+          }
+        ]
       }
     ];
     const expectedSubsystems1 = [
@@ -256,9 +351,11 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER2',
         fullSubsystemName: 'INST/CLASS/MEMBER2/SYSTEM',
-        methods: []
+        methods: [],
+        services: []
       }
     ];
     const expectedSubsystems2 = [
@@ -267,6 +364,7 @@ describe('SubsystemsService', () => {
         subsystemCode: 'SYSTEM',
         xRoadInstance: 'INST',
         subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
         memberCode: 'MEMBER',
         fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
         methods: [
@@ -276,6 +374,27 @@ describe('SubsystemsService', () => {
             wsdl: 'URL',
             serviceVersion: 'VER',
             fullMethodName: 'INST/CLASS/MEMBER/SYSTEM/SERVICE2/VER'
+          }
+        ],
+        services: []
+      }
+    ];
+    const expectedSubsystems3 = [
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'OK',
+        memberCode: 'MEMBER3',
+        fullSubsystemName: 'INST/CLASS/MEMBER3/SYSTEM',
+        methods: [],
+        services: [
+          {
+            status: 'OK',
+            serviceCode: 'SERVICE2',
+            openapi: 'URL',
+            fullServiceName: 'INST/CLASS/MEMBER3/SYSTEM/RESTSRV2'
           }
         ]
       }
@@ -294,6 +413,12 @@ describe('SubsystemsService', () => {
     tick(config.getConfig('FILTER_DEBOUNCE'));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems2);
 
+    // Search member with multiple services
+    service.setFilter('RESTSRV2');
+    // Waiting for a debounce time to apply filter
+    tick(config.getConfig('FILTER_DEBOUNCE'));
+    expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems3);
+
     // Search with limit
     const sourceSubsystems2 = [];
     for (let i = 0; i < config.getConfig('DEFAULT_LIMIT') + 1; i++) {
@@ -303,9 +428,11 @@ describe('SubsystemsService', () => {
           subsystemCode: 'SYSTEM',
           xRoadInstance: 'INST',
           subsystemStatus: 'OK',
+          servicesStatus: 'OK',
           memberCode: 'MEMBER' + i,
           fullSubsystemName: 'INST/CLASS/MEMBER' + i + '/SYSTEM',
-          methods: []
+          methods: [],
+          services: []
         }
       );
     }
