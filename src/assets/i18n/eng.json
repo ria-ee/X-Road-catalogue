@@ -12,7 +12,7 @@
       "p2": "Subsystems with the <span class=\"badge badge-secondary\">Empty</span> icon do not have X-tee services available.",
       "p3": "Subsystems with the <span class=\"badge badge-danger\">Error</span> icon either could not be reached by RIA Monitoring Security Server or there was some other error during the request.",
       "p4": "Latest version of catalogue in <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON form</a>",
-      "p5": "Catalogue uses Angular web framework, checked with Google Chromega but might not work with MS Internet Explorer non-standard browsers.",
+      "p5": "Catalogue uses Angular web framework, checked with Google Chrome but might not work with MS Internet Explorer non-standard browsers.",
       "p6": "Support: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
     "moreSubsystems": "Some subsystems are not available in this view due to display limit. To see more subsystems change amount of subsystems to display or filter by subsystem or service name.",

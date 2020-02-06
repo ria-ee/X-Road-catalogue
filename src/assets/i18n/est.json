@@ -12,13 +12,13 @@
       "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid.",
       "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt või päringu tegemisel ilmnes muu viga.",
       "p4": "Värskeim kataloogi versioon <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON kujul</a>",
-      "p5": "Kataloog kasutab Angular veebiraamistikku, mis on kontrollitud koostöös Google Chromega kuid ei pruugi toimida MS Internet Explorer mittestandardsete sirvikutega.",
+      "p5": "Kataloog kasutab Angular veebiraamistikku, mis on kontrollitud koostöös Google Chromega, kuid ei pruugi toimida MS Internet Explorer mittestandardsete sirvikutega.",
       "p6": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
     },
     "moreSubsystems": "Kõiki alamsüsteeme ei kuvatud seoses alamsüsteemide arvu piiranguga. Selleks, et näha rohkem alamsüsteeme, palun muutke määrangut 'Alamsüsteeme lehel' või otsige alamsüsteemi või teenuse nime järgi.",
     "showAll": "Näita kõiki alamsüsteeme",
     "selectInstance": "Vali X-tee keskkond",
-    "selectVersion": "Vali kataloogi versiooni",
+    "selectVersion": "Vali kataloogi versioon",
     "latestVersion": "Värskeim versioon"
   },
   "search": {
