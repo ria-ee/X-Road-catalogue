@@ -7,14 +7,8 @@
   },
   "subsystemList": {
     "heading": "X-tee alamsüsteemide kataloog teenuste ja WSDL kirjeldustega",
-    "intro": {
-      "p1": "Kataloog on genereeritud metapäringute 'getWsdl' ja 'getOpenAPI' tulemustest RIA monitooringu turvaserveri poolt kõigist X-tee alamsüsteemidest.",
-      "p2": "Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid.",
-      "p3": "Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt või päringu tegemisel ilmnes muu viga.",
-      "p4": "Värskeim kataloogi versioon <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON kujul</a>",
-      "p5": "Kataloog kasutab Angular veebiraamistikku, mis on kontrollitud koostöös Google Chromega, kuid ei pruugi toimida MS Internet Explorer mittestandardsete sirvikutega.",
-      "p6": "Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>"
-    },
+    "intro": "<p>Kataloog on genereeritud metapäringute 'getWsdl' ja 'getOpenAPI' tulemustest RIA monitooringu turvaserveri poolt kõigist X-tee alamsüsteemidest.</p>\n<p>Alamsüsteemid <span class=\"badge badge-secondary\">Tühi</span> ikooniga ei oma X-tee teenuseid. Alamsüsteemid <span class=\"badge badge-danger\">Viga</span> ikooniga kas ei ole ligipääsetavad RIA monitooringu turvaserveri poolt või päringu tegemisel ilmnes muu viga.</p>\n<p>Värskeim kataloogi versioon <a href=\"{{jsonUrl}}\" target=\"_blank\">JSON kujul</a>.</p>\n<p>Kasutajatugi: <a href=\"mailto:help@ria.ee\">help@ria.ee</a>.</p>",
+    "ieWarning": "Kataloog ei toimi sirvikuga MS Internet Explorer, palun kasutage selle asemel kaasaegse sirviku nagu Google Chrome.",
     "moreSubsystems": "Kõiki alamsüsteeme ei kuvatud seoses alamsüsteemide arvu piiranguga. Selleks, et näha rohkem alamsüsteeme, palun muutke määrangut 'Alamsüsteeme lehel' või otsige alamsüsteemi või teenuse nime järgi.",
     "showAll": "Näita kõiki alamsüsteeme",
     "selectInstance": "Vali X-tee keskkond",

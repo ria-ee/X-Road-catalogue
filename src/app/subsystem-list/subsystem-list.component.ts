@@ -91,6 +91,13 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.search.setLimit('all');
   }
 
+  isIE() {
+    if (window.navigator.userAgent.indexOf('MSIE ') > 0) {
+      return true;
+    }
+    return false;
+  }
+
   ngOnInit() {
     // Reset message on page load
     this.message = '';
