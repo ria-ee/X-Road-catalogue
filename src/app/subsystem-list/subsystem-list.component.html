@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <h3>{{'subsystemList.heading' | translate}}</h3>
-<div [innerHTML]="'subsystemList.common' | translate:{'jsonUrl': getApiUrl()}"></div>
+<div [innerHTML]="'subsystemList.intro.common' | translate:{'jsonUrl': getApiUrl()}"></div>
 <div *ngIf="isIE()">
   <p [innerHTML]="'subsystemList.intro.ieWarning' | translate" class="alert alert-danger mt-3 mb-0"></p>
   <br>
