@@ -92,7 +92,8 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   isIE() {
-    if (window.navigator.userAgent.indexOf('MSIE ') > 0) {
+    const ua = window.navigator.userAgent;
+    if (ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0) {
       return true;
     }
     return false;
@@ -115,7 +116,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
       this.message = '';
 
       // Redirect to default instance if instance is empty or invalid
-      if (!this.subsystemsService.getInstances().includes(params.instance)) {
+      if (this.subsystemsService.getInstances().indexOf(params.instance) < 0) {
         this.router.navigateByUrl('/' + this.subsystemsService.getDefaultInstance(), { replaceUrl: true });
         return;
       }

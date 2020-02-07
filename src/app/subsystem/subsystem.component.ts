@@ -76,7 +76,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.routeSubscription = this.route.params.subscribe( params => {
       // Checking if instance is correct
-      if (!this.subsystemsService.getInstances().includes(params.instance)) {
+      if (this.subsystemsService.getInstances().indexOf(params.instance) < 0) {
         this.paramsInstance = params.instance;
         this.message = 'subsystem.incorrectInstanceWarning';
         return;
