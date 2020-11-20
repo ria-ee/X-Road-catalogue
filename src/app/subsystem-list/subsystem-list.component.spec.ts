@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { SubsystemListComponent } from './subsystem-list.component';
@@ -32,7 +32,7 @@ describe('SubsystemListComponent', () => {
   let getInstancesSpy;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         SubsystemListComponent,
@@ -186,7 +186,7 @@ describe('SubsystemListComponent (with instance version)', () => {
   let getInstancesSpy;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         SubsystemListComponent,

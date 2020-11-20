@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
@@ -17,7 +17,7 @@ describe('SubsystemItemComponent', () => {
   let fixture: ComponentFixture<SubsystemItemComponent>;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         SubsystemItemComponent
