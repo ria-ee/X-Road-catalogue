@@ -13,6 +13,8 @@ import { SearchComponent } from './search/search.component';
   templateUrl: './subsystem-list.component.html'
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(SearchComponent, { static: true }) search;
+
   message: string;
   scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   routerScrollSubscription: Subscription;
@@ -22,8 +24,6 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   filteredSubsystems: BehaviorSubject<Subsystem[]>;
   instanceVersions: BehaviorSubject<InstanceVersion[]>;
   instanceVersion: string;
-
-  @ViewChild(SearchComponent, { static: true }) search;
 
   constructor(
     private subsystemsService: SubsystemsService,

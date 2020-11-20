@@ -12,18 +12,17 @@ import { InstanceVersion } from './instance-version';
   providedIn: 'root'
 })
 export class SubsystemsService {
+  subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
+  instanceVersionsSubject: BehaviorSubject<InstanceVersion[]> = new BehaviorSubject([]);
+  warnings: EventEmitter<string> = new EventEmitter();
   private apiUrlBase = '';
   private limit: number = this.config.getConfig('DEFAULT_LIMIT');
   private nonEmpty = false;
   private filter = '';
   private instance = '';
   private instanceVersion = '';
-  subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
-  filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
-  instanceVersionsSubject: BehaviorSubject<InstanceVersion[]> = new BehaviorSubject([]);
   private updateFilter = new Subject<string>();
-
-  warnings: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private http: HttpClient,
@@ -36,6 +35,134 @@ export class SubsystemsService {
     ).subscribe(() => {
       this.updateFiltered();
     });
+  }
+
+  getDefaultInstance(): string {
+    return Object.keys(this.config.getConfig('INSTANCES'))[0];
+  }
+
+  getInstances(): string[] {
+    return Object.keys(this.config.getConfig('INSTANCES'));
+  }
+
+  getInstance(): string {
+    return this.instance;
+  }
+
+  // Not "private" to be able to override in unit tests
+  updateSubsystems() {
+    // Reset only if has values (less refreshes)
+    if (this.subsystemsSubject.value.length) {
+      this.subsystemsSubject.next([]);
+    }
+    this.http.get<Subsystem[]>(
+      this.apiUrlBase + (this.instanceVersion ? 'index_' + this.instanceVersion + '.json' : this.config.getConfig('API_SERVICE'))
+    ).pipe(
+      catchError( () => {
+        this.emitWarning('service.dataLoadingError');
+        // Let the app keep running by returning an empty result.
+        return of([]);
+      })
+    ).subscribe(subsystems => {
+      this.subsystemsSubject.next(this.setFullNames(subsystems));
+      this.updateFiltered();
+    });
+  }
+
+  // Not "private" to be able to override in unit tests
+  updateInstanceVersions() {
+    this.instanceVersionsSubject.next([]);
+    this.http.get<InstanceVersion[]>(this.apiUrlBase + this.config.getConfig('API_HISTORY'))
+    .pipe(
+      // Let the app keep running by returning an empty result.
+      catchError(() => of([]))
+    ).subscribe(history => {
+      const versions: InstanceVersion[] = [];
+      for (const version of history) {
+        const matches = version.reportPath.match(/index_(\d+).json/);
+        if (matches && matches.length === 2) {
+          version.reportTimeCompact = matches[1];
+          versions.push(version);
+        }
+        if (versions.length >= this.config.getConfig('HISTORY_LIMIT')) {
+          break;
+        }
+      }
+      this.instanceVersionsSubject.next(versions);
+    });
+  }
+
+  setInstance(instance: string, instanceVersion: string = '') {
+    this.instance = instance;
+    this.instanceVersion = instanceVersion;
+    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
+
+    this.updateSubsystems();
+    this.updateInstanceVersions();
+  }
+
+  getApiUrlBase(): string {
+    return this.apiUrlBase;
+  }
+
+  getApiUrl(): string {
+    return this.apiUrlBase + this.config.getConfig('API_SERVICE');
+  }
+
+  getLimit(): string {
+    if (this.limit === this.config.getConfig('MAX_LIMIT')) {
+      return 'all';
+    }
+    return this.limit.toString();
+  }
+
+  getLimits(): Map<string, number> {
+    return this.config.getConfig('LIMITS');
+  }
+
+  setLimit(limit: string) {
+    const limits = this.config.getConfig('LIMITS');
+    let found = false;
+    for (const key of Object.keys(limits)) {
+      if (limit === key) {
+        this.limit = limits[key];
+        found = true;
+        break;
+      }
+    }
+    if (!found && limit === 'all') {
+      this.limit = this.config.getConfig('MAX_LIMIT');
+      found = true;
+    }
+    if (!found) {
+      this.limit = this.config.getConfig('DEFAULT_LIMIT');
+    }
+    this.updateFiltered();
+  }
+
+  getNonEmpty(): boolean {
+    return this.nonEmpty;
+  }
+
+  setNonEmpty(nonEmpty: boolean) {
+    this.nonEmpty = nonEmpty;
+    this.updateFiltered();
+  }
+
+  getfilter(): string {
+    return this.filter;
+  }
+
+  setFilter(filter: string) {
+    if (this.filter !== filter.trim()) {
+      this.filter = filter.trim();
+      // Debouncing update of filter
+      this.updateFilter.next(this.filter);
+    }
+  }
+
+  getInstanceVersion(): string {
+    return this.instanceVersion;
   }
 
   private filteredSubsystems(): Subsystem[] {
@@ -122,135 +249,5 @@ export class SubsystemsService {
 
   private updateFiltered() {
     this.filteredSubsystemsSubject.next(this.filteredSubsystems());
-  }
-
-  getDefaultInstance(): string {
-    return Object.keys(this.config.getConfig('INSTANCES'))[0];
-  }
-
-  getInstances(): string[] {
-    return Object.keys(this.config.getConfig('INSTANCES'));
-  }
-
-  getInstance(): string {
-    return this.instance;
-  }
-
-  // Not "private" to be able to override in unit tests
-  updateSubsystems() {
-    // Reset only if has values (less refreshes)
-    if (this.subsystemsSubject.value.length) {
-      this.subsystemsSubject.next([]);
-    }
-    this.http.get<Subsystem[]>(
-      this.apiUrlBase + (this.instanceVersion ? 'index_' + this.instanceVersion + '.json' : this.config.getConfig('API_SERVICE'))
-    ).pipe(
-      catchError( () => {
-        this.emitWarning('service.dataLoadingError');
-        // Let the app keep running by returning an empty result.
-        return of([]);
-      })
-    ).subscribe(subsystems => {
-      this.subsystemsSubject.next(this.setFullNames(subsystems));
-      this.updateFiltered();
-    });
-  }
-
-  // Not "private" to be able to override in unit tests
-  updateInstanceVersions() {
-    this.instanceVersionsSubject.next([]);
-    this.http.get<InstanceVersion[]>(this.apiUrlBase + this.config.getConfig('API_HISTORY'))
-    .pipe(
-      catchError(() => {
-        // Let the app keep running by returning an empty result.
-        return of([]);
-      })
-    ).subscribe(history => {
-      const versions: InstanceVersion[] = [];
-      for (const version of history) {
-        const matches = version.reportPath.match(/index_(\d+).json/);
-        if (matches && matches.length === 2) {
-          version.reportTimeCompact = matches[1];
-          versions.push(version);
-        }
-        if (versions.length >= this.config.getConfig('HISTORY_LIMIT')) {
-          break;
-        }
-      }
-      this.instanceVersionsSubject.next(versions);
-    });
-  }
-
-  setInstance(instance: string, instanceVersion: string = '') {
-    this.instance = instance;
-    this.instanceVersion = instanceVersion;
-    this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
-
-    this.updateSubsystems();
-    this.updateInstanceVersions();
-  }
-
-  getApiUrlBase(): string {
-    return this.apiUrlBase;
-  }
-
-  getApiUrl(): string {
-    return this.apiUrlBase + this.config.getConfig('API_SERVICE');
-  }
-
-  getLimit(): string {
-    if (this.limit === this.config.getConfig('MAX_LIMIT')) {
-      return 'all';
-    }
-    return this.limit.toString();
-  }
-
-  getLimits(): object {
-    return this.config.getConfig('LIMITS');
-  }
-
-  setLimit(limit: string) {
-    const limits = this.config.getConfig('LIMITS');
-    let found = false;
-    for (const key of Object.keys(limits)) {
-      if (limit === key) {
-        this.limit = limits[key];
-        found = true;
-        break;
-      }
-    }
-    if (!found && limit === 'all') {
-      this.limit = this.config.getConfig('MAX_LIMIT');
-      found = true;
-    }
-    if (!found) {
-      this.limit = this.config.getConfig('DEFAULT_LIMIT');
-    }
-    this.updateFiltered();
-  }
-
-  getNonEmpty(): boolean {
-    return this.nonEmpty;
-  }
-
-  setNonEmpty(nonEmpty: boolean) {
-    this.nonEmpty = nonEmpty;
-    this.updateFiltered();
-  }
-
-  getfilter(): string {
-    return this.filter;
-  }
-
-  setFilter(filter: string) {
-    if (this.filter !== filter.trim()) {
-      this.filter = filter.trim();
-      // Debouncing update of filter
-      this.updateFilter.next(this.filter);
-    }
-  }
-
-  getInstanceVersion(): string {
-    return this.instanceVersion;
   }
 }

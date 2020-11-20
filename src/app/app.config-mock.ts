@@ -1,3 +1,5 @@
+// We mock configuration file that has different naming convention
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { AppConfig } from './app.config';
 

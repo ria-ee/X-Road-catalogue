@@ -33,7 +33,8 @@ import { MessagesComponent } from './messages/messages.component';
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        // Providing path as a workaround for ngx-translate bug with --base-href option
+        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/'),
         deps: [HttpClient]
       }
     })
@@ -45,8 +46,3 @@ import { MessagesComponent } from './messages/messages.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-export function HttpLoaderFactory(http: HttpClient) {
-  // Providing path as a workaround for ngx-translate bug with --base-href option
-  return new TranslateHttpLoader(http, './assets/i18n/');
-}

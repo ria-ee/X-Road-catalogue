@@ -15,12 +15,14 @@ describe('AppConfig', () => {
   });
 
   it('should load configuration', async () => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     httpClientSpy.get.and.returnValue(of({TEST: 'OK'}));
     await config.load();
     expect(httpClientSpy.get).toHaveBeenCalledWith('./assets/config.json');
   });
 
   it('getConfig should work', async () => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     httpClientSpy.get.and.returnValue(of({TEST: 'OK'}));
     await config.load();
     expect(config.getConfig('TEST')).toBe('OK');
