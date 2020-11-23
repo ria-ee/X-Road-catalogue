@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
@@ -17,7 +17,7 @@ describe('SubsystemItemComponent', () => {
   let fixture: ComponentFixture<SubsystemItemComponent>;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         SubsystemItemComponent
@@ -38,7 +38,7 @@ describe('SubsystemItemComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     spyOn(subsystemsService, 'getApiUrlBase').and.returnValue(null);
 
     fixture = TestBed.createComponent(SubsystemItemComponent);
@@ -99,7 +99,8 @@ describe('SubsystemItemComponent', () => {
   });
 
   it('should go to detail view', () => {
-    const spy = TestBed.get(Router).navigateByUrl;
+    const injected = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const spy = injected.navigateByUrl;
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
 

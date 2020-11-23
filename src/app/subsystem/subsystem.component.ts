@@ -15,6 +15,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   message = '';
   // Contains instance from route.params (for displaying warning)
   paramsInstance = '';
+  subsystemSubject: BehaviorSubject<Subsystem> = new BehaviorSubject(null);
   private scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
   private routerScrollSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -22,7 +23,6 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   private scrollSubjectSubscription: Subscription;
   private subsystemsSubscription: Subscription;
   private instanceVersion: string;
-  subsystemSubject: BehaviorSubject<Subsystem> = new BehaviorSubject(null);
 
   constructor(
     private subsystemsService: SubsystemsService,
@@ -37,12 +37,6 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
       if ((e as Scroll).position) {
         this.scrollSubject.next((e as Scroll).position);
       }
-    });
-  }
-
-  private getSubsystem(subsystems: Subsystem[], name: string): Subsystem {
-    return subsystems.find((element) => {
-      return element.fullSubsystemName === name;
     });
   }
 
@@ -125,5 +119,9 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.subsystemsSubscription) {
       this.subsystemsSubscription.unsubscribe();
     }
+  }
+
+  private getSubsystem(subsystems: Subsystem[], name: string): Subsystem {
+    return subsystems.find((element) => element.fullSubsystemName === name);
   }
 }
