@@ -28,7 +28,7 @@ describe('SearchComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     spyOn(subsystemsService, 'getLimits').and.returnValue({10: 10, 20: 20});
     spyOn(subsystemsService, 'setNonEmpty').and.returnValue(null);
     spyOn(subsystemsService, 'setLimit').and.returnValue(null);

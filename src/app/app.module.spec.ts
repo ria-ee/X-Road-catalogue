@@ -1,4 +1,4 @@
-import { AppModule, HttpLoaderFactory } from './app.module';
+import { AppModule, httpLoaderFactory } from './app.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppConfig } from './app.config';
 import { TestBed } from '@angular/core/testing';
@@ -19,7 +19,7 @@ describe('AppModule', () => {
   });
 
   it('HttpLoaderFactory should work', () => {
-    expect(HttpLoaderFactory(httpClientSpy as any) instanceof TranslateHttpLoader).toBeTruthy();
+    expect(httpLoaderFactory(httpClientSpy as any) instanceof TranslateHttpLoader).toBeTruthy();
   });
 
   it('AppConfig should be initialized', async () => {
@@ -29,7 +29,7 @@ describe('AppModule', () => {
         { provide: AppConfig, useValue: appConfigSpy }
       ]
     });
-    expect(TestBed.get(AppConfig)).toBeTruthy();
+    expect(TestBed.inject(AppConfig)).toBeTruthy();
     expect(appConfigSpy.load).toHaveBeenCalledTimes(1);
   });
 });

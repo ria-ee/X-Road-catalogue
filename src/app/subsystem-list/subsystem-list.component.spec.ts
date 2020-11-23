@@ -63,13 +63,13 @@ describe('SubsystemListComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
     getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
     spyOn(subsystemsService, 'setInstance').and.returnValue(null);
     spyOn(subsystemsService, 'getDefaultInstance').and.returnValue('DEFINST');
-    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
   });
 
   it('should create', () => {
@@ -84,7 +84,7 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/DEFINST', Object({ replaceUrl: true }));
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/DEFINST', Object({ replaceUrl: true }));
   });
 
   it('should detect when instance is not selected', () => {
@@ -108,14 +108,15 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(TestBed.get(ViewportScroller).scrollToPosition).toHaveBeenCalledWith([11, 12]);
+    expect(TestBed.inject(ViewportScroller).scrollToPosition).toHaveBeenCalledWith([11, 12]);
   });
 
   it('switchInstance should work', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    const spy = TestBed.get(Router).navigateByUrl;
+    const injected = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const spy = injected.navigateByUrl;
 
     component.switchInstance('NEWINST');
     expect(spy).toHaveBeenCalledWith('/NEWINST');
@@ -137,7 +138,8 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    const spy = TestBed.get(ViewportScroller).scrollToPosition;
+    const injected = TestBed.inject(ViewportScroller) as jasmine.SpyObj<ViewportScroller>;
+    const spy = injected.scrollToPosition;
     spy.calls.reset();
     component.scrollToTop();
     expect(spy).toHaveBeenCalledWith([0, 0]);
@@ -150,13 +152,13 @@ describe('SubsystemListComponent', () => {
 
     subsystemsService.filteredSubsystemsSubject.next([new Subsystem(), new Subsystem()]);
 
-    const getLimitSpy = spyOn(subsystemsService, 'getLimit').and.returnValue(['all']);
+    const getLimitSpy = spyOn(subsystemsService, 'getLimit').and.returnValue('all');
     expect(component.isPartialList()).toBeFalsy();
 
-    getLimitSpy.and.returnValue(['2']);
+    getLimitSpy.and.returnValue('2');
     expect(component.isPartialList()).toBeTruthy();
 
-    getLimitSpy.and.returnValue(['3']);
+    getLimitSpy.and.returnValue('3');
     expect(component.isPartialList()).toBeFalsy();
   });
 
@@ -165,7 +167,7 @@ describe('SubsystemListComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.setInstanceVersion();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
   });
 
   it('setMaxLimit should work', () => {
@@ -176,6 +178,14 @@ describe('SubsystemListComponent', () => {
     component.search.setLimit = jasmine.createSpy();
     component.setMaxLimit();
     expect(component.search.setLimit).toHaveBeenCalledWith('all');
+  });
+
+  it('isIE should work', () => {
+    fixture = TestBed.createComponent(SubsystemListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    spyOnProperty(window.navigator, 'userAgent').and.returnValue('...MSIE 10...');
+    expect(component.isIE()).toBeTrue();
   });
 });
 
@@ -222,13 +232,13 @@ describe('SubsystemListComponent (with instance version)', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
     getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
     spyOn(subsystemsService, 'setInstance').and.returnValue(null);
     spyOn(subsystemsService, 'getDefaultInstance').and.returnValue('DEFINST');
-    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
   });
 
   it('should create', () => {
@@ -244,7 +254,7 @@ describe('SubsystemListComponent (with instance version)', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.setInstanceVersion();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
   });
 
   it('switchInstance should reset instance version when instance does not change', () => {
@@ -253,7 +263,7 @@ describe('SubsystemListComponent (with instance version)', () => {
     fixture.detectChanges();
     component.instanceVersion = 'test';
     component.switchInstance('INST');
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
     expect(component.instanceVersion).toBe('');
   });
 });

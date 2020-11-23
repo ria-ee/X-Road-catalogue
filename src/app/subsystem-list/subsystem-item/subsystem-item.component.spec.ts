@@ -38,7 +38,7 @@ describe('SubsystemItemComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     spyOn(subsystemsService, 'getApiUrlBase').and.returnValue(null);
 
     fixture = TestBed.createComponent(SubsystemItemComponent);
@@ -99,7 +99,8 @@ describe('SubsystemItemComponent', () => {
   });
 
   it('should go to detail view', () => {
-    const spy = TestBed.get(Router).navigateByUrl;
+    const injected = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const spy = injected.navigateByUrl;
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
 

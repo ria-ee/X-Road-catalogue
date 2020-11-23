@@ -56,12 +56,12 @@ describe('SubsystemComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
     getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
     spyOn(subsystemsService, 'setInstance').and.returnValue(null);
-    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
     subsystemsService.subsystemsSubject = new BehaviorSubject([
       {
         memberClass: '',
@@ -133,7 +133,7 @@ describe('SubsystemComponent', () => {
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    expect(TestBed.get(ViewportScroller).scrollToPosition).toHaveBeenCalledWith([11, 12]);
+    expect(TestBed.inject(ViewportScroller).scrollToPosition).toHaveBeenCalledWith([11, 12]);
   });
 
   it('getApiUrlBase should work', () => {
@@ -149,7 +149,7 @@ describe('SubsystemComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.goToList();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST');
   });
 
   it('should receive service warnings', () => {
@@ -164,13 +164,13 @@ describe('SubsystemComponent', () => {
     fixture = TestBed.createComponent(SubsystemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    const spy = TestBed.get(ViewportScroller).scrollToPosition;
+    const injected = TestBed.inject(ViewportScroller) as jasmine.SpyObj<ViewportScroller>;
+    const spy = injected.scrollToPosition;
     spy.calls.reset();
     component.scrollToTop();
     expect(spy).toHaveBeenCalledWith([0, 0]);
   });
 });
-
 
 describe('SubsystemComponent (with instance version)', () => {
   let component: SubsystemComponent;
@@ -215,12 +215,12 @@ describe('SubsystemComponent (with instance version)', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
     getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.get(ViewportScroller), 'scrollToPosition');
+    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
     spyOn(subsystemsService, 'setInstance').and.returnValue(null);
-    spyOn(TestBed.get(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
     subsystemsService.subsystemsSubject = new BehaviorSubject([
       {
         memberClass: '',
@@ -241,6 +241,6 @@ describe('SubsystemComponent (with instance version)', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.goToList();
-    expect(TestBed.get(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
+    expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
   });
 });

@@ -35,7 +35,7 @@ describe('HeaderComponent', () => {
   });
 
   it('should set language', () => {
-    const languagesService: LanguagesService = TestBed.get(LanguagesService);
+    const languagesService: LanguagesService = TestBed.inject(LanguagesService);
     spyOn(languagesService, 'setLang').and.returnValue(null);
     component.setLang('xxx');
     expect(languagesService.setLang).toHaveBeenCalledWith('xxx');

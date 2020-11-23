@@ -17,30 +17,30 @@ describe('LanguagesService', () => {
   }));
 
   it('should be created', () => {
-    const service: LanguagesService = TestBed.get(LanguagesService);
+    const service: LanguagesService = TestBed.inject(LanguagesService);
     expect(service).toBeTruthy();
   });
 
   it('should set default lang with empty localStorage', () => {
-    const translateService: TranslateService = TestBed.get(TranslateService);
+    const translateService: TranslateService = TestBed.inject(TranslateService);
     spyOn(translateService, 'setDefaultLang');
     spyOn(window.localStorage, 'getItem').and.returnValue(undefined);
-    TestBed.get(LanguagesService);
+    TestBed.inject(LanguagesService);
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('est');
   });
 
   it('should set default lang from localStorage', () => {
-    const translateService: TranslateService = TestBed.get(TranslateService);
+    const translateService: TranslateService = TestBed.inject(TranslateService);
     spyOn(translateService, 'setDefaultLang');
     spyOn(window.localStorage, 'getItem').and.returnValue('ENG');
-    TestBed.get(LanguagesService);
+    TestBed.inject(LanguagesService);
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('eng');
   });
 
   it('should set language', () => {
-    const translateService: TranslateService = TestBed.get(TranslateService);
+    const translateService: TranslateService = TestBed.inject(TranslateService);
     spyOn(translateService, 'use');
-    const service = TestBed.get(LanguagesService);
+    const service = TestBed.inject(LanguagesService);
     service.setLang('ENG');
     expect(translateService.use).toHaveBeenCalledWith('eng');
   });

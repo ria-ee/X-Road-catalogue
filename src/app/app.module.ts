@@ -15,6 +15,9 @@ import { APP_INITIALIZER } from '@angular/core';
 import { AppConfig } from './app.config';
 import { MessagesComponent } from './messages/messages.component';
 
+// Providing path as a workaround for ngx-translate bug with --base-href option
+export const httpLoaderFactory = (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/');
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,8 +36,7 @@ import { MessagesComponent } from './messages/messages.component';
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        // Providing path as a workaround for ngx-translate bug with --base-href option
-        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/'),
+        useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
     })

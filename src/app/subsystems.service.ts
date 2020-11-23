@@ -116,7 +116,7 @@ export class SubsystemsService {
     return this.limit.toString();
   }
 
-  getLimits(): Map<string, number> {
+  getLimits(): Record<string, number> {
     return this.config.getConfig('LIMITS');
   }
 
