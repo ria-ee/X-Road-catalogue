@@ -11,7 +11,7 @@
 
 <div class="btn-group" role="group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
   <button *ngFor="let instance of getInstances()"
-    type="button" [ngClass]="getInstance() == instance ? 'btn btn-primary' : 'btn btn-secondary'"
+    type="button" [ngClass]="getInstance() === instance ? 'btn btn-primary' : 'btn btn-secondary'"
     (click)="switchInstance(instance)">{{instance}}</button>
 </div>
 
@@ -22,7 +22,7 @@
   <div class="card-body">
     <div class="row">
       <div class="col-sm-6">
-        <select [(ngModel)]="instanceVersion" class="form-control" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
+        <select [(ngModel)]="instanceVersion" class="form-control form-select" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
           <option value="">{{'subsystemList.latestVersion' | translate}}</option>
           <option *ngFor="let version of instanceVersions | async" [ngValue]="version.reportTimeCompact">{{version.reportTime}}</option>
         </select>
@@ -39,7 +39,7 @@
 
 <p *ngIf="isPartialList()">
   {{'subsystemList.moreSubsystems' | translate}}<br>
-  <a class="font-weight-bold"
+  <a class="fw-bold"
     onClick="return false" href="#" (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</a>.
 </p>
 

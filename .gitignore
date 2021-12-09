@@ -48,3 +48,6 @@ Thumbs.db
 
 ### Sonar ###
 .scannerwork
+
+### Angular ###
+.angular
