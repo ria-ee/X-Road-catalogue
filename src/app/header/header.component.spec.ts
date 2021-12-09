@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from './header.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,7 +10,7 @@ describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HeaderComponent ],
       imports: [
@@ -35,7 +35,7 @@ describe('HeaderComponent', () => {
   });
 
   it('should set language', () => {
-    const languagesService: LanguagesService = TestBed.get(LanguagesService);
+    const languagesService: LanguagesService = TestBed.inject(LanguagesService);
     spyOn(languagesService, 'setLang').and.returnValue(null);
     component.setLang('xxx');
     expect(languagesService.setLang).toHaveBeenCalledWith('xxx');

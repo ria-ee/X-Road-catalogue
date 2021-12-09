@@ -7,7 +7,7 @@ import { SubsystemsService } from '../../subsystems.service';
 })
 export class SearchComponent implements OnInit {
   limit: string;
-  limits: object;
+  limits: Record<string, number>;
   nonEmpty: boolean;
   filter: string;
 

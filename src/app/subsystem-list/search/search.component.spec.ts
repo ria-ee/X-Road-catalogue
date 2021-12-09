@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ describe('SearchComponent', () => {
   let fixture: ComponentFixture<SearchComponent>;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SearchComponent ],
       imports: [
@@ -28,7 +28,7 @@ describe('SearchComponent', () => {
   }));
 
   beforeEach(() => {
-    subsystemsService = TestBed.get(SubsystemsService);
+    subsystemsService = TestBed.inject(SubsystemsService);
     spyOn(subsystemsService, 'getLimits').and.returnValue({10: 10, 20: 20});
     spyOn(subsystemsService, 'setNonEmpty').and.returnValue(null);
     spyOn(subsystemsService, 'setLimit').and.returnValue(null);
