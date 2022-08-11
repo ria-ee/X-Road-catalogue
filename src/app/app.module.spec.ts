@@ -2,15 +2,20 @@ import { AppModule, httpLoaderFactory } from './app.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppConfig } from './app.config';
 import { TestBed } from '@angular/core/testing';
+import { APP_BASE_HREF } from '@angular/common';
 
 describe('AppModule', () => {
   let appModule: AppModule;
-  let httpClientSpy: { get: jasmine.Spy };
-  let appConfigSpy: { load: jasmine.Spy };
+  let httpClientSpy: { get: jest.SpyInstance };
+  let appConfigSpy: { load: jest.SpyInstance };
 
   beforeEach(() => {
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-    appConfigSpy = jasmine.createSpyObj('HttpClient', ['load']);
+    httpClientSpy = {
+      get: jest.fn()
+    };
+    appConfigSpy = {
+      load: jest.fn()
+    };
     appModule = new AppModule();
   });
 
@@ -26,7 +31,8 @@ describe('AppModule', () => {
     TestBed.configureTestingModule({
       imports: [ AppModule ],
       providers: [
-        { provide: AppConfig, useValue: appConfigSpy }
+        { provide: AppConfig, useValue: appConfigSpy },
+        { provide: APP_BASE_HREF, useValue: '/' }
       ]
     });
     expect(TestBed.inject(AppConfig)).toBeTruthy();

@@ -8,8 +8,8 @@ import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { of } from 'rxjs';
 import { SubsystemsService } from '../subsystems.service';
 import { ViewportScroller } from '@angular/common';
-import { AppConfigMock } from 'src/app/app.config-mock';
-import { AppConfig } from 'src/app/app.config';
+import { AppConfigMock } from '../app.config-mock';
+import { AppConfig } from '../app.config';
 import { FormsModule } from '@angular/forms';
 
 @Component({selector: 'app-header', template: ''})
@@ -54,7 +54,7 @@ describe('SubsystemListComponent', () => {
         }},
         { provide: Router, useValue: {
             events: of(new Scroll(null, [11, 12], null)),
-            navigateByUrl: jasmine.createSpy('navigateByUrl')
+            navigateByUrl: jest.fn()
         }},
         { provide: AppConfig, useClass: AppConfigMock }
       ]
@@ -64,12 +64,12 @@ describe('SubsystemListComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
-    getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
-    spyOn(subsystemsService, 'setInstance').and.returnValue(null);
-    spyOn(subsystemsService, 'getDefaultInstance').and.returnValue('DEFINST');
-    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    getInstanceSpy = jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
+    getInstancesSpy = jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
+    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {});
+    jest.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
+    jest.spyOn(subsystemsService, 'getDefaultInstance').mockReturnValue('DEFINST');
+    jest.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
   });
 
   it('should create', () => {
@@ -80,7 +80,7 @@ describe('SubsystemListComponent', () => {
   });
 
   it('should redirect on incorrect instance', () => {
-    getInstancesSpy.and.returnValue(['XXX']);
+    getInstancesSpy.mockReturnValue(['XXX']);
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -88,7 +88,7 @@ describe('SubsystemListComponent', () => {
   });
 
   it('should detect when instance is not selected', () => {
-    getInstanceSpy.and.returnValue('');
+    getInstanceSpy.mockReturnValue('');
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -96,8 +96,8 @@ describe('SubsystemListComponent', () => {
   });
 
   it('should detect change instance', () => {
-    getInstanceSpy.and.returnValue('INST2');
-    getInstancesSpy.and.returnValue(['INST', 'INST2']);
+    getInstanceSpy.mockReturnValue('INST2');
+    getInstancesSpy.mockReturnValue(['INST', 'INST2']);
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -115,13 +115,13 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    const injected = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const injected = TestBed.inject(Router) as jest.Mocked<Router>;
     const spy = injected.navigateByUrl;
 
     component.switchInstance('NEWINST');
     expect(spy).toHaveBeenCalledWith('/NEWINST');
 
-    spy.calls.reset();
+    spy.mockClear();
     component.switchInstance('INST');
     expect(spy).toHaveBeenCalledWith('/INST');
   });
@@ -138,9 +138,9 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    const injected = TestBed.inject(ViewportScroller) as jasmine.SpyObj<ViewportScroller>;
+    const injected = TestBed.inject(ViewportScroller) as jest.Mocked<ViewportScroller>;
     const spy = injected.scrollToPosition;
-    spy.calls.reset();
+    spy.mockClear();
     component.scrollToTop();
     expect(spy).toHaveBeenCalledWith([0, 0]);
   });
@@ -152,13 +152,13 @@ describe('SubsystemListComponent', () => {
 
     subsystemsService.filteredSubsystemsSubject.next([new Subsystem(), new Subsystem()]);
 
-    const getLimitSpy = spyOn(subsystemsService, 'getLimit').and.returnValue('all');
+    const getLimitSpy = jest.spyOn(subsystemsService, 'getLimit').mockReturnValue('all');
     expect(component.isPartialList()).toBeFalsy();
 
-    getLimitSpy.and.returnValue('2');
+    getLimitSpy.mockReturnValue('2');
     expect(component.isPartialList()).toBeTruthy();
 
-    getLimitSpy.and.returnValue('3');
+    getLimitSpy.mockReturnValue('3');
     expect(component.isPartialList()).toBeFalsy();
   });
 
@@ -175,7 +175,7 @@ describe('SubsystemListComponent', () => {
     component = fixture.componentInstance;
     component.search = TestBed.createComponent(SearchStubComponent).componentInstance;
     fixture.detectChanges();
-    component.search.setLimit = jasmine.createSpy();
+    component.search.setLimit = jest.fn();
     component.setMaxLimit();
     expect(component.search.setLimit).toHaveBeenCalledWith('all');
   });
@@ -184,8 +184,8 @@ describe('SubsystemListComponent', () => {
     fixture = TestBed.createComponent(SubsystemListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    spyOnProperty(window.navigator, 'userAgent').and.returnValue('...MSIE 10...');
-    expect(component.isIE()).toBeTrue();
+    jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('...MSIE 10...');
+    expect(component.isIE()).toBeTruthy();
   });
 });
 
@@ -223,7 +223,7 @@ describe('SubsystemListComponent (with instance version)', () => {
         }},
         { provide: Router, useValue: {
             events: of(new Scroll(null, [11, 12], null)),
-            navigateByUrl: jasmine.createSpy('navigateByUrl')
+            navigateByUrl: jest.fn()
         }},
         { provide: AppConfig, useClass: AppConfigMock }
       ]
@@ -233,12 +233,12 @@ describe('SubsystemListComponent (with instance version)', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    getInstanceSpy = spyOn(subsystemsService, 'getInstance').and.returnValue('INST');
-    getInstancesSpy = spyOn(subsystemsService, 'getInstances').and.returnValue(['INST']);
-    spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
-    spyOn(subsystemsService, 'setInstance').and.returnValue(null);
-    spyOn(subsystemsService, 'getDefaultInstance').and.returnValue('DEFINST');
-    spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').and.returnValue('base');
+    getInstanceSpy = jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
+    getInstancesSpy = jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
+    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {});
+    jest.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
+    jest.spyOn(subsystemsService, 'getDefaultInstance').mockReturnValue('DEFINST');
+    jest.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
   });
 
   it('should create', () => {

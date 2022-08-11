@@ -3,9 +3,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent } from './search.component';
-import { SubsystemsService } from 'src/app/subsystems.service';
-import { AppConfigMock } from 'src/app/app.config-mock';
-import { AppConfig } from 'src/app/app.config';
+import { SubsystemsService } from '../../subsystems.service';
+import { AppConfigMock } from '../../app.config-mock';
+import { AppConfig } from '../../app.config';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -29,10 +29,10 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    spyOn(subsystemsService, 'getLimits').and.returnValue({10: 10, 20: 20});
-    spyOn(subsystemsService, 'setNonEmpty').and.returnValue(null);
-    spyOn(subsystemsService, 'setLimit').and.returnValue(null);
-    spyOn(subsystemsService, 'setFilter').and.returnValue(null);
+    jest.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
+    jest.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
+    jest.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);
+    jest.spyOn(subsystemsService, 'setFilter').mockReturnValue(null);
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
