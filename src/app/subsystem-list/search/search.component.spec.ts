@@ -29,6 +29,7 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     jest.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
     jest.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
     jest.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);
