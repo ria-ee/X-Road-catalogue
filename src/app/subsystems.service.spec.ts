@@ -9,12 +9,14 @@ import { AppConfigMock } from './app.config-mock';
 import { InstanceVersion } from './instance-version';
 
 describe('SubsystemsService', () => {
-  let httpClientSpy: { get: jasmine.Spy };
+  let httpClientSpy: { get: jest.SpyInstance };
   let service: SubsystemsService;
   let config: AppConfigMock;
 
   beforeEach(() => {
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+    httpClientSpy = {
+      get: jest.fn()
+    };
     config = new AppConfigMock(httpClientSpy as any);
     service = new SubsystemsService(httpClientSpy as any, config);
   });
@@ -115,7 +117,7 @@ describe('SubsystemsService', () => {
         ]
       }
     ];
-    httpClientSpy.get.and.returnValue(of(sourceSubsystems));
+    httpClientSpy.get.mockReturnValue(of(sourceSubsystems));
     // Setting value to test resetting of values
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
@@ -138,7 +140,7 @@ describe('SubsystemsService', () => {
 
   it('should set instance on HTTP ERROR', fakeAsync(() => {
     const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
-    httpClientSpy.get.and.returnValue(defer(() => Promise.reject(errorResponse)));
+    httpClientSpy.get.mockReturnValue(defer(() => Promise.reject(errorResponse)));
     // Setting value to test resetting of values
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
@@ -171,7 +173,7 @@ describe('SubsystemsService', () => {
         reportPath: 'index_20190415080141.json'
       }
     ];
-    httpClientSpy.get.and.returnValue(of(sourceHistory));
+    httpClientSpy.get.mockReturnValue(of(sourceHistory));
     // Setting value to test resetting of values
     service.instanceVersionsSubject.next([new InstanceVersion()]);
     // Disabling updateSubsystems()
@@ -192,7 +194,7 @@ describe('SubsystemsService', () => {
         }
       );
     }
-    httpClientSpy.get.and.returnValue(of(longHistory));
+    httpClientSpy.get.mockReturnValue(of(longHistory));
     service.setInstance('EE');
     // Waiting for asynchronous work
     tick();
@@ -203,7 +205,7 @@ describe('SubsystemsService', () => {
 
   it('should set instance versions on HTTP ERROR', fakeAsync(() => {
     const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
-    httpClientSpy.get.and.returnValue(defer(() => Promise.reject(errorResponse)));
+    httpClientSpy.get.mockReturnValue(defer(() => Promise.reject(errorResponse)));
     // Setting value to test resetting of values
     service.instanceVersionsSubject.next([new InstanceVersion()]);
     // Disabling updateSubsystems()

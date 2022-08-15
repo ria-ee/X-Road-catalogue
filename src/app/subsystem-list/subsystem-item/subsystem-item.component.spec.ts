@@ -3,12 +3,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SubsystemsService } from 'src/app/subsystems.service';
+import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
-import { Method } from 'src/app/method';
-import { AppConfigMock } from 'src/app/app.config-mock';
-import { AppConfig } from 'src/app/app.config';
-import { Service } from 'src/app/service';
+import { Method } from '../../method';
+import { AppConfigMock } from '../../app.config-mock';
+import { AppConfig } from '../../app.config';
+import { Service } from '../../service';
 
 const PREVIEW_SIZE = 5;
 
@@ -29,7 +29,7 @@ describe('SubsystemItemComponent', () => {
       ],
       providers: [
         { provide: Router, useValue: {
-            navigateByUrl: jasmine.createSpy('navigateByUrl')
+            navigateByUrl: jest.fn()
         }},
         { provide: AppConfig, useClass: AppConfigMock }
       ]
@@ -39,7 +39,7 @@ describe('SubsystemItemComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    spyOn(subsystemsService, 'getApiUrlBase').and.returnValue(null);
+    jest.spyOn(subsystemsService, 'getApiUrlBase').mockReturnValue(null);
 
     fixture = TestBed.createComponent(SubsystemItemComponent);
     component = fixture.componentInstance;
@@ -99,13 +99,13 @@ describe('SubsystemItemComponent', () => {
   });
 
   it('should go to detail view', () => {
-    const injected = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const injected = TestBed.inject(Router) as jest.Mocked<Router>;
     const spy = injected.navigateByUrl;
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
 
-    spy.calls.reset();
-    spyOn(subsystemsService, 'getInstanceVersion').and.returnValue('12345');
+    spy.mockClear();
+    jest.spyOn(subsystemsService, 'getInstanceVersion').mockReturnValue('12345');
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB?at=12345');
   });

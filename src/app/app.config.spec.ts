@@ -3,10 +3,12 @@ import { of } from 'rxjs';
 
 describe('AppConfig', () => {
   let config: AppConfig;
-  let httpClientSpy: { get: jasmine.Spy };
+  let httpClientSpy: { get: jest.SpyInstance };
 
   beforeEach(() => {
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+    httpClientSpy = {
+      get: jest.fn()
+    };
     config = new AppConfig(httpClientSpy as any);
   });
 
@@ -16,14 +18,14 @@ describe('AppConfig', () => {
 
   it('should load configuration', async () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    httpClientSpy.get.and.returnValue(of({TEST: 'OK'}));
+    httpClientSpy.get.mockReturnValue(of({TEST: 'OK'}));
     await config.load();
     expect(httpClientSpy.get).toHaveBeenCalledWith('./assets/config.json');
   });
 
   it('getConfig should work', async () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    httpClientSpy.get.and.returnValue(of({TEST: 'OK'}));
+    httpClientSpy.get.mockReturnValue(of({TEST: 'OK'}));
     await config.load();
     expect(config.getConfig('TEST')).toBe('OK');
   });
