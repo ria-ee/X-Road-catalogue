@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
 import { Service } from '../../service';
@@ -11,7 +11,7 @@ import { AppConfig } from '../../app.config';
   templateUrl: './subsystem-item.component.html',
   styleUrls: ['./subsystem-item.component.css']
 })
-export class SubsystemItemComponent implements OnInit {
+export class SubsystemItemComponent {
   @Input() subsystem: Subsystem;
 
   constructor(
@@ -55,6 +55,4 @@ export class SubsystemItemComponent implements OnInit {
       + (this.subsystemsService.getInstanceVersion() ? '?at=' + this.subsystemsService.getInstanceVersion() : '')
     );
   }
-
-  ngOnInit() {}
 }

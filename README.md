@@ -10,18 +10,17 @@ git clone <this_repository>
 cd <this_repository_name>
 npm ci
 npm run lint
-npm run test-headless
+npm run test
 ```
 
 ## Sonarqube
-By default `http://localhost:9000` is used as a sonarqube server.
-If you have a remote sonarqube server, update `sonar-project.properties` cunfiguration file and run the test with:
+If you have a local sonarqube server listening on `http://localhost:9000` then you can run Sonarqube test with a command:
 ```
-npm run sonar
+docker run -it --rm -v $(pwd):/usr/src sonarsource/sonar-scanner-cli:latest
 ```
 Alternatively you can provide hostname and access token with command line:
 ```
-./node_modules/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=<server> -Dsonar.login=<token>
+docker run -it --rm -v $(pwd):/usr/src sonarsource/sonar-scanner-cli:latest -Dsonar.host.url=<server> -Dsonar.login=<token>
 ```
 
 ## Updating angular version
@@ -36,5 +35,5 @@ ng serve --host 0.0.0.0
 
 ## Build for production
 ```
-ng build --prod --base-href /catalogue/
+npm run build
 ```

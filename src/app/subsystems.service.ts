@@ -168,7 +168,9 @@ export class SubsystemsService {
   private filteredSubsystems(): Subsystem[] {
     const filtered: Subsystem[] = [];
     let limit: number = this.limit;
-    for (let subsystem of this.subsystemsSubject.value) {
+    for (const origSubsystem of this.subsystemsSubject.value) {
+      // Copy object to avoid overwriting methods and services arrays in subsystem object
+      const subsystem = Object.assign(Object.create(origSubsystem), origSubsystem);
       if (this.nonEmpty && !subsystem.methods.length && !subsystem.services.length) {
         // Filtering out empty subsystems
         continue;
@@ -201,9 +203,7 @@ export class SubsystemsService {
           // No matching method and/or services names found
           continue;
         }
-        // Copy object to avoid overwriting methods array in subsystem object
-        subsystem = Object.assign(Object.create(subsystem), subsystem);
-        // Leaving only matcing methods and services
+        // Leaving only matching methods and services
         subsystem.methods = filteredMethods;
         subsystem.services = filteredServices;
       }

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LanguagesService } from '../languages.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   constructor(private languagesService: LanguagesService) { }
 
@@ -20,6 +20,4 @@ export class HeaderComponent implements OnInit {
   setLang(lang: string) {
     return this.languagesService.setLang(lang);
   }
-
-  ngOnInit() {}
 }

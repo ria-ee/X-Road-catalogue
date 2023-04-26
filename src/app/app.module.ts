@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -11,7 +11,6 @@ import { SubsystemItemComponent } from './subsystem-list/subsystem-item/subsyste
 import { AppRoutingModule } from './app-routing.module';
 import { SubsystemComponent } from './subsystem/subsystem.component';
 import { HeaderComponent } from './header/header.component';
-import { APP_INITIALIZER } from '@angular/core';
 import { AppConfig } from './app.config';
 import { MessagesComponent } from './messages/messages.component';
 

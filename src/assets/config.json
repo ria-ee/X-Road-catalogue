@@ -12,8 +12,8 @@
         "ee-dev": "https://www.x-tee.ee/catalogue-data/ee-dev/"
     },
     "API_SERVICE": "index.json",
-    "API_HISTORY": "history.json",
-    "HISTORY_LIMIT": 30,
+    "API_HISTORY": "filtered_history.json",
+    "HISTORY_LIMIT": 100,
     "LANGUAGES": {
         "EST": "est",
         "ENG": "eng"
