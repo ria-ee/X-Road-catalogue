@@ -1,16 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html'
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent {
   @Input() message: '';
   @Input() subsystemId: '';
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
 }
