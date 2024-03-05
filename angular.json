@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "xtss-catalogue:build"
+            "buildTarget": "xtss-catalogue:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "xtss-catalogue:build:production"
+              "buildTarget": "xtss-catalogue:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "xtss-catalogue:build"
+            "buildTarget": "xtss-catalogue:build"
           }
         },
         "test": {
