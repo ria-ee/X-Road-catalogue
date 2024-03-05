@@ -175,8 +175,6 @@ describe('SubsystemComponent', () => {
 describe('SubsystemComponent (with instance version)', () => {
   let component: SubsystemComponent;
   let fixture: ComponentFixture<SubsystemComponent>;
-  let getInstanceSpy;
-  let getInstancesSpy;
   let subsystemsService: SubsystemsService;
 
   beforeEach(waitForAsync(() => {
@@ -216,8 +214,8 @@ describe('SubsystemComponent (with instance version)', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    getInstanceSpy = jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
-    getInstancesSpy = jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
+    jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
+    jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
     jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {});
     jest.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
     jest.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
