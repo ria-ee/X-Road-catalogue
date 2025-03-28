@@ -14,11 +14,7 @@ npm run test
 ```
 
 ## Sonarqube
-If you have a local sonarqube server listening on `http://localhost:9000` then you can run Sonarqube test with a command:
-```
-docker run -it --rm -v $(pwd):/usr/src sonarsource/sonar-scanner-cli:latest
-```
-Alternatively you can provide hostname and access token with command line:
+You can run SonarQube tests via the command line, optionally providing a hostname and access token:
 ```
 docker run -it --rm -v $(pwd):/usr/src sonarsource/sonar-scanner-cli:latest -Dsonar.host.url=<server> -Dsonar.login=<token>
 ```
