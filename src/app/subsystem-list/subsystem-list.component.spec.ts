@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { SubsystemListComponent } from './subsystem-list.component';
 import { Component, Input } from '@angular/core';
 import { Subsystem } from '../subsystem';
@@ -34,17 +34,14 @@ describe('SubsystemListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+      imports: [
+        FormsModule,
+        TranslateModule.forRoot(),
         SubsystemListComponent,
         HeaderStubComponent,
         MessagesStubComponent,
         SearchStubComponent,
         SubsystemItemStubComponent
-      ],
-      imports: [
-        FormsModule,
-        TranslateModule.forRoot(),
-        HttpClientModule
       ],
       providers: [
         { provide: ActivatedRoute, useValue: {
@@ -56,7 +53,8 @@ describe('SubsystemListComponent', () => {
             events: of(new Scroll(null, [11, 12], null)),
             navigateByUrl: jest.fn()
         }},
-        { provide: AppConfig, useClass: AppConfigMock }
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
       ]
     })
     .compileComponents();
@@ -66,7 +64,7 @@ describe('SubsystemListComponent', () => {
     subsystemsService = TestBed.inject(SubsystemsService);
     getInstanceSpy = jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
     getInstancesSpy = jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
-    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {});
+    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {/* do nothing */});
     jest.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
     jest.spyOn(subsystemsService, 'getDefaultInstance').mockReturnValue('DEFINST');
     jest.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
@@ -196,17 +194,14 @@ describe('SubsystemListComponent (with instance version)', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+      imports: [
+        FormsModule,
+        TranslateModule.forRoot(),
         SubsystemListComponent,
         HeaderStubComponent,
         MessagesStubComponent,
         SearchStubComponent,
         SubsystemItemStubComponent
-      ],
-      imports: [
-        FormsModule,
-        TranslateModule.forRoot(),
-        HttpClientModule
       ],
       providers: [
         { provide: ActivatedRoute, useValue: {
@@ -223,7 +218,8 @@ describe('SubsystemListComponent (with instance version)', () => {
             events: of(new Scroll(null, [11, 12], null)),
             navigateByUrl: jest.fn()
         }},
-        { provide: AppConfig, useClass: AppConfigMock }
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
       ]
     })
     .compileComponents();
@@ -233,7 +229,7 @@ describe('SubsystemListComponent (with instance version)', () => {
     subsystemsService = TestBed.inject(SubsystemsService);
     jest.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
     jest.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
-    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {});
+    jest.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {/* do nothing */});
     jest.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
     jest.spyOn(subsystemsService, 'getDefaultInstance').mockReturnValue('DEFINST');
     jest.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');

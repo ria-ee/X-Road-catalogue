@@ -3,7 +3,7 @@ import { of, defer } from 'rxjs';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { Service } from './service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { tick, fakeAsync } from '@angular/core/testing';
 import { AppConfigMock } from './app.config-mock';
 import { InstanceVersion } from './instance-version';
@@ -17,8 +17,9 @@ describe('SubsystemsService', () => {
     httpClientSpy = {
       get: jest.fn()
     };
-    config = new AppConfigMock(httpClientSpy as any);
-    service = new SubsystemsService(httpClientSpy as any, config);
+    // TODO: Is there a better solution instead of casting to unknown?
+    config = new AppConfigMock(httpClientSpy as unknown as HttpClient);
+    service = new SubsystemsService(httpClientSpy as unknown as HttpClient, config);
   });
 
   it('should be created', () => {
@@ -122,7 +123,7 @@ describe('SubsystemsService', () => {
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
     // Disabling updateInstanceVersions()
-    service.updateInstanceVersions = () => {};
+    service.updateInstanceVersions = () => {/* do nothing */};
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
@@ -145,7 +146,7 @@ describe('SubsystemsService', () => {
     service.subsystemsSubject.next([new Subsystem()]);
     service.filteredSubsystemsSubject.next([new Subsystem()]);
     // Disabling updateInstanceVersions()
-    service.updateInstanceVersions = () => {};
+    service.updateInstanceVersions = () => {/* do nothing */};
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
@@ -177,7 +178,7 @@ describe('SubsystemsService', () => {
     // Setting value to test resetting of values
     service.instanceVersionsSubject.next([new InstanceVersion()]);
     // Disabling updateSubsystems()
-    service.updateSubsystems = () => {};
+    service.updateSubsystems = () => {/* do nothing */};
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
@@ -209,7 +210,7 @@ describe('SubsystemsService', () => {
     // Setting value to test resetting of values
     service.instanceVersionsSubject.next([new InstanceVersion()]);
     // Disabling updateSubsystems()
-    service.updateSubsystems = () => {};
+    service.updateSubsystems = () => {/* do nothing */};
 
     service.setInstance('EE');
     // Waiting for asynchronous work

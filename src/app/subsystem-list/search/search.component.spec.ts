@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent } from './search.component';
 import { SubsystemsService } from '../../subsystems.service';
@@ -14,14 +14,14 @@ describe('SearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchComponent ],
       imports: [
         FormsModule,
         TranslateModule.forRoot(),
-        HttpClientModule
+        SearchComponent
       ],
       providers: [
-        { provide: AppConfig, useClass: AppConfigMock }
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
       ]
     })
     .compileComponents();
@@ -29,7 +29,6 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     jest.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
     jest.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
     jest.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);

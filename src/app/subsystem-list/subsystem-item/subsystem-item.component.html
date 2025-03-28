@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header pointerCursor" (click)="showDetail()">
+  <div class="card-header pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
     {{subsystem.fullSubsystemName}}
     <span class="badge bg-secondary" *ngIf="!subsystem.methods.length && !subsystem.services.length && subsystem.subsystemStatus === 'OK'">{{'subsystem.statusEmpty' | translate}}</span>
     <span class="badge bg-danger" *ngIf="subsystem.subsystemStatus === 'ERROR'">{{'subsystem.statusError' | translate}}</span>
@@ -20,7 +20,7 @@
       <span class="badge bg-danger" *ngIf="method.methodStatus === 'TIMEOUT'">{{'subsystem.statusWsdlTimeout' | translate}}</span>
       <span class="badge bg-warning" *ngIf="method.methodStatus === 'SKIPPED'">{{'subsystem.statusWsdlSkipped' | translate}}</span>
     </p>
-    <p *ngIf="getMethodsNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
+    <p *ngIf="getMethodsNotInPreview() > 0" class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
       {{'subsystem.moreMethods' | translate:{"count": getMethodsNotInPreview()} }}
     </p>
     <h6 *ngIf="subsystem.services.length" class="card-subtitle text-muted">REST</h6>
@@ -32,7 +32,7 @@
       <span class="badge bg-danger" *ngIf="service.status === 'TIMEOUT'">{{'subsystem.statusOpenapiTimeout' | translate}}</span>
       <span class="badge bg-warning" *ngIf="service.status === 'SKIPPED'">{{'subsystem.statusOpenapiSkipped' | translate}}</span>
     </p>
-    <p *ngIf="getServicesNotInPreview() > 0" class="pointerCursor" (click)="showDetail()">
+    <p *ngIf="getServicesNotInPreview() > 0" class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
       {{'subsystem.moreMethods' | translate:{"count": getServicesNotInPreview()} }}
     </p>
   </div>

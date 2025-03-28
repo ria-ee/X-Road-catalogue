@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { AppConfig } from './app.config';
 import { of } from 'rxjs';
+import { Config } from './config';
 
 describe('AppConfig', () => {
   let config: AppConfig;
@@ -9,7 +11,8 @@ describe('AppConfig', () => {
     httpClientSpy = {
       get: jest.fn()
     };
-    config = new AppConfig(httpClientSpy as any);
+    // TODO: Is there a better solution instead of casting to unknown?
+    config = new AppConfig(httpClientSpy as unknown as HttpClient);
   });
 
   it('should be created', () => {
@@ -17,16 +20,16 @@ describe('AppConfig', () => {
   });
 
   it('should load configuration', async () => {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    httpClientSpy.get.mockReturnValue(of({TEST: 'OK'}));
+    const mockResponse = new Config();
+    mockResponse.API_SERVICE = 'index.json';
+    httpClientSpy.get.mockReturnValue(of(mockResponse));
     await config.load();
     expect(httpClientSpy.get).toHaveBeenCalledWith('./assets/config.json');
   });
 
   it('getConfig should work', async () => {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    httpClientSpy.get.mockReturnValue(of({TEST: 'OK'}));
+    httpClientSpy.get.mockReturnValue(of({API_SERVICE: 'index.json'}));
     await config.load();
-    expect(config.getConfig('TEST')).toBe('OK');
+    expect(config.getConfig('API_SERVICE')).toBe('index.json');
   });
 });

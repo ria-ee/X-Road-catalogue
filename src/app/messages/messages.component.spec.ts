@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { MessagesComponent } from './messages.component';
 
 describe('MessagesComponent', () => {
@@ -9,12 +9,12 @@ describe('MessagesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MessagesComponent
-      ],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientModule
+        MessagesComponent
+      ],
+      providers: [
+        provideHttpClient()
       ]
     })
     .compileComponents();

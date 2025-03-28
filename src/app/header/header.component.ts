@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { LanguagesService } from '../languages.service';
+import { NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html'
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    imports: [NgFor, NgClass]
 })
 export class HeaderComponent {
 

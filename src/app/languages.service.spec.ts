@@ -3,16 +3,16 @@ import { LanguagesService } from './languages.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppConfigMock } from './app.config-mock';
 import { AppConfig } from './app.config';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('LanguagesService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      TranslateModule.forRoot(),
-      HttpClientModule
+      TranslateModule.forRoot()
     ],
     providers: [
-      { provide: AppConfig, useClass: AppConfigMock }
+      { provide: AppConfig, useClass: AppConfigMock },
+      provideHttpClient()
     ]
   }));
 
@@ -23,7 +23,7 @@ describe('LanguagesService', () => {
 
   it('should set default lang with empty localStorage', () => {
     const translateService: TranslateService = TestBed.inject(TranslateService);
-    jest.spyOn(translateService, 'setDefaultLang').mockImplementation(() => {});
+    jest.spyOn(translateService, 'setDefaultLang').mockImplementation(() => {/* do nothing */});
     jest.spyOn(window.localStorage.__proto__, 'getItem').mockReturnValue(undefined);
     TestBed.inject(LanguagesService);
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('est');
@@ -31,7 +31,7 @@ describe('LanguagesService', () => {
 
   it('should set default lang from localStorage', () => {
     const translateService: TranslateService = TestBed.inject(TranslateService);
-    jest.spyOn(translateService, 'setDefaultLang').mockImplementation(() => {});
+    jest.spyOn(translateService, 'setDefaultLang').mockImplementation(() => {/* do nothing */});
     jest.spyOn(window.localStorage.__proto__, 'getItem').mockReturnValue('ENG');
     TestBed.inject(LanguagesService);
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('eng');

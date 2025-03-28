@@ -12,10 +12,10 @@ import { InstanceVersion } from './instance-version';
   providedIn: 'root'
 })
 export class SubsystemsService {
-  subsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
-  filteredSubsystemsSubject: BehaviorSubject<Subsystem[]> = new BehaviorSubject([]);
-  instanceVersionsSubject: BehaviorSubject<InstanceVersion[]> = new BehaviorSubject([]);
-  warnings: EventEmitter<string> = new EventEmitter();
+  subsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
+  filteredSubsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
+  instanceVersionsSubject = new BehaviorSubject<InstanceVersion[]>([]);
+  warnings = new EventEmitter<string>();
   private apiUrlBase = '';
   private limit: number = this.config.getConfig('DEFAULT_LIMIT');
   private nonEmpty = false;
@@ -92,7 +92,7 @@ export class SubsystemsService {
     });
   }
 
-  setInstance(instance: string, instanceVersion: string = '') {
+  setInstance(instance: string, instanceVersion = '') {
     this.instance = instance;
     this.instanceVersion = instanceVersion;
     this.apiUrlBase = this.config.getConfig('INSTANCES')[instance];
