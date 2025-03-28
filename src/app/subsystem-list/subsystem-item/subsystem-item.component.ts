@@ -5,11 +5,14 @@ import { Service } from '../../service';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../app.config';
+import { NgIf, NgFor } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-subsystem-item',
-  templateUrl: './subsystem-item.component.html',
-  styleUrls: ['./subsystem-item.component.css']
+    selector: 'app-subsystem-item',
+    templateUrl: './subsystem-item.component.html',
+    styleUrls: ['./subsystem-item.component.css'],
+    imports: [NgIf, NgFor, TranslatePipe]
 })
 export class SubsystemItemComponent {
   @Input() subsystem: Subsystem;

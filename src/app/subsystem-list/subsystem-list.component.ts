@@ -3,20 +3,26 @@ import { Subsystem } from '../subsystem';
 import { SubsystemsService } from '../subsystems.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { ViewportScroller } from '@angular/common';
+import { ViewportScroller, NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { InstanceVersion } from '../instance-version';
 import { SearchComponent } from './search/search.component';
+import { HeaderComponent } from '../header/header.component';
+import { MessagesComponent } from '../messages/messages.component';
+import { FormsModule } from '@angular/forms';
+import { SubsystemItemComponent } from './subsystem-item/subsystem-item.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-subsystem-list',
-  templateUrl: './subsystem-list.component.html'
+    selector: 'app-subsystem-list',
+    templateUrl: './subsystem-list.component.html',
+    imports: [HeaderComponent, NgIf, MessagesComponent, NgFor, NgClass, FormsModule, SearchComponent, SubsystemItemComponent, AsyncPipe, TranslatePipe]
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(SearchComponent, { static: true }) search;
 
   message: string;
-  scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  scrollSubject = new BehaviorSubject<[number, number]>(null);
   routerScrollSubscription: Subscription;
   routeSubscription: Subscription;
   warningsSubscription: Subscription;

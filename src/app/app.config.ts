@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Config } from './config';
 
 @Injectable()
 export class AppConfig {
-    private config: any = null;
+    private config: Config = null;
 
     constructor(private http: HttpClient) { }
 
     /**
      * Use to get the data found in the config file
      */
-    public getConfig(key: any) {
+    public getConfig(key: string) {
         return this.config[key];
     }
 
@@ -20,7 +21,7 @@ export class AppConfig {
     public load() {
         return new Promise(resolve => {
             // Not handling errors. App cannot work without valid configuration
-            this.http.get<any>('./assets/config.json')
+            this.http.get<Config>('./assets/config.json')
             .subscribe(responseData => {
                 this.config = responseData;
                 resolve(true);

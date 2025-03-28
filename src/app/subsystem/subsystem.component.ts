@@ -3,20 +3,24 @@ import { SubsystemsService } from '../subsystems.service';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { ViewportScroller } from '@angular/common';
+import { ViewportScroller, NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { HeaderComponent } from '../header/header.component';
+import { MessagesComponent } from '../messages/messages.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-subsystem',
-  templateUrl: './subsystem.component.html'
+    selector: 'app-subsystem',
+    templateUrl: './subsystem.component.html',
+    imports: [HeaderComponent, MessagesComponent, NgIf, NgFor, NgClass, AsyncPipe, TranslatePipe]
 })
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   subsystemId = '';
   message = '';
   // Contains instance from route.params (for displaying warning)
   paramsInstance = '';
-  subsystemSubject: BehaviorSubject<Subsystem> = new BehaviorSubject(null);
-  private scrollSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  subsystemSubject = new BehaviorSubject<Subsystem>(null);
+  private scrollSubject = new BehaviorSubject<[number, number]>(null);
   private routerScrollSubscription: Subscription;
   private routeSubscription: Subscription;
   private warningsSubscription: Subscription;

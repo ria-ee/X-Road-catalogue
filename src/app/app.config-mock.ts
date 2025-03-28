@@ -1,11 +1,10 @@
-// We mock configuration file that has different naming convention
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { AppConfig } from './app.config';
+import { Config } from './config';
 
 @Injectable()
 export class AppConfigMock extends AppConfig {
-    private configMock: any = {
+    private configMock: Config = {
         MAX_LIMIT: 1000000,
         DEFAULT_LIMIT: 10,
         LIMITS: {
@@ -30,7 +29,7 @@ export class AppConfigMock extends AppConfig {
         FILTER_DEBOUNCE: 20
     };
 
-    public getConfig(key: any) {
+    public getConfig(key: string) {
         return this.configMock[key];
     }
 }

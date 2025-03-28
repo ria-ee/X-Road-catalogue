@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from './header.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { LanguagesService } from '../languages.service';
 import { AppConfigMock } from '../app.config-mock';
 import { AppConfig } from '../app.config';
@@ -12,13 +12,13 @@ describe('HeaderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientModule
+        HeaderComponent
       ],
       providers: [
-        { provide: AppConfig, useClass: AppConfigMock }
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
       ]
     })
     .compileComponents();

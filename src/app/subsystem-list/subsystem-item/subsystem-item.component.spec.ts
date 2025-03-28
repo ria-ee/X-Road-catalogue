@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
 import { Method } from '../../method';
@@ -16,22 +15,22 @@ describe('SubsystemItemComponent', () => {
   let component: SubsystemItemComponent;
   let fixture: ComponentFixture<SubsystemItemComponent>;
   let subsystemsService: SubsystemsService;
+  //let router: Router;
 
   beforeEach(waitForAsync(() => {
+    const routerSpy = {
+      navigateByUrl: jest.fn(),
+    };
+
     TestBed.configureTestingModule({
-      declarations: [
-        SubsystemItemComponent
-      ],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientModule,
-        RouterTestingModule
+        SubsystemItemComponent
       ],
       providers: [
-        { provide: Router, useValue: {
-            navigateByUrl: jest.fn()
-        }},
-        { provide: AppConfig, useClass: AppConfigMock }
+        { provide: Router, useValue: routerSpy },
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
       ]
     })
     .compileComponents();
@@ -54,6 +53,8 @@ describe('SubsystemItemComponent', () => {
       methods: [],
       services: []
     };
+    //router = TestBed.inject(Router);
+    TestBed.inject(Router);
     fixture.detectChanges();
   });
 
