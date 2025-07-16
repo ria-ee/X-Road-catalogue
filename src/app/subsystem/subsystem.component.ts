@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject } from '@angular/core';
 import { SubsystemsService } from '../subsystems.service';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { ViewportScroller, NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { ViewportScroller, NgClass, AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { HeaderComponent } from '../header/header.component';
 import { MessagesComponent } from '../messages/messages.component';
@@ -12,9 +12,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-subsystem',
     templateUrl: './subsystem.component.html',
-    imports: [HeaderComponent, MessagesComponent, NgIf, NgFor, NgClass, AsyncPipe, TranslatePipe]
+    imports: [HeaderComponent, MessagesComponent, NgClass, AsyncPipe, TranslatePipe]
 })
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
+  private subsystemsService = inject(SubsystemsService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private viewportScroller = inject(ViewportScroller);
+
   subsystemId = '';
   message = '';
   // Contains instance from route.params (for displaying warning)
@@ -28,12 +33,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   private subsystemsSubscription: Subscription;
   private instanceVersion: string;
 
-  constructor(
-    private subsystemsService: SubsystemsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private viewportScroller: ViewportScroller
-  ) {
+  constructor() {
     // Geting previous scroll position
     this.routerScrollSubscription = this.router.events.pipe(
       filter(e => e instanceof Scroll)

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -9,14 +9,16 @@ import { AppConfig } from './app.config';
   providedIn: 'root'
 })
 export class LanguagesService {
+  private translate = inject(TranslateService);
+  private title = inject(Title);
+  private config = inject(AppConfig);
+
   private selectedLang = '';
   private translateSubscription: Subscription;
 
-  constructor(
-    private translate: TranslateService,
-    private title: Title,
-    private config: AppConfig
-  ) {
+  constructor() {
+    const translate = this.translate;
+
     this.selectedLang = this.getDefaultLang();
     translate.setDefaultLang(this.config.getConfig('LANGUAGES')[this.selectedLang]);
     this.updateTitle();

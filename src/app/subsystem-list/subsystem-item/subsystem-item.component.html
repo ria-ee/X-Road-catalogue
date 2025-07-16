@@ -1,39 +1,77 @@
 <div class="card">
   <div class="card-header pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
     {{subsystem.fullSubsystemName}}
-    <span class="badge bg-secondary" *ngIf="!subsystem.methods.length && !subsystem.services.length && subsystem.subsystemStatus === 'OK'">{{'subsystem.statusEmpty' | translate}}</span>
-    <span class="badge bg-danger" *ngIf="subsystem.subsystemStatus === 'ERROR'">{{'subsystem.statusError' | translate}}</span>
+    @if (!subsystem.methods.length && !subsystem.services.length && subsystem.subsystemStatus === 'OK') {
+      <span class="badge bg-secondary">{{'subsystem.statusEmpty' | translate}}</span>
+    }
+    @if (subsystem.subsystemStatus === 'ERROR') {
+      <span class="badge bg-danger">{{'subsystem.statusError' | translate}}</span>
+    }
   </div>
-  <div class="card-body" *ngIf="subsystem.subsystemStatus === 'ERROR'">
-    <p>{{'subsystem.statusErrorInfo' | translate}}</p>
-  </div>
-  <div class="card-body" *ngIf="subsystem.subsystemStatus === 'OK' && !subsystem.methods.length && !subsystem.services.length">
-    <p>{{'subsystem.statusEmptyInfo' | translate}}</p>
-  </div>
-  <div class="card-body" *ngIf="subsystem.subsystemStatus === 'OK' && (subsystem.methods.length || subsystem.services.length)">
-    <h6 *ngIf="subsystem.methods.length" class="card-subtitle text-muted">SOAP</h6>
-    <p *ngFor="let method of getMethodsPreview()">
-      {{method.fullMethodName}}
-      <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge bg-success"
-        *ngIf="method.wsdl" [target]="'_blank'">WSDL</a>
-      <span class="badge bg-danger" *ngIf="method.methodStatus === 'ERROR'">{{'subsystem.statusWsdlError' | translate}}</span>
-      <span class="badge bg-danger" *ngIf="method.methodStatus === 'TIMEOUT'">{{'subsystem.statusWsdlTimeout' | translate}}</span>
-      <span class="badge bg-warning" *ngIf="method.methodStatus === 'SKIPPED'">{{'subsystem.statusWsdlSkipped' | translate}}</span>
-    </p>
-    <p *ngIf="getMethodsNotInPreview() > 0" class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
-      {{'subsystem.moreMethods' | translate:{"count": getMethodsNotInPreview()} }}
-    </p>
-    <h6 *ngIf="subsystem.services.length" class="card-subtitle text-muted">REST</h6>
-    <p *ngFor="let service of getServicesPreview()">
-      {{service.fullServiceName}}
-      <a href="{{getApiUrlBase()}}{{service.openapi}}" class="badge bg-success"
-        *ngIf="service.openapi" [target]="'_blank'">OpenAPI</a>
-      <span class="badge bg-danger" *ngIf="service.status === 'ERROR'">{{'subsystem.statusOpenapiError' | translate}}</span>
-      <span class="badge bg-danger" *ngIf="service.status === 'TIMEOUT'">{{'subsystem.statusOpenapiTimeout' | translate}}</span>
-      <span class="badge bg-warning" *ngIf="service.status === 'SKIPPED'">{{'subsystem.statusOpenapiSkipped' | translate}}</span>
-    </p>
-    <p *ngIf="getServicesNotInPreview() > 0" class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
-      {{'subsystem.moreMethods' | translate:{"count": getServicesNotInPreview()} }}
-    </p>
-  </div>
+  @if (subsystem.subsystemStatus === 'ERROR') {
+    <div class="card-body">
+      <p>{{'subsystem.statusErrorInfo' | translate}}</p>
+    </div>
+  }
+  @if (subsystem.subsystemStatus === 'OK' && !subsystem.methods.length && !subsystem.services.length) {
+    <div class="card-body">
+      <p>{{'subsystem.statusEmptyInfo' | translate}}</p>
+    </div>
+  }
+  @if (subsystem.subsystemStatus === 'OK' && (subsystem.methods.length || subsystem.services.length)) {
+    <div class="card-body">
+      @if (subsystem.methods.length) {
+        <h6 class="card-subtitle text-muted">SOAP</h6>
+      }
+      @for (method of getMethodsPreview(); track method) {
+        <p>
+          {{method.fullMethodName}}
+          @if (method.wsdl) {
+            <a href="{{getApiUrlBase()}}{{method.wsdl}}" class="badge bg-success"
+            [target]="'_blank'">WSDL</a>
+          }
+          @if (method.methodStatus === 'ERROR') {
+            <span class="badge bg-danger">{{'subsystem.statusWsdlError' | translate}}</span>
+          }
+          @if (method.methodStatus === 'TIMEOUT') {
+            <span class="badge bg-danger">{{'subsystem.statusWsdlTimeout' | translate}}</span>
+          }
+          @if (method.methodStatus === 'SKIPPED') {
+            <span class="badge bg-warning">{{'subsystem.statusWsdlSkipped' | translate}}</span>
+          }
+        </p>
+      }
+      @if (getMethodsNotInPreview() > 0) {
+        <p class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
+          {{'subsystem.moreMethods' | translate:{"count": getMethodsNotInPreview()} }}
+        </p>
+      }
+      @if (subsystem.services.length) {
+        <h6 class="card-subtitle text-muted">REST</h6>
+      }
+      @for (service of getServicesPreview(); track service) {
+        <p>
+          {{service.fullServiceName}}
+          @if (service.openapi) {
+            <a href="{{getApiUrlBase()}}{{service.openapi}}" class="badge bg-success"
+            [target]="'_blank'">OpenAPI</a>
+          }
+          @if (service.status === 'ERROR') {
+            <span class="badge bg-danger">{{'subsystem.statusOpenapiError' | translate}}</span>
+          }
+          @if (service.status === 'TIMEOUT') {
+            <span class="badge bg-danger">{{'subsystem.statusOpenapiTimeout' | translate}}</span>
+          }
+          @if (service.status === 'SKIPPED') {
+            <span class="badge bg-warning">{{'subsystem.statusOpenapiSkipped' | translate}}</span>
+          }
+        </p>
+      }
+      @if (getServicesNotInPreview() > 0) {
+        <p class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
+          {{'subsystem.moreMethods' | translate:{"count": getServicesNotInPreview()} }}
+        </p>
+      }
+    </div>
+  }
 </div>

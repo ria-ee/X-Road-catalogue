@@ -2,47 +2,59 @@
 
 <h3>{{'subsystemList.heading' | translate}}</h3>
 <div [innerHTML]="'subsystemList.intro.common' | translate:{'jsonUrl': getApiUrl()}"></div>
-<div *ngIf="isIE()">
-  <p [innerHTML]="'subsystemList.intro.ieWarning' | translate" class="alert alert-danger mt-3 mb-0"></p>
-  <br>
-</div>
+@if (isIE()) {
+  <div>
+    <p [innerHTML]="'subsystemList.intro.ieWarning' | translate" class="alert alert-danger mt-3 mb-0"></p>
+    <br>
+    </div>
+  }
 
-<app-messages [message]="message"></app-messages>
+  <app-messages [message]="message"></app-messages>
 
-<div class="btn-group" role="group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
-  <button *ngFor="let instance of getInstances()"
-    type="button" [ngClass]="getInstance() === instance ? 'btn btn-primary' : 'btn btn-secondary'"
-    (click)="switchInstance(instance)">{{instance}}</button>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    {{'subsystemList.selectVersion' | translate}}
+  <div class="btn-group" role="group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
+    @for (instance of getInstances(); track instance) {
+      <button
+        type="button" [ngClass]="getInstance() === instance ? 'btn btn-primary' : 'btn btn-secondary'"
+      (click)="switchInstance(instance)">{{instance}}</button>
+    }
   </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-sm-6">
-        <select [(ngModel)]="instanceVersion" class="form-control form-select" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
-          <option value="">{{'subsystemList.latestVersion' | translate}}</option>
-          <option *ngFor="let version of instanceVersions | async" [ngValue]="version.reportTimeCompact">{{version.reportTime}}</option>
-        </select>
+
+  <div class="card">
+    <div class="card-header">
+      {{'subsystemList.selectVersion' | translate}}
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-6">
+          <select [(ngModel)]="instanceVersion" class="form-control form-select" id="instanceVersion" (ngModelChange)="setInstanceVersion()">
+            <option value="">{{'subsystemList.latestVersion' | translate}}</option>
+            @for (version of instanceVersions | async; track version) {
+              <option [ngValue]="version.reportTimeCompact">{{version.reportTime}}</option>
+            }
+          </select>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<app-search></app-search>
-<br>
+  <app-search></app-search>
+  <br>
 
-<app-subsystem-item *ngFor="let subsystem of filteredSubsystems | async" [subsystem]="subsystem"></app-subsystem-item>
-<br>
+    @for (subsystem of filteredSubsystems | async; track subsystem) {
+      <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
+    }
+    <br>
 
-<p *ngIf="isPartialList()">
-  {{'subsystemList.moreSubsystems' | translate}}<br>
-  <a class="fw-bold"
-    onClick="return false" href="#" (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</a>.
-</p>
+      @if (isPartialList()) {
+        <p>
+          {{'subsystemList.moreSubsystems' | translate}}<br>
+          <a class="fw-bold"
+          onClick="return false" href="#" (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</a>.
+        </p>
+      }
 
-<p *ngIf="filteredSubsystems.value?.length">
-  <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
-</p>
+      @if (filteredSubsystems.value?.length) {
+        <p>
+          <button type="button" [ngClass]="'btn btn-secondary'" (click)="scrollToTop()">{{'scrollToTop' | translate}}</button>
+        </p>
+      }

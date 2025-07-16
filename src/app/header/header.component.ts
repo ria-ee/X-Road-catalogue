@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LanguagesService } from '../languages.service';
-import { NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    imports: [NgFor, NgClass]
+    imports: [NgClass]
 })
 export class HeaderComponent {
+  private languagesService = inject(LanguagesService);
 
-  constructor(private languagesService: LanguagesService) { }
 
   getLangs(): string[] {
     return this.languagesService.getLangs();

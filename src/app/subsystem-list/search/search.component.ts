@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SubsystemsService } from '../../subsystems.service';
 import { FormsModule } from '@angular/forms';
-import { NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
-    imports: [FormsModule, NgFor, TranslatePipe]
+    imports: [FormsModule, TranslatePipe]
 })
 export class SearchComponent implements OnInit {
+  private subsystemsService = inject(SubsystemsService);
+
   limit: string;
   limits: Record<string, number>;
   nonEmpty: boolean;
   filter: string;
 
-  constructor(private subsystemsService: SubsystemsService) {
+  constructor() {
     this.limit = this.subsystemsService.getLimit();
     this.limits = this.subsystemsService.getLimits();
   }

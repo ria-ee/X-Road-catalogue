@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Config } from './config';
 
 @Injectable()
 export class AppConfig {
-    private config: Config = null;
+    private http = inject(HttpClient);
 
-    constructor(private http: HttpClient) { }
+    private config: Config = null;
 
     /**
      * Use to get the data found in the config file

@@ -16,18 +16,20 @@
           <label for="limitSelect">{{'search.limit' | translate}}</label>
           <select class="form-control" id="limitSelect"
             [(ngModel)]="limit" (change)="setLimit(limit)">
-            <option *ngFor="let key of getLimitKeys()" [ngValue]="key">{{limits[key]}}</option>
+            @for (key of getLimitKeys(); track key) {
+              <option [ngValue]="key">{{limits[key]}}</option>
+            }
             <option value="all">{{'search.allOption' | translate}}</option>
           </select>
         </div>
       </div>
       <div class="col-sm-3">
-          <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="nonEmptyCheck" 
-              [(ngModel)]="nonEmpty" (change)="setNonEmpty(nonEmpty)">
-            <label class="form-check-label" for="nonEmptyCheck">{{'search.nonEmpty' | translate}}</label>
-          </div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="nonEmptyCheck"
+            [(ngModel)]="nonEmpty" (change)="setNonEmpty(nonEmpty)">
+          <label class="form-check-label" for="nonEmptyCheck">{{'search.nonEmpty' | translate}}</label>
         </div>
+      </div>
     </div>
   </div>
 </div>
