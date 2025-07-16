@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -12,6 +12,9 @@ import { InstanceVersion } from './instance-version';
   providedIn: 'root'
 })
 export class SubsystemsService {
+  private http = inject(HttpClient);
+  private config = inject(AppConfig);
+
   subsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
   filteredSubsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
   instanceVersionsSubject = new BehaviorSubject<InstanceVersion[]>([]);
@@ -24,10 +27,7 @@ export class SubsystemsService {
   private instanceVersion = '';
   private updateFilter = new Subject<string>();
 
-  constructor(
-    private http: HttpClient,
-    private config: AppConfig
-  ) {
+  constructor() {
     // Debouncing update of filter
     this.updateFilter.pipe(
       debounceTime(this.config.getConfig('FILTER_DEBOUNCE')),

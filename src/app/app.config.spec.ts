@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { AppConfig } from './app.config';
 import { of } from 'rxjs';
 import { Config } from './config';
+import { TestBed } from '@angular/core/testing';
 
 describe('AppConfig', () => {
   let config: AppConfig;
@@ -11,8 +12,13 @@ describe('AppConfig', () => {
     httpClientSpy = {
       get: jest.fn()
     };
-    // TODO: Is there a better solution instead of casting to unknown?
-    config = new AppConfig(httpClientSpy as unknown as HttpClient);
+    TestBed.configureTestingModule({
+      providers: [
+        AppConfig,
+        { provide: HttpClient, useValue: httpClientSpy }
+      ]
+    });
+    config = TestBed.inject(AppConfig);
   });
 
   it('should be created', () => {

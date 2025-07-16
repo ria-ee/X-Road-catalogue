@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, inject } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { SubsystemsService } from '../subsystems.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Subscription, BehaviorSubject } from 'rxjs';
-import { ViewportScroller, NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { ViewportScroller, NgClass, AsyncPipe } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { InstanceVersion } from '../instance-version';
 import { SearchComponent } from './search/search.component';
@@ -16,9 +16,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-subsystem-list',
     templateUrl: './subsystem-list.component.html',
-    imports: [HeaderComponent, NgIf, MessagesComponent, NgFor, NgClass, FormsModule, SearchComponent, SubsystemItemComponent, AsyncPipe, TranslatePipe]
+    imports: [HeaderComponent, MessagesComponent, NgClass, FormsModule, SearchComponent, SubsystemItemComponent, AsyncPipe, TranslatePipe]
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private subsystemsService = inject(SubsystemsService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private viewportScroller = inject(ViewportScroller);
+
   @ViewChild(SearchComponent, { static: true }) search;
 
   message: string;
@@ -31,12 +36,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   instanceVersions: BehaviorSubject<InstanceVersion[]>;
   instanceVersion: string;
 
-  constructor(
-    private subsystemsService: SubsystemsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private viewportScroller: ViewportScroller
-  ) {
+  constructor() {
     // Geting previous scroll position
     this.routerScrollSubscription = this.router.events.pipe(
       filter(e => e instanceof Scroll)

@@ -1,27 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
 import { Service } from '../../service';
 import { SubsystemsService } from '../../subsystems.service';
 import { Router } from '@angular/router';
 import { AppConfig } from '../../app.config';
-import { NgIf, NgFor } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-subsystem-item',
     templateUrl: './subsystem-item.component.html',
     styleUrls: ['./subsystem-item.component.css'],
-    imports: [NgIf, NgFor, TranslatePipe]
+    imports: [TranslatePipe]
 })
 export class SubsystemItemComponent {
-  @Input() subsystem: Subsystem;
+  private subsystemsService = inject(SubsystemsService);
+  private router = inject(Router);
+  private config = inject(AppConfig);
 
-  constructor(
-    private subsystemsService: SubsystemsService,
-    private router: Router,
-    private config: AppConfig
-  ) { }
+  @Input() subsystem: Subsystem;
 
   getApiUrlBase(): string {
     return this.subsystemsService.getApiUrlBase();

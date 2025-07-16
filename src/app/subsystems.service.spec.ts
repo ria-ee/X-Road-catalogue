@@ -4,7 +4,8 @@ import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { Service } from './service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { tick, fakeAsync } from '@angular/core/testing';
+import { tick, fakeAsync, TestBed } from '@angular/core/testing';
+import { AppConfig } from './app.config';
 import { AppConfigMock } from './app.config-mock';
 import { InstanceVersion } from './instance-version';
 
@@ -17,9 +18,16 @@ describe('SubsystemsService', () => {
     httpClientSpy = {
       get: jest.fn()
     };
-    // TODO: Is there a better solution instead of casting to unknown?
-    config = new AppConfigMock(httpClientSpy as unknown as HttpClient);
-    service = new SubsystemsService(httpClientSpy as unknown as HttpClient, config);
+    TestBed.configureTestingModule({
+      providers: [
+        SubsystemsService,
+        { provide: AppConfigMock, useClass: AppConfigMock },
+        { provide: AppConfig, useClass: AppConfigMock },
+        { provide: HttpClient, useValue: httpClientSpy }
+      ]
+    });
+    config = TestBed.inject(AppConfigMock);
+    service = TestBed.inject(SubsystemsService);
   });
 
   it('should be created', () => {
