@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, BehaviorSubject, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { of, BehaviorSubject, Subject, Observable } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { Service } from './service';
@@ -26,15 +26,17 @@ export class SubsystemsService {
   private instance = '';
   private instanceVersion = '';
   private updateFilter = new Subject<string>();
+  private memberClass = "all";
+  private memberCode = "all";
 
   constructor() {
     // Debouncing update of filter
     this.updateFilter.pipe(
       debounceTime(this.config.getConfig('FILTER_DEBOUNCE')),
-      distinctUntilChanged()
+        distinctUntilChanged()
     ).subscribe(() => {
-      this.updateFiltered();
-    });
+        this.updateFiltered();
+      });
   }
 
   getDefaultInstance(): string {
@@ -60,36 +62,36 @@ export class SubsystemsService {
     ).pipe(
       catchError( () => {
         this.emitWarning('service.dataLoadingError');
-        // Let the app keep running by returning an empty result.
-        return of([]);
-      })
+          // Let the app keep running by returning an empty result.
+          return of([]);
+        })
     ).subscribe(subsystems => {
-      this.subsystemsSubject.next(this.setFullNames(subsystems));
-      this.updateFiltered();
-    });
+        this.subsystemsSubject.next(this.setFullNames(subsystems));
+        this.updateFiltered();
+      });
   }
 
   // Not "private" to be able to override in unit tests
   updateInstanceVersions() {
     this.instanceVersionsSubject.next([]);
     this.http.get<InstanceVersion[]>(this.apiUrlBase + this.config.getConfig('API_HISTORY'))
-    .pipe(
-      // Let the app keep running by returning an empty result.
-      catchError(() => of([]))
+      .pipe(
+        // Let the app keep running by returning an empty result.
+        catchError(() => of([]))
     ).subscribe(history => {
-      const versions: InstanceVersion[] = [];
-      for (const version of history) {
-        const matches = version.reportPath.match(/index_(\d+).json/);
-        if (matches && matches.length === 2) {
-          version.reportTimeCompact = matches[1];
-          versions.push(version);
-        }
+        const versions: InstanceVersion[] = [];
+        for (const version of history) {
+          const matches = version.reportPath.match(/index_(\d+).json/);
+          if (matches && matches.length === 2) {
+            version.reportTimeCompact = matches[1];
+            versions.push(version);
+          }
         if (versions.length >= this.config.getConfig('HISTORY_LIMIT')) {
-          break;
+            break;
+          }
         }
-      }
-      this.instanceVersionsSubject.next(versions);
-    });
+        this.instanceVersionsSubject.next(versions);
+      });
   }
 
   setInstance(instance: string, instanceVersion = '') {
@@ -165,13 +167,93 @@ export class SubsystemsService {
     return this.instanceVersion;
   }
 
+  getMemberClass(): string {
+    return this.memberClass;
+  }
+
+  setMemberClass(memberClass: string): void {
+    this.memberClass = memberClass;
+    this.updateFiltered();
+  }
+
+  getMemberClasses(): Observable<string[]> {
+    return this.subsystemsSubject.pipe(
+      map((subsystems) => {
+        const uniqueClasses = new Set<string>();
+        subsystems.forEach((subsystem) => {
+          if (subsystem.memberClass) {
+            uniqueClasses.add(subsystem.memberClass);
+          }
+        });
+        const result = Array.from(uniqueClasses).sort();
+        return result;
+      })
+    );
+  }
+
+  getMemberCode(): string {
+    return this.memberCode;
+  }
+
+  setMemberCode(memberCode: string): void {
+    this.memberCode = memberCode;
+    this.updateFiltered();
+  }
+
+  getMemberCodes(): Observable<string[]> {
+    return this.subsystemsSubject.pipe(
+      map((subsystems) => {
+        const uniqueCodes = new Set<string>();
+        const filteredSubsystems =
+          this.memberClass !== "all"
+            ? subsystems.filter(
+                (subsystem) => subsystem.memberClass === this.memberClass
+              )
+            : subsystems;
+
+        filteredSubsystems.forEach((subsystem) => {
+          if (subsystem.memberCode) {
+            uniqueCodes.add(subsystem.memberCode);
+          }
+        });
+
+        const result = Array.from(uniqueCodes).sort();
+        return result;
+      })
+    );
+  }
+
   private filteredSubsystems(): Subsystem[] {
     const filtered: Subsystem[] = [];
     let limit: number = this.limit;
     for (const origSubsystem of this.subsystemsSubject.value) {
       // Copy object to avoid overwriting methods and services arrays in subsystem object
-      const subsystem = Object.assign(Object.create(origSubsystem), origSubsystem);
-      if (this.nonEmpty && !subsystem.methods.length && !subsystem.services.length) {
+      const subsystem = Object.assign(
+        Object.create(origSubsystem),
+        origSubsystem
+      );
+
+      // Filter by member class
+      if (
+        this.memberClass !== "all" &&
+        subsystem.memberClass !== this.memberClass
+      ) {
+        continue;
+      }
+
+      // Filter by member code
+      if (
+        this.memberCode !== "all" &&
+        subsystem.memberCode !== this.memberCode
+      ) {
+        continue;
+      }
+
+      if (
+        this.nonEmpty &&
+        !subsystem.methods.length &&
+        !subsystem.services.length
+      ) {
         // Filtering out empty subsystems
         continue;
       }

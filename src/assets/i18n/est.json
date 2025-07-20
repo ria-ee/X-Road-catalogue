@@ -22,7 +22,9 @@
     "nameFilter": "Filtreeri nime järgi",
     "limit": "Alamsüsteeme lehel",
     "nonEmpty": "Näita vaid teenusepakkujaid",
-    "allOption": "Kõik"
+    "allOption": "Kõik",
+    "memberClass": "Liikme klass",
+    "memberCode": "Liikme kood"
   },
   "subsystem": {
     "heading": "Alamsüsteem {{subsystem}} teenuste ja WSDL kirjeldustega X-tee keskkonna \"{{instance}}\" jaoks",

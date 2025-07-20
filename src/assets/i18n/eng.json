@@ -22,7 +22,9 @@
     "nameFilter": "Filter by name",
     "limit": "Amount of subsystems to display",
     "nonEmpty": "Show only data producer subsystems",
-    "allOption": "All"
+    "allOption": "All",
+    "memberClass": "Member class",
+    "memberCode": "Member code"
   },
   "subsystem": {
     "heading": "Subsystem {{subsystem}} with methods and WSDL descriptions for X-tee instance \"{{instance}}\"",

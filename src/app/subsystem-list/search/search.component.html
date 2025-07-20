@@ -2,7 +2,7 @@
   <div class="card-header">
     {{'search.searchFilters' | translate}}
   </div>
-  <div class="card-body">
+  <div class="card-body d-flex flex-column gap-3">
     <div class="row">
       <div class="col-sm-6">
         <div class="form-group">
@@ -25,9 +25,49 @@
       </div>
       <div class="col-sm-3">
         <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="nonEmptyCheck"
+                  <input type="checkbox" class="form-check-input" id="nonEmptyCheck"
             [(ngModel)]="nonEmpty" (change)="setNonEmpty(nonEmpty)">
           <label class="form-check-label" for="nonEmptyCheck">{{'search.nonEmpty' | translate}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="memberClassSelect">{{
+            "search.memberClass" | translate
+          }}</label>
+          <select
+            class="form-control"
+            id="memberClassSelect"
+            [(ngModel)]="memberClass"
+            (change)="setMemberClass(memberClass)"
+          >
+            <option value="all">
+              {{ "search.allOption" | translate }} ({{ memberClasses.length }})
+            </option>
+            @for (memberClassOption of memberClasses; track memberClassOption) {
+            <option [value]="memberClassOption">{{ memberClassOption }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="memberCodeSelect">{{ "search.memberCode" | translate }}</label>
+          <select
+            class="form-control"
+            id="memberCodeSelect"
+            [(ngModel)]="memberCode"
+            (change)="setMemberCode(memberCode)"
+          >
+            <option value="all">
+              {{ "search.allOption" | translate }} ({{ memberCodes.length }})
+            </option>
+            @for (memberCodeOption of memberCodes; track memberCodeOption) {
+            <option [value]="memberCodeOption">{{ memberCodeOption }}</option>
+            }
+          </select>
         </div>
       </div>
     </div>
