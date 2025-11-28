@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from './header.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -10,8 +10,8 @@ describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
         HeaderComponent
@@ -22,7 +22,7 @@ describe('HeaderComponent', () => {
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
@@ -36,7 +36,7 @@ describe('HeaderComponent', () => {
 
   it('should set language', () => {
     const languagesService: LanguagesService = TestBed.inject(LanguagesService);
-    jest.spyOn(languagesService, 'setLang').mockReturnValue(null);
+    vi.spyOn(languagesService, 'setLang').mockReturnValue(null);
     component.setLang('xxx');
     expect(languagesService.setLang).toHaveBeenCalledWith('xxx');
   });

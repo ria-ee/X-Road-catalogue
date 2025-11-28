@@ -3,14 +3,15 @@ import { AppConfig } from './app.config';
 import { of } from 'rxjs';
 import { Config } from './config';
 import { TestBed } from '@angular/core/testing';
+import { MockInstance } from 'vitest';
 
 describe('AppConfig', () => {
   let config: AppConfig;
-  let httpClientSpy: { get: jest.SpyInstance };
+  let httpClientSpy: { get: MockInstance };
 
   beforeEach(() => {
     httpClientSpy = {
-      get: jest.fn()
+      get: vi.fn()
     };
     TestBed.configureTestingModule({
       providers: [

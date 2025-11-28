@@ -17,10 +17,7 @@
               "base": "dist/catalogue"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
-            "tsConfig": "src/tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -62,8 +59,14 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -73,8 +76,12 @@
           "configurations": {
             "production": {
               "buildTarget": "xtss-catalogue:build:production"
+            },
+            "development": {
+              "buildTarget": "xtss-catalogue:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
@@ -83,8 +90,19 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {}
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "coverage": true,
+            "coverageInclude": [
+              "app/**/*.ts"
+            ],
+            "coverageExclude": [
+              "app/**/*.spec.ts",
+              "app/**/environment.*ts"
+            ],
+            "coverageReporters": ["lcov", "text", "html"],
+            "watch": false
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

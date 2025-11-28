@@ -40,7 +40,7 @@
   <app-search></app-search>
   <br>
 
-    @for (subsystem of filteredSubsystems | async; track subsystem) {
+    @for (subsystem of filteredSubsystems | async; track subsystem.fullSubsystemName) {
       <app-subsystem-item [subsystem]="subsystem"></app-subsystem-item>
     }
     <br>

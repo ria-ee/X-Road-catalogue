@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -12,8 +12,8 @@ describe('SearchComponent', () => {
   let fixture: ComponentFixture<SearchComponent>;
   let subsystemsService: SubsystemsService;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         FormsModule,
         TranslateModule.forRoot(),
@@ -25,14 +25,14 @@ describe('SearchComponent', () => {
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    jest.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
-    jest.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
-    jest.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);
-    jest.spyOn(subsystemsService, 'setFilter').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
+    vi.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'setFilter').mockReturnValue(null);
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

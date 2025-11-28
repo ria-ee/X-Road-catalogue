@@ -19,8 +19,8 @@ export class LanguagesService {
   constructor() {
     const translate = this.translate;
 
-    this.selectedLang = this.getDefaultLang();
-    translate.setDefaultLang(this.config.getConfig('LANGUAGES')[this.selectedLang]);
+    this.selectedLang = this.getFallbackLang();
+    translate.setFallbackLang(this.config.getConfig('LANGUAGES')[this.selectedLang]);
     this.updateTitle();
   }
 
@@ -33,7 +33,7 @@ export class LanguagesService {
     }
   }
 
-  getDefaultLang(): string {
+  getFallbackLang(): string {
     if (window && window.localStorage && window.localStorage.getItem('lang')) {
       return window.localStorage.getItem('lang');
     }

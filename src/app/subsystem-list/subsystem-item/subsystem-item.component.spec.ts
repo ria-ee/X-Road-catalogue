@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
@@ -8,6 +8,7 @@ import { Method } from '../../method';
 import { AppConfigMock } from '../../app.config-mock';
 import { AppConfig } from '../../app.config';
 import { Service } from '../../service';
+import { Mocked } from 'vitest';
 
 const PREVIEW_SIZE = 5;
 
@@ -17,12 +18,12 @@ describe('SubsystemItemComponent', () => {
   let subsystemsService: SubsystemsService;
   //let router: Router;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     const routerSpy = {
-      navigateByUrl: jest.fn(),
+      navigateByUrl: vi.fn(),
     };
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
         SubsystemItemComponent
@@ -34,11 +35,11 @@ describe('SubsystemItemComponent', () => {
       ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    jest.spyOn(subsystemsService, 'getApiUrlBase').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'getApiUrlBase').mockReturnValue(null);
 
     fixture = TestBed.createComponent(SubsystemItemComponent);
     component = fixture.componentInstance;
@@ -100,13 +101,13 @@ describe('SubsystemItemComponent', () => {
   });
 
   it('should go to detail view', () => {
-    const injected = TestBed.inject(Router) as jest.Mocked<Router>;
+    const injected = TestBed.inject(Router) as Mocked<Router>;
     const spy = injected.navigateByUrl;
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB');
 
     spy.mockClear();
-    jest.spyOn(subsystemsService, 'getInstanceVersion').mockReturnValue('12345');
+    vi.spyOn(subsystemsService, 'getInstanceVersion').mockReturnValue('12345');
     component.showDetail();
     expect(spy).toHaveBeenCalledWith('/INST/CLASS/CODE/SUB?at=12345');
   });
