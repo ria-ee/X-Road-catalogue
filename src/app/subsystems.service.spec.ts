@@ -4,19 +4,20 @@ import { Subsystem } from './subsystem';
 import { Method } from './method';
 import { Service } from './service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { tick, fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { AppConfig } from './app.config';
 import { AppConfigMock } from './app.config-mock';
 import { InstanceVersion } from './instance-version';
+import { MockInstance } from 'vitest';
 
 describe('SubsystemsService', () => {
-  let httpClientSpy: { get: jest.SpyInstance };
+  let httpClientSpy: { get: MockInstance };
   let service: SubsystemsService;
   let config: AppConfigMock;
 
   beforeEach(() => {
     httpClientSpy = {
-      get: jest.fn()
+      get: vi.fn()
     };
     TestBed.configureTestingModule({
       providers: [
@@ -34,7 +35,7 @@ describe('SubsystemsService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should set instance on HTTP OK', fakeAsync(() => {
+  it('should set instance on HTTP OK', async () => {
     const sourceSubsystems = [
       {
         memberClass: 'CLASS',
@@ -135,7 +136,7 @@ describe('SubsystemsService', () => {
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index.json');
     expect(service.subsystemsSubject.value).toEqual(expectedSubsystems);
     // No filters yet
@@ -143,11 +144,11 @@ describe('SubsystemsService', () => {
 
     service.setInstance('EE', '12345');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index_12345.json');
-  }));
+  });
 
-  it('should set instance on HTTP ERROR', fakeAsync(() => {
+  it('should set instance on HTTP ERROR', async () => {
     const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
     httpClientSpy.get.mockReturnValue(defer(() => Promise.reject(errorResponse)));
     // Setting value to test resetting of values
@@ -158,13 +159,13 @@ describe('SubsystemsService', () => {
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/index.json');
     expect(service.subsystemsSubject.value).toEqual([]);
     expect(service.filteredSubsystemsSubject.value).toEqual([]);
-  }));
+  });
 
-  it('should set instance versions on HTTP OK', fakeAsync(() => {
+  it('should set instance versions on HTTP OK', async () => {
     const sourceHistory = [
       {
         reportTime: '2019-04-15 08:01:41',
@@ -190,7 +191,7 @@ describe('SubsystemsService', () => {
 
     service.setInstance('EE', '');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/history.json');
     expect(service.instanceVersionsSubject.value).toEqual(expectedInstanceVersions);
 
@@ -206,13 +207,13 @@ describe('SubsystemsService', () => {
     httpClientSpy.get.mockReturnValue(of(longHistory));
     service.setInstance('EE');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(longHistory.length).toBe(config.getConfig('HISTORY_LIMIT') + 1);
     expect(service.instanceVersionsSubject.value.length).toEqual(config.getConfig('HISTORY_LIMIT'));
 
-  }));
+  });
 
-  it('should set instance versions on HTTP ERROR', fakeAsync(() => {
+  it('should set instance versions on HTTP ERROR', async () => {
     const errorResponse = new HttpErrorResponse({error: 'error', status: 404, statusText: 'Not Found'});
     httpClientSpy.get.mockReturnValue(defer(() => Promise.reject(errorResponse)));
     // Setting value to test resetting of values
@@ -222,10 +223,10 @@ describe('SubsystemsService', () => {
 
     service.setInstance('EE');
     // Waiting for asynchronous work
-    tick();
+    await Promise.resolve();
     expect(httpClientSpy.get).toHaveBeenCalledWith('https://www.x-tee.ee/catalogue/EE/wsdls/history.json');
     expect(service.instanceVersionsSubject.value).toEqual([]);
-  }));
+  });
 
   it('should filter nonEmpty subsystems', () => {
     const sourceSubsystems = [
@@ -292,7 +293,7 @@ describe('SubsystemsService', () => {
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems);
   });
 
-  it('should set filter for subsystems', fakeAsync(() => {
+  it('should set filter for subsystems', async () => {
     const sourceSubsystems = [
       {
         memberClass: 'CLASS',
@@ -412,22 +413,25 @@ describe('SubsystemsService', () => {
     ];
     service.subsystemsSubject.next(sourceSubsystems);
 
+    // Filter starts changing after FILTER_DEBOUNCE time. Adding some extra time to make sure that process had finished.
+    const filterUpdateTime = config.getConfig('FILTER_DEBOUNCE') + 50;
+
     // Search member without methods
     service.setFilter('MEMBER2');
     // Waiting for a debounce time to apply filter
-    tick(config.getConfig('FILTER_DEBOUNCE'));
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems1);
 
     // Search member with multiple methods
     service.setFilter('SERVICE2');
     // Waiting for a debounce time to apply filter
-    tick(config.getConfig('FILTER_DEBOUNCE'));
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems2);
 
     // Search member with multiple services
     service.setFilter('RESTSRV2');
     // Waiting for a debounce time to apply filter
-    tick(config.getConfig('FILTER_DEBOUNCE'));
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems3);
 
     // Search with limit
@@ -450,9 +454,9 @@ describe('SubsystemsService', () => {
     service.subsystemsSubject.next(sourceSubsystems2);
     service.setFilter('MEMBER');
     // Waiting for a debounce time to apply filter
-    tick(config.getConfig('FILTER_DEBOUNCE'));
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
     expect(service.filteredSubsystemsSubject.value.length).toEqual(config.getConfig('DEFAULT_LIMIT'));
-  }));
+  });
 
   it('should set limit', () => {
     const sourceSubsystems = [];
