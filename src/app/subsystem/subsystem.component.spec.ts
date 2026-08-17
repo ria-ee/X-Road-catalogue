@@ -1,40 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { Component, Input } from '@angular/core';
 import { SubsystemComponent } from './subsystem.component';
 import { provideHttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute, Scroll } from '@angular/router';
+import { Router, ActivatedRoute, Scroll, NavigationEnd } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { SubsystemsService } from '../subsystems.service';
 import { ViewportScroller } from '@angular/common';
 import { AppConfigMock } from '../app.config-mock';
 import { AppConfig } from '../app.config';
-import { Mocked } from 'vitest';
+import { Mocked, MockInstance } from 'vitest';
+import { Subsystem } from '../subsystem';
 
 @Component({selector: 'app-header', template: ''})
 class HeaderStubComponent {}
 @Component({selector: 'app-messages', template: ''})
 class MessagesStubComponent {
-  @Input() message: string;
-  @Input() subsystemId: string;
+  @Input() message!: string;
+  @Input() subsystemId!: string;
 }
 
 describe('SubsystemComponent', () => {
   let component: SubsystemComponent;
   let fixture: ComponentFixture<SubsystemComponent>;
-  let getInstanceSpy;
-  let getInstancesSpy;
+  let getInstanceSpy: MockInstance;
+  let getInstancesSpy: MockInstance;
   let subsystemsService: SubsystemsService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
         SubsystemComponent,
         HeaderStubComponent,
         MessagesStubComponent
       ],
       providers: [
+        provideTranslateService(),
         { provide: ActivatedRoute, useValue: {
           params: of({
             instance: 'INST',
@@ -44,7 +45,7 @@ describe('SubsystemComponent', () => {
           })
         }},
         { provide: Router, useValue: {
-            events: of(new Scroll(null, [11, 12], null)),
+            events: of(new Scroll(new NavigationEnd(0, '/', '/'), [11, 12], null)),
             navigateByUrl: vi.fn()
         }},
         { provide: AppConfig, useClass: AppConfigMock },
@@ -59,9 +60,9 @@ describe('SubsystemComponent', () => {
     getInstanceSpy = vi.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
     getInstancesSpy = vi.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
     vi.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {/* do nothing */});
-    vi.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'setInstance').mockImplementation(() => { /* noop */ });
     vi.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
-    subsystemsService.subsystemsSubject = new BehaviorSubject([
+    subsystemsService.subsystemsSubject = new BehaviorSubject<Subsystem[]>([
       {
         memberClass: '',
         subsystemCode: '',
@@ -109,7 +110,7 @@ describe('SubsystemComponent', () => {
   });
 
   it('should detect incorrect subsystem', () => {
-    subsystemsService.subsystemsSubject = new BehaviorSubject([
+    subsystemsService.subsystemsSubject = new BehaviorSubject<Subsystem[]>([
       {
         memberClass: '',
         subsystemCode: '',
@@ -179,12 +180,12 @@ describe('SubsystemComponent (with instance version)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
         SubsystemComponent,
         HeaderStubComponent,
         MessagesStubComponent
       ],
       providers: [
+        provideTranslateService(),
         { provide: ActivatedRoute, useValue: {
           params: of({
             instance: 'INST',
@@ -199,7 +200,7 @@ describe('SubsystemComponent (with instance version)', () => {
           }
         }},
         { provide: Router, useValue: {
-            events: of(new Scroll(null, [11, 12], null)),
+            events: of(new Scroll(new NavigationEnd(0, '/', '/'), [11, 12], null)),
             navigateByUrl: vi.fn()
         }},
         { provide: AppConfig, useClass: AppConfigMock },
@@ -214,9 +215,9 @@ describe('SubsystemComponent (with instance version)', () => {
     vi.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
     vi.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
     vi.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {/* do nothing */});
-    vi.spyOn(subsystemsService, 'setInstance').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'setInstance').mockImplementation(() => { /* noop */ });
     vi.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
-    subsystemsService.subsystemsSubject = new BehaviorSubject([
+    subsystemsService.subsystemsSubject = new BehaviorSubject<Subsystem[]>([
       {
         memberClass: '',
         subsystemCode: '',

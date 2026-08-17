@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Subsystem } from '../subsystem';
 import { SubsystemsService } from '../subsystems.service';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
@@ -16,6 +16,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-subsystem-list',
     templateUrl: './subsystem-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [HeaderComponent, MessagesComponent, NgClass, FormsModule, SearchComponent, SubsystemItemComponent, AsyncPipe, TranslatePipe]
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -24,17 +25,17 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
   private router = inject(Router);
   private viewportScroller = inject(ViewportScroller);
 
-  @ViewChild(SearchComponent, { static: true }) search;
+  @ViewChild(SearchComponent, { static: true }) search!: SearchComponent;
 
-  message: string;
-  scrollSubject = new BehaviorSubject<[number, number]>(null);
+  message = '';
+  scrollSubject = new BehaviorSubject<[number, number] | null>(null);
   routerScrollSubscription: Subscription;
-  routeSubscription: Subscription;
-  warningsSubscription: Subscription;
-  scrollSubjectSubscription: Subscription;
-  filteredSubsystems: BehaviorSubject<Subsystem[]>;
-  instanceVersions: BehaviorSubject<InstanceVersion[]>;
-  instanceVersion: string;
+  routeSubscription!: Subscription;
+  warningsSubscription!: Subscription;
+  scrollSubjectSubscription!: Subscription;
+  filteredSubsystems!: BehaviorSubject<Subsystem[]>;
+  instanceVersions!: BehaviorSubject<InstanceVersion[]>;
+  instanceVersion = '';
 
   constructor() {
     // Geting previous scroll position

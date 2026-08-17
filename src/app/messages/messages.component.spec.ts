@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { MessagesComponent } from './messages.component';
 
@@ -10,10 +10,10 @@ describe('MessagesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
         MessagesComponent
       ],
       providers: [
+        provideTranslateService(),
         provideHttpClient()
       ]
     })

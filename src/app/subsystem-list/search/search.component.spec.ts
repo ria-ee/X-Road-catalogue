@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent } from './search.component';
@@ -16,10 +16,10 @@ describe('SearchComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        TranslateModule.forRoot(),
         SearchComponent
       ],
       providers: [
+        provideTranslateService(),
         { provide: AppConfig, useClass: AppConfigMock },
         provideHttpClient()
       ]
@@ -30,9 +30,9 @@ describe('SearchComponent', () => {
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
     vi.spyOn(subsystemsService, 'getLimits').mockReturnValue({10: 10, 20: 20});
-    vi.spyOn(subsystemsService, 'setNonEmpty').mockReturnValue(null);
-    vi.spyOn(subsystemsService, 'setLimit').mockReturnValue(null);
-    vi.spyOn(subsystemsService, 'setFilter').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'setNonEmpty').mockImplementation(() => { /* noop */ });
+    vi.spyOn(subsystemsService, 'setLimit').mockImplementation(() => { /* noop */ });
+    vi.spyOn(subsystemsService, 'setFilter').mockImplementation(() => { /* noop */ });
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

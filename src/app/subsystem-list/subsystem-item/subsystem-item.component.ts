@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Subsystem } from '../../subsystem';
 import { Method } from '../../method';
 import { Service } from '../../service';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     selector: 'app-subsystem-item',
     templateUrl: './subsystem-item.component.html',
     styleUrls: ['./subsystem-item.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [TranslatePipe]
 })
 export class SubsystemItemComponent {
@@ -19,7 +20,7 @@ export class SubsystemItemComponent {
   private router = inject(Router);
   private config = inject(AppConfig);
 
-  @Input() subsystem: Subsystem;
+  @Input() subsystem!: Subsystem;
 
   getApiUrlBase(): string {
     return this.subsystemsService.getApiUrlBase();

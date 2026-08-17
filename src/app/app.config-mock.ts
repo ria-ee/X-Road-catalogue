@@ -29,7 +29,7 @@ export class AppConfigMock extends AppConfig {
         FILTER_DEBOUNCE: 20
     };
 
-    public getConfig(key: string) {
+    public override getConfig<K extends keyof Config>(key: K): Config[K] {
         return this.configMock[key];
     }
 }

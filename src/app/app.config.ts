@@ -6,18 +6,12 @@ import { Config } from './config';
 export class AppConfig {
     private http = inject(HttpClient);
 
-    private config: Config = null;
+    private config!: Config;
 
-    /**
-     * Use to get the data found in the config file
-     */
-    public getConfig(key: string) {
+    public getConfig<K extends keyof Config>(key: K): Config[K] {
         return this.config[key];
     }
 
-    /**
-     * This method loads "config.json" to get all configuration variables
-     */
     public load() {
         return new Promise(resolve => {
             // Not handling errors. App cannot work without valid configuration
