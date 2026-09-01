@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { SubsystemItemComponent } from './subsystem-item.component';
 import { SubsystemsService } from '../../subsystems.service';
@@ -16,7 +16,6 @@ describe('SubsystemItemComponent', () => {
   let component: SubsystemItemComponent;
   let fixture: ComponentFixture<SubsystemItemComponent>;
   let subsystemsService: SubsystemsService;
-  //let router: Router;
 
   beforeEach(async () => {
     const routerSpy = {
@@ -25,10 +24,10 @@ describe('SubsystemItemComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
         SubsystemItemComponent
       ],
       providers: [
+        provideTranslateService(),
         { provide: Router, useValue: routerSpy },
         { provide: AppConfig, useClass: AppConfigMock },
         provideHttpClient()
@@ -39,7 +38,7 @@ describe('SubsystemItemComponent', () => {
 
   beforeEach(() => {
     subsystemsService = TestBed.inject(SubsystemsService);
-    vi.spyOn(subsystemsService, 'getApiUrlBase').mockReturnValue(null);
+    vi.spyOn(subsystemsService, 'getApiUrlBase').mockReturnValue('');
 
     fixture = TestBed.createComponent(SubsystemItemComponent);
     component = fixture.componentInstance;
@@ -54,7 +53,6 @@ describe('SubsystemItemComponent', () => {
       methods: [],
       services: []
     };
-    //router = TestBed.inject(Router);
     TestBed.inject(Router);
     fixture.detectChanges();
   });

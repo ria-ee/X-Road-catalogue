@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { LanguagesService } from '../languages.service';
 import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgClass]
 })
 export class HeaderComponent {

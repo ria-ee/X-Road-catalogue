@@ -1,7 +1,7 @@
 import { enableProdMode, provideAppInitializer, inject, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { environment } from './environments/environment';
 import { AppConfig } from './app/app.config';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app/app-routing.module';
@@ -25,6 +25,6 @@ bootstrapApplication(AppComponent, {
             const initializerFn = ((config: AppConfig) => () => config.load())(inject(AppConfig));
             return initializerFn();
         }),
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ]
 }).catch(err => console.error(err));

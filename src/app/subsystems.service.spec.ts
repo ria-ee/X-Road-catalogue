@@ -288,7 +288,7 @@ describe('SubsystemsService', () => {
         services: [{} as Service]
       }
     ];
-    service.subsystemsSubject.next(sourceSubsystems);
+    service.subsystemsSubject.next(sourceSubsystems as Subsystem[]);
     service.setNonEmpty(true);
     expect(service.filteredSubsystemsSubject.value).toEqual(expectedSubsystems);
   });
@@ -411,7 +411,7 @@ describe('SubsystemsService', () => {
         ]
       }
     ];
-    service.subsystemsSubject.next(sourceSubsystems);
+    service.subsystemsSubject.next(sourceSubsystems as Subsystem[]);
 
     // Filter starts changing after FILTER_DEBOUNCE time. Adding some extra time to make sure that process had finished.
     const filterUpdateTime = config.getConfig('FILTER_DEBOUNCE') + 50;
@@ -451,7 +451,7 @@ describe('SubsystemsService', () => {
         }
       );
     }
-    service.subsystemsSubject.next(sourceSubsystems2);
+    service.subsystemsSubject.next(sourceSubsystems2 as Subsystem[]);
     service.setFilter('MEMBER');
     // Waiting for a debounce time to apply filter
     await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
@@ -473,7 +473,7 @@ describe('SubsystemsService', () => {
         }
       );
     }
-    service.subsystemsSubject.next(sourceSubsystems);
+    service.subsystemsSubject.next(sourceSubsystems as unknown as Subsystem[]);
 
     service.setLimit('all');
     expect(service.filteredSubsystemsSubject.value.length).toEqual(51);

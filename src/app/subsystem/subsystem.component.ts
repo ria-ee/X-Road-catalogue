@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SubsystemsService } from '../subsystems.service';
 import { Subsystem } from '../subsystem';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-subsystem',
     templateUrl: './subsystem.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [HeaderComponent, MessagesComponent, NgClass, AsyncPipe, TranslatePipe]
 })
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -24,14 +25,14 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
   message = '';
   // Contains instance from route.params (for displaying warning)
   paramsInstance = '';
-  subsystemSubject = new BehaviorSubject<Subsystem>(null);
-  private scrollSubject = new BehaviorSubject<[number, number]>(null);
+  subsystemSubject = new BehaviorSubject<Subsystem | null>(null);
+  private scrollSubject = new BehaviorSubject<[number, number] | null>(null);
   private routerScrollSubscription: Subscription;
-  private routeSubscription: Subscription;
-  private warningsSubscription: Subscription;
-  private scrollSubjectSubscription: Subscription;
-  private subsystemsSubscription: Subscription;
-  private instanceVersion: string;
+  private routeSubscription!: Subscription;
+  private warningsSubscription!: Subscription;
+  private scrollSubjectSubscription!: Subscription;
+  private subsystemsSubscription!: Subscription;
+  private instanceVersion = '';
 
   constructor() {
     // Geting previous scroll position
@@ -99,7 +100,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!subsystem && !this.message && subsystems.length) {
           this.message = 'subsystem.subsystemNotFoundWarning';
         } else {
-          this.subsystemSubject.next(subsystem);
+          this.subsystemSubject.next(subsystem ?? null);
         }
       });
     });
@@ -124,7 +125,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private getSubsystem(subsystems: Subsystem[], name: string): Subsystem {
+  private getSubsystem(subsystems: Subsystem[], name: string): Subsystem | undefined {
     return subsystems.find((element) => element.fullSubsystemName === name);
   }
 }

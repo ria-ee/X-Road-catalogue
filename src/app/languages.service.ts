@@ -14,14 +14,13 @@ export class LanguagesService {
   private config = inject(AppConfig);
 
   private selectedLang = '';
-  private translateSubscription: Subscription;
+  private translateSubscription!: Subscription;
 
   constructor() {
-    const translate = this.translate;
-
     this.selectedLang = this.getFallbackLang();
-    translate.setFallbackLang(this.config.getConfig('LANGUAGES')[this.selectedLang]);
-    this.updateTitle();
+    const langCode = this.config.getConfig('LANGUAGES')[this.selectedLang];
+    this.translate.setFallbackLang(langCode);
+    this.translate.use(langCode).subscribe(() => this.updateTitle());
   }
 
   updateTitle(): void {
@@ -35,7 +34,7 @@ export class LanguagesService {
 
   getFallbackLang(): string {
     if (window && window.localStorage && window.localStorage.getItem('lang')) {
-      return window.localStorage.getItem('lang');
+      return window.localStorage.getItem('lang')!;
     }
     return Object.keys(this.config.getConfig('LANGUAGES'))[0];
   }

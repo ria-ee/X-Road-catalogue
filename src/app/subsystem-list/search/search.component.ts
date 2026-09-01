@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SubsystemsService } from '../../subsystems.service';
 import { FormsModule } from '@angular/forms';
 
@@ -7,6 +7,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, TranslatePipe]
 })
 export class SearchComponent implements OnInit {
@@ -14,8 +15,8 @@ export class SearchComponent implements OnInit {
 
   limit: string;
   limits: Record<string, number>;
-  nonEmpty: boolean;
-  filter: string;
+  nonEmpty = false;
+  filter = '';
 
   constructor() {
     this.limit = this.subsystemsService.getLimit();
