@@ -1,13 +1,17 @@
+import { TestBed } from '@angular/core/testing';
 import { AppRoutingModule } from './app-routing.module';
 
 describe('AppRoutingModule', () => {
-  let module: AppRoutingModule;
-
   beforeEach(() => {
-    module = new AppRoutingModule();
+    TestBed.configureTestingModule({
+      imports: [
+        AppRoutingModule
+      ]
+    });
   });
 
   it('should be created', () => {
-    expect(module).toBeTruthy();
+    // Instantiating through DI, so that the generated module factory is used
+    expect(TestBed.inject(AppRoutingModule)).toBeTruthy();
   });
 });

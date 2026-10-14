@@ -520,4 +520,55 @@ describe('SubsystemsService', () => {
     // Default value
     expect(service.getApiUrlBase()).toEqual('');
   });
+
+  it('should not reset subsystems when there are no values', async () => {
+    const nextSpy = vi.spyOn(service.subsystemsSubject, 'next');
+    httpClientSpy.get.mockReturnValue(of([]));
+    // Disabling updateInstanceVersions()
+    service.updateInstanceVersions = () => {/* do nothing */};
+
+    // subsystemsSubject is empty, so no reset should happen
+    service.setInstance('EE', '');
+    // Waiting for asynchronous work
+    await Promise.resolve();
+    // Only the result of the request, no reset before it
+    expect(nextSpy).toHaveBeenCalledTimes(1);
+    expect(service.subsystemsSubject.value).toEqual([]);
+  });
+
+  it('should not update filter when it does not change', async () => {
+    const sourceSubsystems = [
+      {
+        memberClass: 'CLASS',
+        subsystemCode: 'SYSTEM',
+        xRoadInstance: 'INST',
+        subsystemStatus: 'OK',
+        servicesStatus: 'ERROR',
+        memberCode: 'MEMBER',
+        fullSubsystemName: 'INST/CLASS/MEMBER/SYSTEM',
+        methods: [],
+        services: []
+      }
+    ];
+    service.subsystemsSubject.next(sourceSubsystems as Subsystem[]);
+
+    // Filter starts changing after FILTER_DEBOUNCE time. Adding some extra time to make sure that process had finished.
+    const filterUpdateTime = config.getConfig('FILTER_DEBOUNCE') + 50;
+
+    service.setFilter('MEMBER');
+    // Waiting for a debounce time to apply filter
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
+    expect(service.getfilter()).toEqual('MEMBER');
+
+    // Spying on the debounced subject, because distinctUntilChanged() hides
+    // a repeated value from filteredSubsystemsSubject anyway
+    const updateFilterSpy = vi.spyOn(service['updateFilter'], 'next');
+    const filteredSpy = vi.spyOn(service.filteredSubsystemsSubject, 'next');
+    // Same filter (trimmed) should not trigger an update
+    service.setFilter('  MEMBER  ');
+    await new Promise(resolve => setTimeout(resolve, filterUpdateTime));
+    expect(updateFilterSpy).not.toHaveBeenCalled();
+    expect(filteredSpy).not.toHaveBeenCalled();
+    expect(service.getfilter()).toEqual('MEMBER');
+  });
 });
