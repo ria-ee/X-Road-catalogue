@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
+  <button type="button" class="card-header unstyledButton pointerCursor" (click)="showDetail()">
     {{subsystem.fullSubsystemName}}
     @if (!subsystem.methods.length && !subsystem.services.length && subsystem.subsystemStatus === 'OK') {
       <span class="badge bg-secondary">{{'subsystem.statusEmpty' | translate}}</span>
@@ -7,7 +7,7 @@
     @if (subsystem.subsystemStatus === 'ERROR') {
       <span class="badge bg-danger">{{'subsystem.statusError' | translate}}</span>
     }
-  </div>
+  </button>
   @if (subsystem.subsystemStatus === 'ERROR') {
     <div class="card-body">
       <p>{{'subsystem.statusErrorInfo' | translate}}</p>
@@ -42,9 +42,9 @@
         </p>
       }
       @if (getMethodsNotInPreview() > 0) {
-        <p class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
+        <button type="button" class="unstyledButton pointerCursor mb-3" (click)="showDetail()">
           {{'subsystem.moreMethods' | translate:{"count": getMethodsNotInPreview()} }}
-        </p>
+        </button>
       }
       @if (subsystem.services.length) {
         <h6 class="card-subtitle text-muted">REST</h6>
@@ -68,9 +68,9 @@
         </p>
       }
       @if (getServicesNotInPreview() > 0) {
-        <p class="pointerCursor" (click)="showDetail()" (keydown.enter)="showDetail()" tabindex="0" role="button">
+        <button type="button" class="unstyledButton pointerCursor mb-3" (click)="showDetail()">
           {{'subsystem.moreMethods' | translate:{"count": getServicesNotInPreview()} }}
-        </p>
+        </button>
       }
     </div>
   }

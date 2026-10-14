@@ -1,3 +1,26 @@
 .pointerCursor {
     cursor: pointer;
 }
+
+/* Resetting default button styling, so it can be used in place of a clickable div/p
+   without changing the layout. */
+.unstyledButton {
+    display: block;
+    width: 100%;
+    text-align: inherit;
+    font: inherit;
+    /* .card-header never sets these sides, so always clearing the native button border here */
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
+/* Not resetting padding/border-bottom/background/color when combined with .card-header:
+   that class already provides the right values, and (being equal specificity)
+   whichever rule comes later in the stylesheet would otherwise win. */
+.unstyledButton:not(.card-header) {
+    padding: 0;
+    border-bottom: 0;
+    background: none;
+    color: inherit;
+}

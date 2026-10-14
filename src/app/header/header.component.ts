@@ -9,7 +9,7 @@ import { NgClass } from '@angular/common';
     imports: [NgClass]
 })
 export class HeaderComponent {
-  private languagesService = inject(LanguagesService);
+  private readonly languagesService = inject(LanguagesService);
 
 
   getLangs(): string[] {

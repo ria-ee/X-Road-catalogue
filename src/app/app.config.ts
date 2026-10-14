@@ -4,7 +4,7 @@ import { Config } from './config';
 
 @Injectable()
 export class AppConfig {
-    private http = inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
     private config!: Config;
 

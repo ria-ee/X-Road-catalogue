@@ -1,0 +1,6 @@
+/* .btn adds a 1px transparent border (top+bottom), making the button 2px taller
+   than the plain link it replaces. Removing it so the button's box matches the
+   surrounding text exactly. */
+.inlineLinkButton {
+    border: 0;
+}
