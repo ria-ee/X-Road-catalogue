@@ -94,11 +94,11 @@
           "options": {
             "coverage": true,
             "coverageInclude": [
-              "app/**/*.ts"
+              "src/app/**/*.ts"
             ],
             "coverageExclude": [
-              "app/**/*.spec.ts",
-              "app/**/environment.*ts"
+              "src/app/**/*.spec.ts",
+              "src/environments/**"
             ],
             "coverageReporters": ["lcov", "text", "html"],
             "watch": false
