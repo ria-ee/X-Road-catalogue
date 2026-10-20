@@ -3,8 +3,8 @@
     <ul class="nav justify-content-end">
       @for (lang of getLangs(); track lang) {
         <li class="nav-item">
-          <a [ngClass]="getLang() === lang ? 'nav-link fw-bold' : 'nav-link'"
-          onClick="return false" href="#" (click)="setLang(lang)">{{lang}}</a>
+          <button type="button" [ngClass]="getLang() === lang ? 'nav-link fw-bold' : 'nav-link'"
+          (click)="setLang(lang)">{{lang}}</button>
         </li>
       }
     </ul>

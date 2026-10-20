@@ -16,18 +16,18 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [HeaderComponent, MessagesComponent, NgClass, AsyncPipe, TranslatePipe]
 })
 export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
-  private subsystemsService = inject(SubsystemsService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private viewportScroller = inject(ViewportScroller);
+  private readonly subsystemsService = inject(SubsystemsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly viewportScroller = inject(ViewportScroller);
 
   subsystemId = '';
   message = '';
   // Contains instance from route.params (for displaying warning)
   paramsInstance = '';
   subsystemSubject = new BehaviorSubject<Subsystem | null>(null);
-  private scrollSubject = new BehaviorSubject<[number, number] | null>(null);
-  private routerScrollSubscription: Subscription;
+  private readonly scrollSubject = new BehaviorSubject<[number, number] | null>(null);
+  private readonly routerScrollSubscription: Subscription;
   private routeSubscription!: Subscription;
   private warningsSubscription!: Subscription;
   private scrollSubjectSubscription!: Subscription;
@@ -39,8 +39,8 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
     this.routerScrollSubscription = this.router.events.pipe(
       filter(e => e instanceof Scroll)
     ).subscribe(async (e) => {
-      if ((e as Scroll).position) {
-        this.scrollSubject.next((e as Scroll).position);
+      if (e.position) {
+        this.scrollSubject.next(e.position);
       }
     });
   }
@@ -82,7 +82,7 @@ export class SubsystemComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       // Set selected instance version
-      if (this.route.snapshot && this.route.snapshot.queryParams.at) {
+      if (this.route.snapshot?.queryParams.at) {
         this.instanceVersion = this.route.snapshot.queryParams.at;
       } else {
         this.instanceVersion = '';

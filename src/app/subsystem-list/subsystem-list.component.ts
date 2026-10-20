@@ -16,14 +16,15 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-subsystem-list',
     templateUrl: './subsystem-list.component.html',
+    styleUrls: ['./subsystem-list.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [HeaderComponent, MessagesComponent, NgClass, FormsModule, SearchComponent, SubsystemItemComponent, AsyncPipe, TranslatePipe]
 })
 export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private subsystemsService = inject(SubsystemsService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private viewportScroller = inject(ViewportScroller);
+  private readonly subsystemsService = inject(SubsystemsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly viewportScroller = inject(ViewportScroller);
 
   @ViewChild(SearchComponent, { static: true }) search!: SearchComponent;
 
@@ -42,8 +43,8 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.routerScrollSubscription = this.router.events.pipe(
       filter(e => e instanceof Scroll)
     ).subscribe(async (e) => {
-      if ((e as Scroll).position) {
-        this.scrollSubject.next((e as Scroll).position);
+      if (e.position) {
+        this.scrollSubject.next(e.position);
       }
     });
   }
@@ -129,7 +130,7 @@ export class SubsystemListComponent implements OnInit, AfterViewInit, OnDestroy 
       }
 
       // Set selected instance version
-      if (this.route.snapshot && this.route.snapshot.queryParams.at) {
+      if (this.route.snapshot?.queryParams.at) {
         this.instanceVersion = this.route.snapshot.queryParams.at;
       } else {
         this.instanceVersion = '';

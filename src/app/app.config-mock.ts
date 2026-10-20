@@ -4,7 +4,7 @@ import { Config } from './config';
 
 @Injectable()
 export class AppConfigMock extends AppConfig {
-    private configMock: Config = {
+    private readonly configMock: Config = {
         MAX_LIMIT: 1000000,
         DEFAULT_LIMIT: 10,
         LIMITS: {

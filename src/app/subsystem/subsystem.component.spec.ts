@@ -240,3 +240,65 @@ describe('SubsystemComponent (with instance version)', () => {
     expect(TestBed.inject(Router).navigateByUrl).toHaveBeenCalledWith('/INST?at=12345');
   });
 });
+
+describe('SubsystemComponent (without scroll position)', () => {
+  let component: SubsystemComponent;
+  let fixture: ComponentFixture<SubsystemComponent>;
+  let subsystemsService: SubsystemsService;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        SubsystemComponent,
+        HeaderStubComponent,
+        MessagesStubComponent
+      ],
+      providers: [
+        provideTranslateService(),
+        { provide: ActivatedRoute, useValue: {
+          params: of({
+            instance: 'INST',
+            class: 'CLASS',
+            member: 'MEMBER',
+            subsystem: 'SYSTEM'
+          })
+        }},
+        { provide: Router, useValue: {
+            // No scroll position to restore
+            events: of(new Scroll(new NavigationEnd(0, '/', '/'), null, null)),
+            navigateByUrl: vi.fn()
+        }},
+        { provide: AppConfig, useClass: AppConfigMock },
+        provideHttpClient()
+      ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    subsystemsService = TestBed.inject(SubsystemsService);
+    vi.spyOn(subsystemsService, 'getInstance').mockReturnValue('INST');
+    vi.spyOn(subsystemsService, 'getInstances').mockReturnValue(['INST']);
+    vi.spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition').mockImplementation(() => {/* do nothing */});
+    vi.spyOn(subsystemsService, 'setInstance').mockImplementation(() => { /* noop */ });
+    vi.spyOn(TestBed.inject(SubsystemsService), 'getApiUrlBase').mockReturnValue('base');
+  });
+
+  it('should not scroll when there is no position to restore', () => {
+    subsystemsService.subsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
+    fixture = TestBed.createComponent(SubsystemComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(TestBed.inject(ViewportScroller).scrollToPosition).not.toHaveBeenCalled();
+  });
+
+  it('should emit no subsystem when subsystem list is empty', () => {
+    subsystemsService.subsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
+    fixture = TestBed.createComponent(SubsystemComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    // No warning, because the list is still empty (data not loaded yet)
+    expect(component.message).toBe('');
+    expect(component.subsystemSubject.value).toBeNull();
+  });
+});

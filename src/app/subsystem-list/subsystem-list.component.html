@@ -11,13 +11,13 @@
 
   <app-messages [message]="message"></app-messages>
 
-  <div class="btn-group" role="group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
+  <fieldset class="btn-group" [attr.aria-label]="'subsystemList.selectInstance' | translate">
     @for (instance of getInstances(); track instance) {
       <button
         type="button" [ngClass]="getInstance() === instance ? 'btn btn-primary' : 'btn btn-secondary'"
       (click)="switchInstance(instance)">{{instance}}</button>
     }
-  </div>
+  </fieldset>
 
   <div class="card">
     <div class="card-header">
@@ -48,8 +48,8 @@
       @if (isPartialList()) {
         <p>
           {{'subsystemList.moreSubsystems' | translate}}<br>
-          <a class="fw-bold"
-          onClick="return false" href="#" (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</a>.
+          <button type="button" class="btn btn-link p-0 align-baseline fw-bold inlineLinkButton"
+          (click)="setMaxLimit()">{{'subsystemList.showAll' | translate}}</button>.
         </p>
       }
 

@@ -9,9 +9,9 @@ import { AppConfig } from './app.config';
   providedIn: 'root'
 })
 export class LanguagesService {
-  private translate = inject(TranslateService);
-  private title = inject(Title);
-  private config = inject(AppConfig);
+  private readonly translate = inject(TranslateService);
+  private readonly title = inject(Title);
+  private readonly config = inject(AppConfig);
 
   private selectedLang = '';
   private translateSubscription!: Subscription;
@@ -33,8 +33,9 @@ export class LanguagesService {
   }
 
   getFallbackLang(): string {
-    if (window && window.localStorage && window.localStorage.getItem('lang')) {
-      return window.localStorage.getItem('lang')!;
+    const storedLang = window?.localStorage?.getItem('lang');
+    if (storedLang) {
+      return storedLang;
     }
     return Object.keys(this.config.getConfig('LANGUAGES'))[0];
   }

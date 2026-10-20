@@ -16,9 +16,9 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [TranslatePipe]
 })
 export class SubsystemItemComponent {
-  private subsystemsService = inject(SubsystemsService);
-  private router = inject(Router);
-  private config = inject(AppConfig);
+  private readonly subsystemsService = inject(SubsystemsService);
+  private readonly router = inject(Router);
+  private readonly config = inject(AppConfig);
 
   @Input() subsystem!: Subsystem;
 

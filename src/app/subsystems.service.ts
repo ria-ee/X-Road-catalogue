@@ -12,8 +12,8 @@ import { InstanceVersion } from './instance-version';
   providedIn: 'root'
 })
 export class SubsystemsService {
-  private http = inject(HttpClient);
-  private config = inject(AppConfig);
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(AppConfig);
 
   subsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
   filteredSubsystemsSubject = new BehaviorSubject<Subsystem[]>([]);
@@ -25,7 +25,7 @@ export class SubsystemsService {
   private filter = '';
   private instance = '';
   private instanceVersion = '';
-  private updateFilter = new Subject<string>();
+  private readonly updateFilter = new Subject<string>();
 
   constructor() {
     // Debouncing update of filter
@@ -171,41 +171,13 @@ export class SubsystemsService {
     for (const origSubsystem of this.subsystemsSubject.value) {
       // Copy object to avoid overwriting methods and services arrays in subsystem object
       const subsystem = Object.assign(Object.create(origSubsystem), origSubsystem);
-      if (this.nonEmpty && !subsystem.methods.length && !subsystem.services.length) {
+      if (this.nonEmpty && this.isEmptySubsystem(subsystem)) {
         // Filtering out empty subsystems
         continue;
       }
-      if (
-        this.filter !== ''
-        && !subsystem.methods.length
-        && !subsystem.services.length
-      ) {
-        // Subsystem without methods and services
-        if (subsystem.fullSubsystemName.toLowerCase().indexOf(this.filter.toLowerCase()) < 0) {
-          // Subsystem name does not match the filter
-          continue;
-        }
-      } else if (this.filter !== '') {
-        // Subsystem with methods and/or services
-        const filteredMethods: Method[] = [];
-        for (const method of subsystem.methods) {
-          if (method.fullMethodName.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0) {
-            filteredMethods.push(method);
-          }
-        }
-        const filteredServices: Service[] = [];
-        for (const service of subsystem.services) {
-          if (service.fullServiceName.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0) {
-            filteredServices.push(service);
-          }
-        }
-        if (!filteredMethods.length && !filteredServices.length) {
-          // No matching method and/or services names found
-          continue;
-        }
-        // Leaving only matching methods and services
-        subsystem.methods = filteredMethods;
-        subsystem.services = filteredServices;
+      if (this.filter !== '' && !this.matchesFilter(subsystem)) {
+        // Subsystem (and its methods/services) do not match the filter
+        continue;
       }
       filtered.push(subsystem);
       limit -= 1;
@@ -214,6 +186,37 @@ export class SubsystemsService {
       }
     }
     return filtered;
+  }
+
+  private isEmptySubsystem(subsystem: Subsystem): boolean {
+    return !subsystem.methods.length && !subsystem.services.length;
+  }
+
+  // Narrows subsystem.methods/services in place to those matching this.filter when the
+  // subsystem has any. Returns whether the subsystem matches the filter.
+  private matchesFilter(subsystem: Subsystem): boolean {
+    const filterLower = this.filter.toLowerCase();
+
+    if (this.isEmptySubsystem(subsystem)) {
+      // Subsystem without methods and services: match on its own name
+      return subsystem.fullSubsystemName.toLowerCase().indexOf(filterLower) >= 0;
+    }
+
+    // Subsystem with methods and/or services: narrow down to the matching ones
+    const filteredMethods = subsystem.methods.filter(
+      (method: Method) => method.fullMethodName.toLowerCase().indexOf(filterLower) >= 0
+    );
+    const filteredServices = subsystem.services.filter(
+      (service: Service) => service.fullServiceName.toLowerCase().indexOf(filterLower) >= 0
+    );
+    if (!filteredMethods.length && !filteredServices.length) {
+      // No matching method and/or services names found
+      return false;
+    }
+    // Leaving only matching methods and services
+    subsystem.methods = filteredMethods;
+    subsystem.services = filteredServices;
+    return true;
   }
 
   private setFullNames(subsystems: Subsystem[]): Subsystem[] {

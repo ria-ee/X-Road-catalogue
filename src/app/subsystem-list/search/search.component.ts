@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubsystemsService } from '../../subsystems.service';
 import { FormsModule } from '@angular/forms';
 
@@ -11,7 +11,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [FormsModule, TranslatePipe]
 })
 export class SearchComponent implements OnInit {
-  private subsystemsService = inject(SubsystemsService);
+  private readonly subsystemsService = inject(SubsystemsService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   limit: string;
   limits: Record<string, number>;
@@ -34,6 +35,9 @@ export class SearchComponent implements OnInit {
   setLimit(limit: string) {
     this.limit = limit;
     this.subsystemsService.setLimit(limit);
+    // Needed when called from outside the component's own template (e.g. via
+    // @ViewChild from SubsystemListComponent), as OnPush otherwise won't notice.
+    this.changeDetectorRef.markForCheck();
   }
 
   setFilter(filter: string) {

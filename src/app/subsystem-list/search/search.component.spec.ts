@@ -55,6 +55,13 @@ describe('SearchComponent', () => {
   it('setLimit should work', () => {
     component.setLimit('50');
     expect(subsystemsService.setLimit).toHaveBeenCalledWith('50');
+    expect(component.limit).toEqual('50');
+  });
+
+  it('setLimit should mark the view for check, so OnPush notices an outside caller (e.g. via @ViewChild)', () => {
+    const markForCheckSpy = vi.spyOn(component['changeDetectorRef'], 'markForCheck');
+    component.setLimit('all');
+    expect(markForCheckSpy).toHaveBeenCalled();
   });
 
   it('setFilter should work', () => {
